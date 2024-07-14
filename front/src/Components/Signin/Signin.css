@@ -1,0 +1,53 @@
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.login-section {
+  background: url('bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Adjust opacity as needed */
+  z-index: 1;
+}
+
+.login-container {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.6); /* White background with some transparency */
+  padding: 2rem;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+  max-width: 350px; /* Max width to ensure it doesn't stretch too wide */
+  width: 100%; /* Full width for smaller screens */
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-outline {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  width: 100%;
+}
+
+.text-center {
+  display: flex;
+  justify-content: center;
+}
