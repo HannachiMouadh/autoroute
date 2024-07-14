@@ -8,7 +8,7 @@ const cors = require('cors');
 
 
 
-
+app.use(passport.initialize());
 app.use(cors());
 app.use(express.json());
 DBconnect();
