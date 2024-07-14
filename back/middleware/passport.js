@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET,
+  secretOrKey: process.env.secretOrKey,
 };
 
 
