@@ -12,6 +12,9 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 DBconnect();
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 app.use("/api/user",require('./routes/user'));
 app.use("/auto",require("./routes/autoroute"));
 
