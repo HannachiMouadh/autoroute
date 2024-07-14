@@ -4,9 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "front": "cd.. && cd front && npm start",
-    "back": "nodemon server.js",
-    "dev": "concurrently \"npm run front\" \"npm run back\" "
+    "start": "node /server.js",
+    "build": "echo 'No build step needed'"
   },
   "author": "",
   "license": "ISC",
