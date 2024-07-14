@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const fetchForms = createAsyncThunk('data/fetchAll', async () => {
   try {
-    const response = await fetch('http://localhost:5000/auto/', {
+    const response = await fetch('https://autoroute-api.vercel.app/auto/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export const fetchForms = createAsyncThunk('data/fetchAll', async () => {
 
 export const addForm = createAsyncThunk('data/add', async (newData) => {
 
-    const response = await fetch('http://localhost:5000/auto/', {
+    const response = await fetch('https://autoroute-api.vercel.app/auto/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export const addForm = createAsyncThunk('data/add', async (newData) => {
 
 export const deleteForm = createAsyncThunk('data/delete', async (dataId) => {
 
-    await fetch(`${'http://localhost:5000/auto/'}${dataId}`, {
+    await fetch(`${'https://autoroute-api.vercel.app/auto/'}${dataId}`, {
       method: 'DELETE',
     });
     return dataId;
@@ -54,7 +54,7 @@ export const updateForm = createAsyncThunk(
   'form/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:5000/auto/${id}`, {
+      const response = await fetch(`https://autoroute-api.vercel.app/auto/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
