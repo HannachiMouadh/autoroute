@@ -226,36 +226,37 @@ const Home = () => {
           <Table className="margin" striped bordered hover >
             <thead >
               <tr>
-                <th>اتجاه</th>
-                <th>ن.ك</th>
+                  <th>زلاقات</th>
                 <th>موتى</th>
-                <th>جرحى </th>
-                <th>السبب </th>
-                <th>التاريخ </th>
-                <th>الساعة </th>
-                <th>اليوم </th>
-                <th>لوحة منجمية</th>
-                <th>زلاقات</th>
-              </tr>
+                <th>جرحى </th>   
+              <th>السبب </th>
+              <th>لوحة منجمية</th>
+              <th>اتجاه</th>
+              <th>ن.ك</th>
+              <th>الساعة </th>
+              <th>اليوم </th>
+              <th>التاريخ </th>
+                  <th style={{ width: "5%" }}></th>
+                </tr>
             </thead>
             {data == "" ? (<tbody><tr><td colSpan="12" style={{ textAlign: "center" }}><img src="https://i.gifer.com/YCZH.gif" alt="logo" /></td></tr></tbody>) : (<tbody >
               {(!formatStartDate && !formatEndDate ? data : data.filter(form => form.ddate >= formatStartDate && form.ddate <= formatEndDate)).map((form) => (
                 <tr key={form._id}>
-                  <td>{form.sens}</td>
-                  <td>Pk:{form.nk},{form.mtr}m</td>
+                  <td>{parseFloat(form.barrier) * 4 + 'm'}</td>
                   <td>{form.nbrmort}</td>
                   <td>{form.nbrblesse}</td>
                   <td>{form.cause}</td>
-                  <td>{form.ddate}</td>
-                  <td>{form.hours}:{form.minutes}</td>
-                  <td>{form.day}</td>
                   <td>
                     أ:{form.a}<br />
                     ب:{form.b}<br />
                     ج:{form.c}<br />
                     د:{form.d}
                   </td>
-                  <td>{parseFloat(form.barrier) * 4 + 'm'}</td>
+                <td>{form.sens}</td>
+                <td>Pk:{form.nk},{form.mtr}m</td>
+                <td>{form.hours}:{form.minutes}</td>
+                    <td>{form.day}</td>
+                    <td>{form.ddate}</td>
                   <td>
                       {userRedux?.isAdmin ? (
                         <div className='wrap-center'>
@@ -318,37 +319,37 @@ const Home = () => {
             <Table className="margin" striped bordered hover >
               <thead >
                 <tr>
-                  <th>اتجاه</th>
-                  <th>ن.ك</th>
-                  <th>موتى</th>
-                  <th>جرحى </th>
-                  <th>السبب </th>
-                  <th>التاريخ </th>
-                  <th>الساعة </th>
-                  <th>اليوم </th>
-                  <th>لوحة منجمية</th>
                   <th>زلاقات</th>
+                <th>موتى</th>
+                <th>جرحى </th>   
+              <th>السبب </th>
+              <th>لوحة منجمية</th>
+              <th>اتجاه</th>
+              <th>ن.ك</th>
+              <th>الساعة </th>
+              <th>اليوم </th>
+              <th>التاريخ </th>
                   <th style={{ width: "5%" }}></th>
                 </tr>
               </thead>
               {data == "" ? (<tbody><tr><td colSpan="12" style={{ textAlign: "center" }}><img src="https://i.gifer.com/YCZH.gif" alt="logo" /></td><td><Add /></td></tr></tbody>) : (<tbody >
                 {(!formatStartDate && !formatEndDate ? data : data.filter(form => form.ddate >= formatStartDate && form.ddate <= formatEndDate)).map((form) => (
                   <tr key={form._id}>
-                    <td>{form.sens}</td>
-                    <td>Pk:{form.nk},{form.mtr}m</td>
-                    <td>{form.nbrmort}</td>
-                    <td>{form.nbrblesse}</td>
-                    <td>{form.cause}</td>
-                    <td>{form.ddate}</td>
-                    <td>{form.hours}:{form.minutes}</td>
-                    <td>{form.day}</td>
-                    <td>
-                      أ:{form.a}<br />
-                      ب:{form.b}<br />
-                      ج:{form.c}<br />
-                      د:{form.d}
-                    </td>
                     <td>{parseFloat(form.barrier) * 4 + 'm'}</td>
+                  <td>{form.nbrmort}</td>
+                  <td>{form.nbrblesse}</td>
+                  <td>{form.cause}</td>
+                  <td>
+                    أ:{form.a}<br />
+                    ب:{form.b}<br />
+                    ج:{form.c}<br />
+                    د:{form.d}
+                  </td>
+                <td>{form.sens}</td>
+                <td>Pk:{form.nk},{form.mtr}m</td>
+                <td>{form.hours}:{form.minutes}</td>
+                    <td>{form.day}</td>
+                    <td>{form.ddate}</td>
                     <td>
                       {userRedux?.isAdmin ? (
                         <div className='wrap-center'>
