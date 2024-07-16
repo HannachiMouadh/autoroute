@@ -40,12 +40,12 @@ export const addForm = createAsyncThunk('data/add', async (newData) => {
 });
 
 
-export const deleteForm = createAsyncThunk('data/delete', async (dataId) => {
+export const deleteForm = createAsyncThunk('data/delete', async (id) => {
 
-    await fetch(`${'https://autoroute-api.vercel.app/auto/'}${dataId}`, {
+    await fetch(`${'https://autoroute-api.vercel.app/auto/'}${id}`, {
       method: 'DELETE',
     });
-    return dataId;
+    return id;
 });
 
 
