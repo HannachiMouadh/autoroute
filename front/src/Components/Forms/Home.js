@@ -83,7 +83,7 @@ const Home = () => {
         console.error("Error deleting data:", error);
         swalWithBootstrapButtons.fire(
           'Error!',
-          'Il y'a un problem lors de la supression.',
+          'Il y a un problem lors de la supression.',
           'error'
         );
       });
