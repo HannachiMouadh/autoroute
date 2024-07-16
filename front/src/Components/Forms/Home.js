@@ -63,7 +63,7 @@ const Home = () => {
     });
 
     swalWithBootstrapButtons.fire({
-      title: 'Voulez-vous supprimer cet utilisateur ?',
+      title: 'Voulez-vous supprimer cette donnée ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Oui',
@@ -73,9 +73,9 @@ const Home = () => {
       if (result.isConfirmed) {
         dispatch(deleteForm(dataId));
         swalWithBootstrapButtons.fire(
-          'Deleted!',
-          'Your file has been deleted.',
-          'success'
+          'Suprimé!',
+          'Votre donnée a été suprimé!.',
+          'succès!'
         );
         window.location.reload();
       }
