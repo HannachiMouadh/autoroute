@@ -242,7 +242,7 @@ const Home = () => {
             {data == "" ? (<tbody><tr><td colSpan="12" style={{ textAlign: "center" }}><img src="https://i.gifer.com/YCZH.gif" alt="logo" /></td></tr></tbody>) : (<tbody >
               {(!formatStartDate && !formatEndDate ? data : data.filter(form => form.ddate >= formatStartDate && form.ddate <= formatEndDate)).map((form) => (
                 <tr key={form._id}>
-                  <td>{parseFloat(form.barrier) * 4 + 'm'}</td>
+                  <td>{parseFloat(form.barrier) * 4 + 'm'},({form.barrier})</td>
                   <td>{form.nbrmort}</td>
                   <td>{form.nbrblesse}</td>
                   <td>{form.cause}</td>
@@ -335,7 +335,7 @@ const Home = () => {
               {data == "" ? (<tbody><tr><td colSpan="12" style={{ textAlign: "center" }}><img src="https://i.gifer.com/YCZH.gif" alt="logo" /></td><td><Add /></td></tr></tbody>) : (<tbody >
                 {(!formatStartDate && !formatEndDate ? data : data.filter(form => form.ddate >= formatStartDate && form.ddate <= formatEndDate)).map((form) => (
                   <tr key={form._id}>
-                    <td>{parseFloat(form.barrier) * 4 + 'm'}</td>
+                    <td>{parseFloat(form.barrier) * 4 + 'm'},({form.barrier})</td>
                   <td>{form.nbrmort}</td>
                   <td>{form.nbrblesse}</td>
                   <td>{form.cause}</td>
