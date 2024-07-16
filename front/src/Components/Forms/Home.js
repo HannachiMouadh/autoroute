@@ -54,34 +54,42 @@ const Home = () => {
   }, [userRedux]);
 
   const handleDelete = (id) => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger'
-      },
-      buttonsStyling: false
-    });
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-success',
+      cancelButton: 'btn btn-danger'
+    },
+    buttonsStyling: false
+  });
 
-    swalWithBootstrapButtons.fire({
-      title: 'Voulez-vous supprimer cette donnée ?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Oui',
-      cancelButtonText: 'Annuler',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(deleteForm(id));
+  swalWithBootstrapButtons.fire({
+    title: 'Voulez-vous supprimer cet utilisateur ?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Oui',
+    cancelButtonText: 'Annuler',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log(`Deleting data with id: ${id}`);
+      dispatch(deleteForm(id)).then(() => {
         swalWithBootstrapButtons.fire(
-          'Suprimé!',
-          'Votre donnée a été suprimé!.',
-          'succès!'
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
         );
-        //window.location.reload();
-      }
-    });
-
-  };
+        window.location.reload();
+      }).catch((error) => {
+        console.error("Error deleting data:", error);
+        swalWithBootstrapButtons.fire(
+          'Error!',
+          'There was an issue deleting your file.',
+          'error'
+        );
+      });
+    }
+  });
+};
 
 
   const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
