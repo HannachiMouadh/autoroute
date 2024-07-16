@@ -53,7 +53,7 @@ const Home = () => {
     setUser(userRedux);
   }, [userRedux]);
 
-  const handleDelete = (id) => {
+ const handleDelete = (dataId) => {
   const swalWithBootstrapButtons = Swal.mixin({
     customClass: {
       confirmButton: 'btn btn-success',
@@ -63,7 +63,7 @@ const Home = () => {
   });
 
   swalWithBootstrapButtons.fire({
-    title: 'Voulez-vous supprimer cette donnée ?',
+    title: 'Voulez-vous supprimer cet utilisateur ?',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Oui',
@@ -71,19 +71,19 @@ const Home = () => {
     reverseButtons: true
   }).then((result) => {
     if (result.isConfirmed) {
-      console.log(`Deleting data with id: ${id}`);
-      dispatch(deleteForm(id)).then(() => {
+      console.log(`Deleting data with id: ${dataId}`);
+      dispatch(deleteForm(dataId)).then(() => {
         swalWithBootstrapButtons.fire(
           'Deleted!',
-          'Votre donnée à été suprimé.',
-          'succès'
+          'Your file has been deleted.',
+          'success'
         );
         window.location.reload();
       }).catch((error) => {
         console.error("Error deleting data:", error);
         swalWithBootstrapButtons.fire(
           'Error!',
-          'Il y'a un problem lors de la supression.',
+          'There was an issue deleting your file.',
           'error'
         );
       });
