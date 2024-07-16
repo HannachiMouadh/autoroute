@@ -127,23 +127,22 @@ const Home = () => {
     const worksheet = workbook.addWorksheet('Statistics');
     const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years,months, ...rest }) => rest);
 
-    // Add headers
     const headerMapping = {
-      a: "ل.م:أ",
-      b: "ل.م:ب",
-      c: "ل.م:ج",
-      d: "ل.م:د",
       barrier: "زلاقات",
-      sens: "اتجاه",
-      nk: "ن.ك",
-      mtr: "مسافة ن.ك",
       nbrmort: "موتى",
       nbrblesse: "جرحى",
       cause: "السبب",
-      ddate: "التاريخ",
-      day: "اليوم",
-      hours: "الساعة",
+      d: "ل.م:د",
+      c: "ل.م:ج",
+      b: "ل.م:ب",
+      a: "ل.م:أ",
+      sens: "اتجاه",
+      mtr: "مسافة ن.ك",
+      nk: "ن.ك",
       minutes: "دقائق",
+      hours: "الساعة",
+      day: "اليوم",
+      ddate: "التاريخ",
     };
 
     const tableHeaderRow = worksheet.getRow(2);
