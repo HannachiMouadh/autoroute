@@ -250,16 +250,18 @@ const Home = () => {
                   </td>
                   <td>{parseFloat(form.barrier) * 4 + 'm'}</td>
                   <td>
-                    {isAdmin ? (
-                      <div className='center'>
-                        <Button variant="danger" onClick={() => handleDelete(form._id)}><RxCross1 /></Button>
-                        <Update dataId={form._id} rowData={form} />
+                      {userRedux?.isAdmin ? (
+                        <div className='wrap-center'>
+                          <div className='top-buttons'>
+                            <Button variant="danger" onClick={() => handleDelete(form._id)}><RxCross1 /></Button>
+                            <Update dataId={form._id} rowData={form} />
+                          </div>
+                          <Add />
+                        </div>
+                      ) : (
                         <Add />
-                      </div>
-                    ) : (
-                      <Add />
-                    )}
-                  </td>
+                      )}
+                    </td>
                 </tr>
               ))}
               <tr>
