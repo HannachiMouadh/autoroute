@@ -77,7 +77,7 @@ const Home = () => {
           'Votre donnée a été suprimé!.',
           'succès!'
         );
-        window.location.reload();
+        //window.location.reload();
       }
     });
 
