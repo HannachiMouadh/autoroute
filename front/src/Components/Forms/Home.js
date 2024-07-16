@@ -276,7 +276,7 @@ const Home = () => {
                 <td></td>
                 <td>{sumDead}</td>
                 <td>{sumInjur}</td>
-                <td colSpan="6"></td>
+                <td colSpan="7"></td>
                 <td>الاجمالي</td>
               </tr>
             </tbody>)}
@@ -369,7 +369,7 @@ const Home = () => {
                   <td></td>
                   <td>{sumDead}</td>
                   <td>{sumInjur}</td>
-                  <td colSpan="6"></td>
+                  <td colSpan="7"></td>
                   <td>الاجمالي</td>
                 </tr>
               </tbody>)}
