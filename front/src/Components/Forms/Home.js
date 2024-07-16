@@ -53,7 +53,7 @@ const Home = () => {
     setUser(userRedux);
   }, [userRedux]);
 
-  const handleDelete = (dataId) => {
+  const handleDelete = (id) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success',
@@ -71,7 +71,7 @@ const Home = () => {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(deleteForm(dataId));
+        dispatch(deleteForm(id));
         swalWithBootstrapButtons.fire(
           'Suprimé!',
           'Votre donnée a été suprimé!.',
@@ -253,7 +253,7 @@ const Home = () => {
                       {userRedux?.isAdmin ? (
                         <div className='wrap-center'>
                           <div className='top-buttons'>
-                            <Button variant="danger" onClick={() => handleDelete(form._id)}><RxCross1 /></Button>
+                            <Button variant="danger" onClick={(id) => handleDelete(form._id)}><RxCross1 /></Button>
                             <Update dataId={form._id} rowData={form} />
                           </div>
                           <Add />
