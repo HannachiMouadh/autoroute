@@ -151,19 +151,23 @@ const Update = ({ rowData, dataId, onUpdate }) => {
       });
     setShowModal(false);
     setUpdateData({
-      matricule: "",
-      barrier: "",
-      sens: "",
-      nk: "",
-      nbrmort: "",
-      nbrblesse: "",
-      cause: "",
-      ddate: "",
-      day: "",
-      months: "",
-      years: "",
-      hours: "",
-      minutes: "",
+      a: "",
+    b: "",
+    c: "",
+    d: "",
+    barrier: "",
+    sens: "",
+    nk: "",
+    mtr: "",
+    nbrmort: "",
+    nbrblesse: "",
+    cause: "",
+    ddate: "",
+    day: "",
+    months: "",
+    years: "",
+    hours: "",
+    minutes: "",
     });
      
     setTimeout(function () {
