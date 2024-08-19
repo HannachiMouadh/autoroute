@@ -16,6 +16,7 @@ import html2canvas from 'html2canvas';
 
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { currentUser, getAllUsers } from '../../JS/userSlice/userSlice';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -31,7 +32,7 @@ const StyledTable = styled(Table)`
 `;
 
 
-const HomeSemaine = () => {
+const HomeSemaine = ({ userSemaine }) => {
   const dispatch = useDispatch();
 
   const [startDate, setStartDate] = useState(null);
@@ -44,80 +45,114 @@ const HomeSemaine = () => {
     dispatch(fetchForms());
   }, [dispatch]);
 
+  const userRedux = useSelector((state) => state.user.users);
+  const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
+  useEffect(() => {
+    dispatch(getAllUsers());
+}, [dispatch]);
+  useEffect(() => {
+    setUser(userRedux);
+  }, [userRedux]);
+
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
-  const formatStartDate = moment(startDate).format("yyyy-MM-DD");
-  const formatEndDate = moment(endDate).format("yyyy-MM-DD");
+  const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
+  const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
 
-  const filteredData = (start, end) => {
-    return data.filter((form) => {
-      const formDate = moment(form.ddate, "yyyy-MM-DD");
-      return formDate.isSameOrAfter(start) && formDate.isSameOrBefore(end);
+
+ 
+
+
+  const filterData = (data) => {
+    if (!data || !userRedux) {
+      return [];
+    }
+
+    const usersFromTargetRegion = userRedux
+      .filter((user) => user.region === userSemaine)
+      .map((user) => user._id);
+
+    const filteredDatas = data.filter((form) => usersFromTargetRegion.includes(form.createdBy));
+
+    return filteredDatas;
+  };
+  console.log(filterData(data));
+
+  const filteredData = (data, start, end) => {
+    if (!start && !end) {
+      return filterData(data)
+    }
+    return filterData(data).filter((form) => {
+      const formDate = moment(form.ddate, "YYYY-MM-DD");
+      const isAfterOrSameStart = !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
+      const isBeforeOrSameEnd = !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
+      return isAfterOrSameStart && isBeforeOrSameEnd ;
     });
   };
+  const filteredDataArray = userRedux ? filteredData(data, formatStartDate, formatEndDate) : [];
 
 
-  const injurMonday = filteredData(formatStartDate, formatEndDate)
+  const injurMonday = filteredDataArray
     .filter((form) => form.day == 'الأثنين')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTuesday = filteredData(formatStartDate, formatEndDate)
+  const injurTuesday = filteredDataArray
     .filter((form) => form.day == 'الثلاثاء')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurWednesday = filteredData(formatStartDate, formatEndDate)
+  const injurWednesday = filteredDataArray
     .filter((form) => form.day == 'الأربعاء')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurThursday = filteredData(formatStartDate, formatEndDate)
+  const injurThursday = filteredDataArray
     .filter((form) => form.day == 'الخميس')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurFriday = filteredData(formatStartDate, formatEndDate)
+  const injurFriday = filteredDataArray
     .filter((form) => form.day == 'الجمعه')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurSaturday = filteredData(formatStartDate, formatEndDate)
+  const injurSaturday = filteredDataArray
     .filter((form) => form.day == 'السبت')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurSunday = filteredData(formatStartDate, formatEndDate)
+  const injurSunday = filteredDataArray
     .filter((form) => form.day == 'الأحد')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const deadMonday = filteredData(formatStartDate, formatEndDate)
+  const deadMonday = filteredDataArray
     .filter((form) => form.day == 'الأثنين')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTuesday = filteredData(formatStartDate, formatEndDate)
+  const deadTuesday = filteredDataArray
     .filter((form) => form.day == 'الثلاثاء')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadWednesday = filteredData(formatStartDate, formatEndDate)
+  const deadWednesday = filteredDataArray
     .filter((form) => form.day == 'الأربعاء')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadThursday = filteredData(formatStartDate, formatEndDate)
+  const deadThursday = filteredDataArray
     .filter((form) => form.day == 'الخميس')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadFriday = filteredData(formatStartDate, formatEndDate)
+  const deadFriday = filteredDataArray
     .filter((form) => form.day == 'الجمعه')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadSaturday = filteredData(formatStartDate, formatEndDate)
+  const deadSaturday = filteredDataArray
     .filter((form) => form.day == 'السبت')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadSunday = filteredData(formatStartDate, formatEndDate)
+  const deadSunday = filteredDataArray
     .filter((form) => form.day == 'الأحد')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const accMonday = filteredData(formatStartDate, formatEndDate)
+  const accMonday = filteredDataArray
     .filter((form) => form.day == 'الأثنين')
     .reduce((acc, form) => acc + 1, 0);
-  const accTuesday = filteredData(formatStartDate, formatEndDate)
+  const accTuesday = filteredDataArray
     .filter((form) => form.day == 'الثلاثاء')
     .reduce((acc, form) => acc + 1, 0);
-  const accWednesday = filteredData(formatStartDate, formatEndDate)
+  const accWednesday = filteredDataArray
     .filter((form) => form.day == 'الأربعاء')
     .reduce((acc, form) => acc + 1, 0);
-  const accThursday = filteredData(formatStartDate, formatEndDate)
+  const accThursday = filteredDataArray
     .filter((form) => form.day == 'الخميس')
     .reduce((acc, form) => acc + 1, 0);
-  const accFriday = filteredData(formatStartDate, formatEndDate)
+  const accFriday = filteredDataArray
     .filter((form) => form.day == 'الجمعه')
     .reduce((acc, form) => acc + 1, 0);
-  const accSaturday = filteredData(formatStartDate, formatEndDate)
+  const accSaturday = filteredDataArray
     .filter((form) => form.day == 'السبت')
     .reduce((acc, form) => acc + 1, 0);
-  const accSunday = filteredData(formatStartDate, formatEndDate)
+  const accSunday = filteredDataArray
     .filter((form) => form.day == 'الأحد')
     .reduce((acc, form) => acc + 1, 0);
 
@@ -210,7 +245,10 @@ const HomeSemaine = () => {
     <div>
       {isMobile ? (<StyledTable>
         <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
-        <div className="datepickers-container">
+        <div className="custom-form-container">
+      <div className="datepickers-container">
+        <div>
+        <label className="datepicker-label">:بداية التاريخ</label>
           <DatePicker
             selected={startDate}
             onChange={(date) => setStartDate(date)}
@@ -220,6 +258,9 @@ const HomeSemaine = () => {
             placeholderText="Start Date"
             className="custom-datepicker"
           />
+        </div>
+        <div>
+          <label className="datepicker-label">:نهاية التاريخ</label>
           <DatePicker
             selected={endDate}
             onChange={(date) => setEndDate(date)}
@@ -231,6 +272,8 @@ const HomeSemaine = () => {
             className="custom-datepicker"
           />
         </div>
+      </div>
+    </div>
         <div>
           <Button variant="secondary" onClick={resetFilters}>
           إعادة تعيين المرشحات
@@ -253,7 +296,7 @@ const HomeSemaine = () => {
                 <th>أيام</th>
               </tr>
             </thead>
-            {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
+            {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
               <tr>
                 <td>%{(injurMonday * 100 / sumInjur).toFixed(2)}</td>
                 <td>{injurMonday}</td>
@@ -329,7 +372,7 @@ const HomeSemaine = () => {
             </tbody>)}
 
           </Table>
-          <div> {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+          <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
             <div>
               <div ref={chartAccRef}>
                 <Bar
@@ -374,27 +417,35 @@ const HomeSemaine = () => {
         </div></StyledTable>) : (
         <StyledTable>
           <h1 className="title">إحصائيات حوادث المرور حسب أيام الاسبوع</h1>
-          <div className="datepickers-container">
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-              placeholderText="Start Date"
-              className="custom-datepicker"
-            />
-            <DatePicker
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              placeholderText="End Date"
-              minDate={startDate}
-              className="custom-datepicker"
-            />
-          </div>
+          <div className="custom-form-container">
+      <div className="datepickers-container">
+        <div>
+        <label className="datepicker-label">:بداية التاريخ</label>
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="Start Date"
+            className="custom-datepicker"
+          />
+        </div>
+        <div>
+          <label className="datepicker-label">:نهاية التاريخ</label>
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="End Date"
+            minDate={startDate}
+            className="custom-datepicker"
+          />
+        </div>
+      </div>
+    </div>
           <div>
             <Button variant="secondary" onClick={resetFilters}>
             إعادة تعيين المرشحات
@@ -417,7 +468,7 @@ const HomeSemaine = () => {
                   <th>أيام</th>
                 </tr>
               </thead>
-              {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
+              {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
                 <tr>
                   <td>%{(injurMonday * 100 / sumInjur).toFixed(2)}</td>
                   <td>{injurMonday}</td>
@@ -493,7 +544,7 @@ const HomeSemaine = () => {
               </tbody>)}
 
             </Table>
-            <div> {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+            <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
               <div>
                 <div ref={chartAccRef}>
                   <Bar

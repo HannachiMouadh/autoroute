@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../JS/userSlice/userSlice';
 import { useNavigate } from "react-router-dom";
 import { Alert, Button, Form, Row } from 'react-bootstrap';
@@ -10,18 +10,22 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Signup = () => {
   const [showAlert, setShowAlert] = useState(false);
-  const [register, setregister] = useState({})
+  const [register, setRegister] = useState({})
   const dispatch = useDispatch();
+  const userRedux = useSelector((state) => state.user.user);
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  
 
   const handleRegister = async (e) => {
     e.preventDefault();
     dispatch(registerUser(register));
-    setregister({
+    setRegister({
       name: "",
       lastName: "",
       email: "",
       password: "",
-      phone: ""
+      phone: "",
+      region: ""
     });
     toast.success('تم تحديث البيانات بنجاح!', {
       position: 'top-right',
@@ -32,8 +36,13 @@ const Signup = () => {
     });
     setTimeout(function () {
       window.location.reload();
-     }, 1000); 
+    }, 1000);
   }
+  useEffect(() => {
+    if (userRedux?.isAdmin) {
+      setRegister({ region: userRedux.region });
+    }
+  }, [userRedux]);
   return (
     <div className="signup-container">
       <p>
@@ -50,7 +59,7 @@ const Signup = () => {
           id="firstName"
           label="Nom de la famille"
           autoFocus
-          onChange={(e) => setregister({ ...register, name: e.target.value })}
+          onChange={(e) => setRegister({ ...register, name: e.target.value })}
         />
         <Form.Label className="form-label">اللقب:</Form.Label>
         <Form.Control
@@ -62,7 +71,7 @@ const Signup = () => {
           label="Prenom"
           name="lastName"
           autoComplete="lname"
-          onChange={(e) => setregister({ ...register, lastName: e.target.value })}
+          onChange={(e) => setRegister({ ...register, lastName: e.target.value })}
         />
         <Form.Label className="form-label">بريد إلكتروني:</Form.Label>
         <Form.Control
@@ -74,8 +83,31 @@ const Signup = () => {
           label="Addresse email"
           name="email"
           autoComplete="email"
-          onChange={(e) => setregister({ ...register, email: e.target.value })}
+          onChange={(e) => setRegister({ ...register, email: e.target.value })}
         />
+        <Form.Label className="form-label">District:</Form.Label>
+        <Form.Select
+          className="form-control"
+          required
+          id="region"
+          name="region"
+          value={register.region}
+          onChange={(e) => setRegister({ ...register, region: e.target.value })}
+        >
+          <option value="" disabled>Select Region</option>
+          <option value="sfax" disabled={userRedux?.isAdmin && userRedux.region !== 'sfax'}>
+            Sfax
+          </option>
+          <option value="gabes" disabled={userRedux?.isAdmin && userRedux.region !== 'gabes'}>
+            Gabes
+          </option>
+          <option value="sousse" disabled={userRedux?.isAdmin && userRedux.region !== 'sousse'}>
+            Sousse
+          </option>
+          <option value="skhera" disabled={userRedux?.isAdmin && userRedux.region !== 'skhera'}>
+            skhera
+          </option>
+        </Form.Select>
         <Form.Label className="form-label">الهاتف:</Form.Label>
         <Form.Control
           className="form-control"
@@ -86,7 +118,7 @@ const Signup = () => {
           label="Numero de telephone"
           name="phone"
           autoComplete="phone"
-          onChange={(e) => setregister({ ...register, phone: e.target.value })}
+          onChange={(e) => setRegister({ ...register, phone: e.target.value })}
         />
         <Form.Label className="form-label">كلمة السر:</Form.Label>
         <Form.Control
@@ -99,7 +131,7 @@ const Signup = () => {
           type="password"
           id="password"
           autoComplete="current-password"
-          onChange={(e) => setregister({ ...register, password: e.target.value })} />
+          onChange={(e) => setRegister({ ...register, password: e.target.value })} />
         <Button
           fullWidth
           variant="primary"

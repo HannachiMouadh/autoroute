@@ -1,77 +1,62 @@
+import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-
-
+// Fetch forms action
 export const fetchForms = createAsyncThunk('data/fetchAll', async () => {
   try {
-    const response = await fetch('http://localhost:5000/auto/', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not OK');
-    }
-
-    const data = await response.json();
-    return data.respond;
+    const response = await axios.get('http://localhost:5000/auto/');
+    return response.data.respond;
   } catch (error) {
     console.error('Error fetching forms:', error);
     throw error;
   }
 });
 
-
+// Add form action
 export const addForm = createAsyncThunk('data/add', async (newData) => {
-
-    const response = await fetch('http://localhost:5000/auto/', {
-      method: 'POST',
+  try {
+    const response = await axios.post('http://localhost:5000/auto/', newData, {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(newData),
     });
-    const data = await response.json();
-    console.log(data);
-    return data;
-
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding form:', error);
+    throw error;
+  }
 });
 
-
-export const deleteForm = createAsyncThunk('data/delete', async (dataId) => {
-
-    await fetch(`${'http://localhost:5000/auto/'}${dataId}`, {
-      method: 'DELETE',
-    });
-    return dataId;
+// Delete form action
+export const deleteForm = createAsyncThunk('data/delete', async (id) => {
+  try {
+    await axios.delete(`http://localhost:5000/auto/${id}`);
+    return id;
+  } catch (error) {
+    console.error('Error deleting form:', error);
+    throw error;
+  }
 });
 
-
-
+// Update form action
 export const updateForm = createAsyncThunk(
   'form/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:5000/auto/${id}`, {
-        method: 'PUT',
+      const response = await axios.put(`http://localhost:5000/auto/${id}`, data, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update form');
-      }
-      const result = await response.json();
-      return result;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 
 

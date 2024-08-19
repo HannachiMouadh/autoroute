@@ -15,6 +15,7 @@ import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { currentUser, getAllUsers } from '../../JS/userSlice/userSlice';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -30,231 +31,264 @@ const StyledTable = styled(Table)`
 `;
 
 
-const HomeSemaine = () => {
+const HomeSemaine = ({ userCause }) => {
   const dispatch = useDispatch();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const chartAccRef = useRef(null);
   const chartInjurRef = useRef(null);
   const data = useSelector((state) => state.data.data);
-
+  const isAuth = localStorage.getItem("token");
   useEffect(() => {
     dispatch(fetchForms());
   }, [dispatch]);
+
+  const userRedux = useSelector((state) => state.user.users);
+  const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
+  useEffect(() => {
+    dispatch(getAllUsers());
+}, [dispatch]);
+  useEffect(() => {
+    setUser(userRedux);
+  }, [userRedux]);
+  console.log(userCause.region);
 
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
   const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
   const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
 
-  console.log(data.hours);
 
-  const filteredData = (start, end) => {
-    return data.filter((form) => {
-      const formDate = moment(form.ddate, "yyyy-MM-DD"); // Adjust the format if needed
-      return formDate.isSameOrAfter(start) && formDate.isSameOrBefore(end);
+ 
+
+
+  const filterData = (data) => {
+    if (!data || !userRedux) {
+      return [];
+    }
+
+    const usersFromTargetRegion = userRedux
+      .filter((user) => user.region === userCause)
+      .map((user) => user._id);
+
+    const filteredDatas = data.filter((form) => usersFromTargetRegion.includes(form.createdBy));
+
+    return filteredDatas;
+  };
+  console.log(filterData(data));
+
+  const filteredData = (data, start, end) => {
+    if (!start && !end) {
+      return filterData(data)
+    }
+    return filterData(data).filter((form) => {
+      const formDate = moment(form.ddate, "YYYY-MM-DD");
+      const isAfterOrSameStart = !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
+      const isBeforeOrSameEnd = !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
+      return isAfterOrSameStart && isBeforeOrSameEnd ;
     });
   };
+  const filteredDataArray = userRedux ? filteredData(data, formatStartDate, formatEndDate) : [];
 
-  const injurVitesse = filteredData(formatStartDate, formatEndDate)
+  const injurVitesse = filteredDataArray
     .filter((form) => form.cause == 'سرعة فائقة')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurEclat = filteredData(formatStartDate, formatEndDate)
+  const injurEclat = filteredDataArray
     .filter((form) => form.cause == 'انشطار اطار العجلة')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurSleep = filteredData(formatStartDate, formatEndDate)
+  const injurSleep = filteredDataArray
     .filter((form) => form.cause == 'نعاس')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurDouble = filteredData(formatStartDate, formatEndDate)
+  const injurDouble = filteredDataArray
     .filter((form) => form.cause == 'مجاوزة فجئية')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurDrunk = filteredData(formatStartDate, formatEndDate)
+  const injurDrunk = filteredDataArray
     .filter((form) => form.cause == 'سياقة في حالة سكر')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurWet = filteredData(formatStartDate, formatEndDate)
+  const injurWet = filteredDataArray
     .filter((form) => form.cause == 'طريق مبلل')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurAtt = filteredData(formatStartDate, formatEndDate)
+  const injurAtt = filteredDataArray
     .filter((form) => form.cause == 'عدم انتباه')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurHole = filteredData(formatStartDate, formatEndDate)
+  const injurHole = filteredDataArray
     .filter((form) => form.cause == 'وجود حفرة وسط الطريق')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTruck = filteredData(formatStartDate, formatEndDate)
+  const injurTruck = filteredDataArray
     .filter((form) => form.cause == 'انقلاب الشاحنة')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurAnimal = filteredData(formatStartDate, formatEndDate)
+  const injurAnimal = filteredDataArray
     .filter((form) => form.cause == 'حيوان على الطريق السيارة')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurMan = filteredData(formatStartDate, formatEndDate)
+  const injurMan = filteredDataArray
     .filter((form) => form.cause == 'مترجل على الطريق السيارة')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTurn = filteredData(formatStartDate, formatEndDate)
+  const injurTurn = filteredDataArray
     .filter((form) => form.cause == 'الدوران في الإتجاه المعاكس')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurOut = filteredData(formatStartDate, formatEndDate)
+  const injurOut = filteredDataArray
     .filter((form) => form.cause == 'الخروج من فتحة عشوائية ')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurCar = filteredData(formatStartDate, formatEndDate)
+  const injurCar = filteredDataArray
     .filter((form) => form.cause == 'اصطدام سيارة باخرى رابظة على طرف الطريق')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurPanne = filteredData(formatStartDate, formatEndDate)
+  const injurPanne = filteredDataArray
     .filter((form) => form.cause == 'عطب مكانيكي/ عطب كهربائي')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurBehind = filteredData(formatStartDate, formatEndDate)
+  const injurBehind = filteredDataArray
     .filter((form) => form.cause == 'مضايقة من الخلف')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurMoto = filteredData(formatStartDate, formatEndDate)
+  const injurMoto = filteredDataArray
     .filter((form) => form.cause == 'اصطدام السيارة بالدراجة النارية')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurLeft = filteredData(formatStartDate, formatEndDate)
+  const injurLeft = filteredDataArray
     .filter((form) => form.cause == 'وجود عجلة او بقايا عجلة على الطريق')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurHerb = filteredData(formatStartDate, formatEndDate)
+  const injurHerb = filteredDataArray
     .filter((form) => form.cause == 'سقوط قرط على الطريق')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurAcc = filteredData(formatStartDate, formatEndDate)
+  const injurAcc = filteredDataArray
     .filter((form) => form.cause == 'اصطدام سيارتان او اكثر ')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurControl = filteredData(formatStartDate, formatEndDate)
+  const injurControl = filteredDataArray
     .filter((form) => form.cause == 'عدم التحكم في السيارة')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTired = filteredData(formatStartDate, formatEndDate)
+  const injurTired = filteredDataArray
     .filter((form) => form.cause == 'السياقة تحت تأثير التعب و الإرهاق')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
 
 
-  const deadVitesse = filteredData(formatStartDate, formatEndDate)
+  const deadVitesse = filteredDataArray
     .filter((form) => form.cause == 'سرعة فائقة')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadEclat = filteredData(formatStartDate, formatEndDate)
+  const deadEclat = filteredDataArray
     .filter((form) => form.cause == 'انشطار اطار العجلة')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadSleep = filteredData(formatStartDate, formatEndDate)
+  const deadSleep = filteredDataArray
     .filter((form) => form.cause == 'نعاس')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadDouble = filteredData(formatStartDate, formatEndDate)
+  const deadDouble = filteredDataArray
     .filter((form) => form.cause == 'مجاوزة فجئية')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadDrunk = filteredData(formatStartDate, formatEndDate)
+  const deadDrunk = filteredDataArray
     .filter((form) => form.cause == 'سياقة في حالة سكر')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadWet = filteredData(formatStartDate, formatEndDate)
+  const deadWet = filteredDataArray
     .filter((form) => form.cause == 'طريق مبلل')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadAtt = filteredData(formatStartDate, formatEndDate)
+  const deadAtt = filteredDataArray
     .filter((form) => form.cause == 'عدم انتباه')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadHole = filteredData(formatStartDate, formatEndDate)
+  const deadHole = filteredDataArray
     .filter((form) => form.cause == 'وجود حفرة وسط الطريق')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTruck = filteredData(formatStartDate, formatEndDate)
+  const deadTruck = filteredDataArray
     .filter((form) => form.cause == 'انقلاب الشاحنة')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadAnimal = filteredData(formatStartDate, formatEndDate)
+  const deadAnimal = filteredDataArray
     .filter((form) => form.cause == 'حيوان على الطريق السيارة')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadMan = filteredData(formatStartDate, formatEndDate)
+  const deadMan = filteredDataArray
     .filter((form) => form.cause == 'مترجل على الطريق السيارة')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTurn = filteredData(formatStartDate, formatEndDate)
+  const deadTurn = filteredDataArray
     .filter((form) => form.cause == 'الدوران في الإتجاه المعاكس')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadOut = filteredData(formatStartDate, formatEndDate)
+  const deadOut = filteredDataArray
     .filter((form) => form.cause == 'الخروج من فتحة عشوائية ')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadCar = filteredData(formatStartDate, formatEndDate)
+  const deadCar = filteredDataArray
     .filter((form) => form.cause == 'اصطدام سيارة باخرى رابظة على طرف الطريق')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadPanne = filteredData(formatStartDate, formatEndDate)
+  const deadPanne = filteredDataArray
     .filter((form) => form.cause == 'عطب مكانيكي/ عطب كهربائي')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadBehind = filteredData(formatStartDate, formatEndDate)
+  const deadBehind = filteredDataArray
     .filter((form) => form.cause == 'مضايقة من الخلف')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadMoto = filteredData(formatStartDate, formatEndDate)
+  const deadMoto = filteredDataArray
     .filter((form) => form.cause == 'اصطدام السيارة بالدراجة النارية')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadLeft = filteredData(formatStartDate, formatEndDate)
+  const deadLeft = filteredDataArray
     .filter((form) => form.cause == 'وجود عجلة او بقايا عجلة على الطريق')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadHerb = filteredData(formatStartDate, formatEndDate)
+  const deadHerb = filteredDataArray
     .filter((form) => form.cause == 'سقوط قرط على الطريق')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadAcc = filteredData(formatStartDate, formatEndDate)
+  const deadAcc = filteredDataArray
     .filter((form) => form.cause == 'اصطدام سيارتان او اكثر ')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadControl = filteredData(formatStartDate, formatEndDate)
+  const deadControl = filteredDataArray
     .filter((form) => form.cause == 'عدم التحكم في السيارة')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTired = filteredData(formatStartDate, formatEndDate)
+  const deadTired = filteredDataArray
     .filter((form) => form.cause == 'السياقة تحت تأثير التعب و الإرهاق')
     .reduce((acc, form) => acc + form.nbrmort, 0);
 
-  const accVitesse = filteredData(formatStartDate, formatEndDate)
+  const accVitesse = filteredDataArray
     .filter((form) => form.cause == 'سرعة فائقة')
     .reduce((acc, form) => acc + 1, 0);
-  const accEclat = filteredData(formatStartDate, formatEndDate)
+  const accEclat = filteredDataArray
     .filter((form) => form.cause == 'انشطار اطار العجلة')
     .reduce((acc, form) => acc + 1, 0);
-  const accSleep = filteredData(formatStartDate, formatEndDate)
+  const accSleep = filteredDataArray
     .filter((form) => form.cause == 'نعاس')
     .reduce((acc, form) => acc + 1, 0);
-  const accDouble = filteredData(formatStartDate, formatEndDate)
+  const accDouble = filteredDataArray
     .filter((form) => form.cause == 'مجاوزة فجئية')
     .reduce((acc, form) => acc + 1, 0);
-  const accDrunk = filteredData(formatStartDate, formatEndDate)
+  const accDrunk = filteredDataArray
     .filter((form) => form.cause == 'سياقة في حالة سكر')
     .reduce((acc, form) => acc + 1, 0);
-  const accWet = filteredData(formatStartDate, formatEndDate)
+  const accWet = filteredDataArray
     .filter((form) => form.cause == 'طريق مبلل')
     .reduce((acc, form) => acc + 1, 0);
-  const accAtt = filteredData(formatStartDate, formatEndDate)
+  const accAtt = filteredDataArray
     .filter((form) => form.cause == 'عدم انتباه')
     .reduce((acc, form) => acc + 1, 0);
-  const accHole = filteredData(formatStartDate, formatEndDate)
+  const accHole = filteredDataArray
     .filter((form) => form.cause == 'وجود حفرة وسط الطريق')
     .reduce((acc, form) => acc + 1, 0);
-  const accTruck = filteredData(formatStartDate, formatEndDate)
+  const accTruck = filteredDataArray
     .filter((form) => form.cause == 'انقلاب الشاحنة')
     .reduce((acc, form) => acc + 1, 0);
-  const accAnimal = filteredData(formatStartDate, formatEndDate)
+  const accAnimal = filteredDataArray
     .filter((form) => form.cause == 'حيوان على الطريق السيارة')
     .reduce((acc, form) => acc + 1, 0);
-  const accMan = filteredData(formatStartDate, formatEndDate)
+  const accMan = filteredDataArray
     .filter((form) => form.cause == 'مترجل على الطريق السيارة')
     .reduce((acc, form) => acc + 1, 0);
-  const accTurn = filteredData(formatStartDate, formatEndDate)
+  const accTurn = filteredDataArray
     .filter((form) => form.cause == 'الدوران في الإتجاه المعاكس')
     .reduce((acc, form) => acc + 1, 0);
-  const accOut = filteredData(formatStartDate, formatEndDate)
+  const accOut = filteredDataArray
     .filter((form) => form.cause == 'الخروج من فتحة عشوائية ')
     .reduce((acc, form) => acc + 1, 0);
-  const accCar = filteredData(formatStartDate, formatEndDate)
+  const accCar = filteredDataArray
     .filter((form) => form.cause == 'اصطدام سيارة باخرى رابظة على طرف الطريق')
     .reduce((acc, form) => acc + 1, 0);
-  const accPanne = filteredData(formatStartDate, formatEndDate)
+  const accPanne = filteredDataArray
     .filter((form) => form.cause == 'عطب مكانيكي/ عطب كهربائي')
     .reduce((acc, form) => acc + 1, 0);
-  const accBehind = filteredData(formatStartDate, formatEndDate)
+  const accBehind = filteredDataArray
     .filter((form) => form.cause == 'مضايقة من الخلف')
     .reduce((acc, form) => acc + 1, 0);
-  const accMoto = filteredData(formatStartDate, formatEndDate)
+  const accMoto = filteredDataArray
     .filter((form) => form.cause == 'اصطدام السيارة بالدراجة النارية')
     .reduce((acc, form) => acc + 1, 0);
-  const accLeft = filteredData(formatStartDate, formatEndDate)
+  const accLeft = filteredDataArray
     .filter((form) => form.cause == 'وجود عجلة او بقايا عجلة على الطريق')
     .reduce((acc, form) => acc + 1, 0);
-  const accHerb = filteredData(formatStartDate, formatEndDate)
+  const accHerb = filteredDataArray
     .filter((form) => form.cause == 'سقوط قرط على الطريق')
     .reduce((acc, form) => acc + 1, 0);
-  const accAcc = filteredData(formatStartDate, formatEndDate)
+  const accAcc = filteredDataArray
     .filter((form) => form.cause == 'اصطدام سيارتان او اكثر ')
     .reduce((acc, form) => acc + 1, 0);
-  const accControl = filteredData(formatStartDate, formatEndDate)
+  const accControl = filteredDataArray
     .filter((form) => form.cause == 'عدم التحكم في السيارة')
     .reduce((acc, form) => acc + 1, 0);
-  const accTired = filteredData(formatStartDate, formatEndDate)
+  const accTired = filteredDataArray
     .filter((form) => form.cause == 'السياقة تحت تأثير التعب و الإرهاق')
     .reduce((acc, form) => acc + 1, 0);
 
@@ -370,7 +404,10 @@ const HomeSemaine = () => {
     <div>
       {isMobile ? (<StyledTable>
         <h1 className="title">احصائيات حوادث المرور حسب الأسباب</h1>
-        <div className="datepickers-container">
+        <div className="custom-form-container">
+      <div className="datepickers-container">
+        <div>
+          <label className="datepicker-label">:بداية التاريخ</label>
           <DatePicker
             selected={startDate}
             onChange={(date) => setStartDate(date)}
@@ -380,6 +417,9 @@ const HomeSemaine = () => {
             placeholderText="Start Date"
             className="custom-datepicker"
           />
+        </div>
+        <div>
+          <label className="datepicker-label">:نهاية التاريخ</label>
           <DatePicker
             selected={endDate}
             onChange={(date) => setEndDate(date)}
@@ -391,6 +431,8 @@ const HomeSemaine = () => {
             className="custom-datepicker"
           />
         </div>
+      </div>
+    </div>
         <div>
           <Button variant="secondary" onClick={resetFilters}>
           إعادة تعيين المرشحات
@@ -413,7 +455,7 @@ const HomeSemaine = () => {
                 <th> الأسباب</th>
               </tr>
             </thead>
-            {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7">الرجاء اختيار التاريخ</td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
+            {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
               <tr>
                 <td>%{(injurVitesse * 100 / sumInjur).toFixed(2)}</td>
                 <td>{injurVitesse}</td>
@@ -624,7 +666,7 @@ const HomeSemaine = () => {
             </tbody>)}
 
           </Table>
-          <div> {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+          <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
             <div>
               <div ref={chartAccRef}>
                 <Bar
@@ -686,27 +728,35 @@ const HomeSemaine = () => {
         </div></StyledTable>) : (
         <StyledTable>
           <h1 className="title">احصائيات حوادث المرور حسب الأسباب</h1>
-          <div className="datepickers-container">
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-              placeholderText="Start Date"
-              className="custom-datepicker"
-            />
-            <DatePicker
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              placeholderText="End Date"
-              minDate={startDate}
-              className="custom-datepicker"
-            />
-          </div>
+          <div className="custom-form-container">
+      <div className="datepickers-container">
+        <div>
+        <label className="datepicker-label">:بداية التاريخ</label>
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="Start Date"
+            className="custom-datepicker"
+          />
+        </div>
+        <div>
+          <label className="datepicker-label">:نهاية التاريخ</label>
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="End Date"
+            minDate={startDate}
+            className="custom-datepicker"
+          />
+        </div>
+      </div>
+    </div>
           <div>
             <Button variant="secondary" onClick={resetFilters}>
             إعادة تعيين المرشحات
@@ -729,7 +779,7 @@ const HomeSemaine = () => {
                   <th> الأسباب</th>
                 </tr>
               </thead>
-              {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7">الرجاء اختيار التاريخ</td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
+              {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
                 <tr>
                   <td>%{(injurVitesse * 100 / sumInjur).toFixed(2)}</td>
                   <td>{injurVitesse}</td>
@@ -940,7 +990,7 @@ const HomeSemaine = () => {
               </tbody>)}
 
             </Table>
-            <div> {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+            <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data, startDate, endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
               <div>
                 <div ref={chartAccRef}>
                   <Bar

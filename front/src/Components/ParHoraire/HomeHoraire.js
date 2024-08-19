@@ -16,6 +16,7 @@ import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { getAllUsers } from '../../JS/userSlice/userSlice';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -31,7 +32,7 @@ const StyledTable = styled(Table)`
 `;
 
 
-const HomeHoraire = () => {
+const HomeHoraire = ({userHoraire}) => {
   const dispatch = useDispatch();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -47,231 +48,262 @@ const HomeHoraire = () => {
   for (let i = 2020; i <= currentYear; i++) {
     years.push(i.toString());
   }
+  const userRedux = useSelector((state) => state.user.users);
+  const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
+  useEffect(() => {
+    dispatch(getAllUsers());
+}, [dispatch]);
+  useEffect(() => {
+    setUser(userRedux);
+  }, [userRedux]);
+
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
-  const sum = data.reduce((acc, form) => acc + form.nbrblesse, 0);
 
   const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
   const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
 
-  console.log(data.hours);
 
-  const filteredData = (start, end) => {
-    return data.filter((form) => {
-      const formDate = moment(form.ddate, "yyyy-MM-DD");
-      return formDate.isSameOrAfter(start) && formDate.isSameOrBefore(end);
+ 
+
+
+  const filterData = (data) => {
+    if (!data || !userRedux) {
+      return [];
+    }
+
+    const usersFromTargetRegion = userRedux
+      .filter((user) => user.region === userHoraire)
+      .map((user) => user._id);
+
+    const filteredDatas = data.filter((form) => usersFromTargetRegion.includes(form.createdBy));
+
+    return filteredDatas;
+  };
+  console.log(filterData(data));
+
+  const filteredData = (data, start, end) => {
+    if (!start && !end) {
+      return filterData(data)
+    }
+    return filterData(data).filter((form) => {
+      const formDate = moment(form.ddate, "YYYY-MM-DD");
+      const isAfterOrSameStart = !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
+      const isBeforeOrSameEnd = !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
+      return isAfterOrSameStart && isBeforeOrSameEnd ;
     });
   };
+  const filteredDataArray = userRedux ? filteredData(data, formatStartDate, formatEndDate) : [];
 
 
-  const injurOne = filteredData(formatStartDate, formatEndDate)
+  const injurOne = filteredDataArray
   .filter((form)=> form.hours >= 0 && form.hours < 1)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTwo = filteredData(formatStartDate, formatEndDate)
+  const injurTwo = filteredDataArray
   .filter((form)=>form.hours >= 1 && form.hours < 2)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurThree = filteredData(formatStartDate, formatEndDate)
+  const injurThree = filteredDataArray
   .filter((form)=> form.hours >= 2 && form.hours < 3)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurFour = filteredData(formatStartDate, formatEndDate)
+  const injurFour = filteredDataArray
   .filter((form)=> form.hours >= 3 && form.hours < 4)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurFive = filteredData(formatStartDate, formatEndDate)
+  const injurFive = filteredDataArray
   .filter((form)=> form.hours >= 4 && form.hours < 5)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurSix = filteredData(formatStartDate, formatEndDate)
+  const injurSix = filteredDataArray
   .filter((form)=> form.hours >= 5 && form.hours < 6)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurSeven = filteredData(formatStartDate, formatEndDate)
+  const injurSeven = filteredDataArray
   .filter((form)=> form.hours >= 6 && form.hours < 7)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurEight = filteredData(formatStartDate, formatEndDate)
+  const injurEight = filteredDataArray
   .filter((form)=> form.hours >= 7 && form.hours < 8)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurNine = filteredData(formatStartDate, formatEndDate)
+  const injurNine = filteredDataArray
   .filter((form)=> form.hours >= 8 && form.hours < 9)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTen = filteredData(formatStartDate, formatEndDate)
+  const injurTen = filteredDataArray
   .filter((form)=> form.hours >= 9 && form.hours < 10)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurEleven = filteredData(formatStartDate, formatEndDate)
+  const injurEleven = filteredDataArray
   .filter((form)=> form.hours >= 10 && form.hours < 11)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTwelve = filteredData(formatStartDate, formatEndDate)
+  const injurTwelve = filteredDataArray
   .filter((form)=> form.hours >= 11 && form.hours < 12)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurThirteen = filteredData(formatStartDate, formatEndDate)
+  const injurThirteen = filteredDataArray
   .filter((form)=> form.hours >= 12 && form.hours < 13)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurForteen = filteredData(formatStartDate, formatEndDate)
+  const injurForteen = filteredDataArray
   .filter((form)=> form.hours >= 13 && form.hours < 14)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurFifteen = filteredData(formatStartDate, formatEndDate)
+  const injurFifteen = filteredDataArray
   .filter((form)=> form.hours >= 14 && form.hours < 15)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurSixteen = filteredData(formatStartDate, formatEndDate)
+  const injurSixteen = filteredDataArray
   .filter((form)=> form.hours >= 15 && form.hours < 16)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurSeventeen = filteredData(formatStartDate, formatEndDate)
+  const injurSeventeen = filteredDataArray
   .filter((form)=> form.hours >= 16 && form.hours < 17)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurEighteen = filteredData(formatStartDate, formatEndDate)
+  const injurEighteen = filteredDataArray
   .filter((form)=> form.hours >= 17 && form.hours < 18)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurNineteen = filteredData(formatStartDate, formatEndDate)
+  const injurNineteen = filteredDataArray
   .filter((form)=> form.hours >= 18 && form.hours < 19)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTwenty = filteredData(formatStartDate, formatEndDate)
+  const injurTwenty = filteredDataArray
   .filter((form)=> form.hours >= 19 && form.hours < 20)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTwentyone = filteredData(formatStartDate, formatEndDate)
+  const injurTwentyone = filteredDataArray
   .filter((form)=> form.hours >= 20 && form.hours < 21)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTwentytwo = filteredData(formatStartDate, formatEndDate)
+  const injurTwentytwo = filteredDataArray
   .filter((form)=> form.hours >= 21 && form.hours < 22)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurTwentythree = filteredData(formatStartDate, formatEndDate)
+  const injurTwentythree = filteredDataArray
   .filter((form)=> form.hours >= 22 && form.hours < 23)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
 
 
-  const deadOne = filteredData(formatStartDate, formatEndDate)
+  const deadOne = filteredDataArray
   .filter((form)=> form.hours >= 0 && form.hours < 1)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTwo = filteredData(formatStartDate, formatEndDate)
+  const deadTwo = filteredDataArray
   .filter((form)=>form.hours >= 1 && form.hours < 2)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadThree = filteredData(formatStartDate, formatEndDate)
+  const deadThree = filteredDataArray
   .filter((form)=> form.hours >= 2 && form.hours < 3)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadFour = filteredData(formatStartDate, formatEndDate)
+  const deadFour = filteredDataArray
   .filter((form)=> form.hours >= 3 && form.hours < 4)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadFive = filteredData(formatStartDate, formatEndDate)
+  const deadFive = filteredDataArray
   .filter((form)=> form.hours >= 4 && form.hours < 5)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadSix = filteredData(formatStartDate, formatEndDate)
+  const deadSix = filteredDataArray
   .filter((form)=> form.hours >= 5 && form.hours < 6)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadSeven = filteredData(formatStartDate, formatEndDate)
+  const deadSeven = filteredDataArray
   .filter((form)=> form.hours >= 6 && form.hours < 7)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadEight = filteredData(formatStartDate, formatEndDate)
+  const deadEight = filteredDataArray
   .filter((form)=> form.hours >= 7 && form.hours < 8)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadNine = filteredData(formatStartDate, formatEndDate)
+  const deadNine = filteredDataArray
   .filter((form)=> form.hours >= 8 && form.hours < 9)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTen = filteredData(formatStartDate, formatEndDate)
+  const deadTen = filteredDataArray
   .filter((form)=> form.hours >= 9 && form.hours < 10)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadEleven = filteredData(formatStartDate, formatEndDate)
+  const deadEleven = filteredDataArray
   .filter((form)=> form.hours >= 10 && form.hours < 11)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTwelve = filteredData(formatStartDate, formatEndDate)
+  const deadTwelve = filteredDataArray
   .filter((form)=> form.hours >= 11 && form.hours < 12)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadThirteen = filteredData(formatStartDate, formatEndDate)
+  const deadThirteen = filteredDataArray
   .filter((form)=> form.hours >= 12 && form.hours < 13)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadForteen = filteredData(formatStartDate, formatEndDate)
+  const deadForteen = filteredDataArray
   .filter((form)=> form.hours >= 13 && form.hours < 14)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadFifteen = filteredData(formatStartDate, formatEndDate)
+  const deadFifteen = filteredDataArray
   .filter((form)=> form.hours >= 14 && form.hours < 15)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadSixteen = filteredData(formatStartDate, formatEndDate)
+  const deadSixteen = filteredDataArray
   .filter((form)=> form.hours >= 15 && form.hours < 16)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadSeventeen = filteredData(formatStartDate, formatEndDate)
+  const deadSeventeen = filteredDataArray
   .filter((form)=> form.hours >= 16 && form.hours < 17)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadEighteen = filteredData(formatStartDate, formatEndDate)
+  const deadEighteen = filteredDataArray
   .filter((form)=> form.hours >= 17 && form.hours < 18)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadNineteen = filteredData(formatStartDate, formatEndDate)
+  const deadNineteen = filteredDataArray
   .filter((form)=> form.hours >= 18 && form.hours < 19)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTwenty = filteredData(formatStartDate, formatEndDate)
+  const deadTwenty = filteredDataArray
   .filter((form)=> form.hours >= 19 && form.hours < 20)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTwentyone = filteredData(formatStartDate, formatEndDate)
+  const deadTwentyone = filteredDataArray
   .filter((form)=> form.hours >= 20 && form.hours < 21)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTwentytwo = filteredData(formatStartDate, formatEndDate)
+  const deadTwentytwo = filteredDataArray
   .filter((form)=> form.hours >= 21 && form.hours < 22)
   .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadTwentythree = filteredData(formatStartDate, formatEndDate)
+  const deadTwentythree = filteredDataArray
   .filter((form)=> form.hours >= 22 && form.hours < 23)
   .reduce((acc, form) => acc + form.nbrmort, 0);
   
 
-  const accOne = filteredData(formatStartDate, formatEndDate)
+  const accOne = filteredDataArray
   .filter((form)=> form.hours >= 0 && form.hours < 1)
   .reduce((acc, form) => acc + 1, 0);
-  const accTwo = filteredData(formatStartDate, formatEndDate)
+  const accTwo = filteredDataArray
   .filter((form)=>form.hours >= 1 && form.hours < 2)
   .reduce((acc, form) => acc + 1, 0);
-  const accThree = filteredData(formatStartDate, formatEndDate)
+  const accThree = filteredDataArray
   .filter((form)=> form.hours >= 2 && form.hours < 3)
   .reduce((acc, form) => acc + 1, 0);
-  const accFour = filteredData(formatStartDate, formatEndDate)
+  const accFour = filteredDataArray
   .filter((form)=> form.hours >= 3 && form.hours < 4)
   .reduce((acc, form) => acc + 1, 0);
-  const accFive = filteredData(formatStartDate, formatEndDate)
+  const accFive = filteredDataArray
   .filter((form)=> form.hours >= 4 && form.hours < 5)
   .reduce((acc, form) => acc + 1, 0);
-  const accSix = filteredData(formatStartDate, formatEndDate)
+  const accSix = filteredDataArray
   .filter((form)=> form.hours >= 5 && form.hours < 6)
   .reduce((acc, form) => acc + 1, 0);
-  const accSeven = filteredData(formatStartDate, formatEndDate)
+  const accSeven = filteredDataArray
   .filter((form)=> form.hours >= 6 && form.hours < 7)
   .reduce((acc, form) => acc + 1, 0);
-  const accEight = filteredData(formatStartDate, formatEndDate)
+  const accEight = filteredDataArray
   .filter((form)=> form.hours >= 7 && form.hours < 8)
   .reduce((acc, form) => acc + 1, 0);
-  const accNine = filteredData(formatStartDate, formatEndDate)
+  const accNine = filteredDataArray
   .filter((form)=> form.hours >= 8 && form.hours < 9)
   .reduce((acc, form) => acc + 1, 0);
-  const accTen = filteredData(formatStartDate, formatEndDate)
+  const accTen = filteredDataArray
   .filter((form)=> form.hours >= 9 && form.hours < 10)
   .reduce((acc, form) => acc + 1, 0);
-  const accEleven = filteredData(formatStartDate, formatEndDate)
+  const accEleven = filteredDataArray
   .filter((form)=> form.hours >= 10 && form.hours < 11)
   .reduce((acc, form) => acc + 1, 0);
-  const accTwelve = filteredData(formatStartDate, formatEndDate)
+  const accTwelve = filteredDataArray
   .filter((form)=> form.hours >= 11 && form.hours < 12)
   .reduce((acc, form) => acc + 1, 0);
-  const accThirteen = filteredData(formatStartDate, formatEndDate)
+  const accThirteen = filteredDataArray
   .filter((form)=> form.hours >= 12 && form.hours < 13)
   .reduce((acc, form) => acc + 1, 0);
-  const accForteen = filteredData(formatStartDate, formatEndDate)
+  const accForteen = filteredDataArray
   .filter((form)=> form.hours >= 13 && form.hours < 14)
   .reduce((acc, form) => acc + 1, 0);
-  const accFifteen = filteredData(formatStartDate, formatEndDate)
+  const accFifteen = filteredDataArray
   .filter((form)=> form.hours >= 14 && form.hours < 15)
   .reduce((acc, form) => acc + 1, 0);
-  const accSixteen = filteredData(formatStartDate, formatEndDate)
+  const accSixteen = filteredDataArray
   .filter((form)=> form.hours >= 15 && form.hours < 16)
   .reduce((acc, form) => acc + 1, 0);
-  const accSeventeen = filteredData(formatStartDate, formatEndDate)
+  const accSeventeen = filteredDataArray
   .filter((form)=> form.hours >= 16 && form.hours < 17)
   .reduce((acc, form) => acc + 1, 0);
-  const accEighteen = filteredData(formatStartDate, formatEndDate)
+  const accEighteen = filteredDataArray
   .filter((form)=> form.hours >= 17 && form.hours < 18)
   .reduce((acc, form) => acc + 1, 0);
-  const accNineteen = filteredData(formatStartDate, formatEndDate)
+  const accNineteen = filteredDataArray
   .filter((form)=> form.hours >= 18 && form.hours < 19)
   .reduce((acc, form) => acc + 1, 0);
-  const accTwenty = filteredData(formatStartDate, formatEndDate)
+  const accTwenty = filteredDataArray
   .filter((form)=> form.hours >= 19 && form.hours < 20)
   .reduce((acc, form) => acc + 1, 0);
-  const accTwentyone = filteredData(formatStartDate, formatEndDate)
+  const accTwentyone = filteredDataArray
   .filter((form)=> form.hours >= 20 && form.hours < 21)
   .reduce((acc, form) => acc + 1, 0);
-  const accTwentytwo = filteredData(formatStartDate, formatEndDate)
+  const accTwentytwo = filteredDataArray
   .filter((form)=> form.hours >= 21 && form.hours < 22)
   .reduce((acc, form) => acc + 1, 0);
-  const accTwentythree = filteredData(formatStartDate, formatEndDate)
+  const accTwentythree = filteredDataArray
   .filter((form)=> form.hours >= 22 && form.hours < 23)
   .reduce((acc, form) => acc + 1, 0);
   
@@ -381,34 +413,41 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
     });
   };
 
-console.log(filteredData(startDate,endDate).length);
 
 
   return (
     <div>
       {isMobile ? (<StyledTable>
       <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
+      <div className="custom-form-container">
       <div className="datepickers-container">
-                <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    placeholderText="Start Date"
-                    className="custom-datepicker"
-                />
-                <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    placeholderText="End Date"
-                    minDate={startDate}
-                    className="custom-datepicker"
-                />
-            </div>
+        <div>
+        <label className="datepicker-label">:بداية التاريخ</label>
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="Start Date"
+            className="custom-datepicker"
+          />
+        </div>
+        <div>
+          <label className="datepicker-label">:نهاية التاريخ</label>
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="End Date"
+            minDate={startDate}
+            className="custom-datepicker"
+          />
+        </div>
+      </div>
+    </div>
             <div>
             <Button variant="secondary" onClick={resetFilters}>
             إعادة تعيين المرشحات
@@ -431,7 +470,7 @@ console.log(filteredData(startDate,endDate).length);
                   <th>الساعة</th>
                 </tr>
               </thead>
-              {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7">الرجاء اختيار التاريخ</td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
+              {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
                 <tr>
                 <td>%{(injurOne * 100 / sumInjur).toFixed(2)}</td>
                 <td>{injurOne}</td>
@@ -652,7 +691,7 @@ console.log(filteredData(startDate,endDate).length);
 
             </Table>
             <div>
-            {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+            {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
             <div>
               <div ref={chartAccRef}>
                 <Bar
@@ -713,27 +752,35 @@ console.log(filteredData(startDate,endDate).length);
           </div></StyledTable>) : (
         <StyledTable>
           <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
-          <div className="datepickers-container">
-                <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    placeholderText="Start Date"
-                    className="custom-datepicker"
-                />
-                <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    placeholderText="End Date"
-                    minDate={startDate}
-                    className="custom-datepicker"
-                />
-            </div>
+          <div className="custom-form-container">
+      <div className="datepickers-container">
+        <div>
+        <label className="datepicker-label">:بداية التاريخ</label>
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="Start Date"
+            className="custom-datepicker"
+          />
+        </div>
+        <div>
+          <label className="datepicker-label">:نهاية التاريخ</label>
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="End Date"
+            minDate={startDate}
+            className="custom-datepicker"
+          />
+        </div>
+      </div>
+    </div>
             <div>
             <Button variant="secondary" onClick={resetFilters}>
             إعادة تعيين المرشحات
@@ -756,7 +803,7 @@ console.log(filteredData(startDate,endDate).length);
                   <th>الساعة</th>
                 </tr>
               </thead>
-              {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7">الرجاء اختيار التاريخ</td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
+              {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
                 <tr>
                 <td>%{(injurOne * 100 / sumInjur).toFixed(2)}</td>
                 <td>{injurOne}</td>
@@ -976,7 +1023,7 @@ console.log(filteredData(startDate,endDate).length);
               </tbody>)}
 
             </Table>
-            <div>{(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+            <div>{(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
             <div>
               <div ref={chartAccRef}>
               <Bar

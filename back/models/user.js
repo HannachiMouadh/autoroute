@@ -23,10 +23,14 @@ const UserSchema = new Schema({
         type:Number,
         required:true
     },
+    region:{
+        type:String,
+        required:true
+    },
     isAuth:{
         type:Boolean,
         default:false
     }
 });
 
-module.exports = mongoose.model('user', UserSchema);
+module.exports = mongoose.model("user", UserSchema);

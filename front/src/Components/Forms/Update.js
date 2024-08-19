@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { updateForm } from '../../JS/formSlice/FormSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ const Update = ({ rowData, dataId, onUpdate }) => {
   const [selectedVoie, setSelectedVoie] = useState(rowData.sens || "اتجاه قابس");
   const [selectedHours,setSelectedHours] = useState(rowData.hours || 0 );
   const [selectedMinutes,setSelectedMinutes] = useState(rowData.minutes || 0 );
+  const userRedux = useSelector((state) => state.user.user);
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [updateData, setUpdateData] = useState({
@@ -37,8 +38,8 @@ const Update = ({ rowData, dataId, onUpdate }) => {
     years: rowData.years || "",
     hours: rowData.hours || "",
     minutes: rowData.minutes || "",
+    createdBy: rowData.createdBy || "",
   });
-  //console.log(rowData.nbrblesse);
   const newData = (e) => {
     const { name, value } = e.target;
     setUpdateData((prevData) => ({
@@ -46,6 +47,9 @@ const Update = ({ rowData, dataId, onUpdate }) => {
       [name]: value,
     }));
   };
+  useEffect(() => {
+    setUpdateData({ ...updateData, createdBy: userRedux?._id })
+  }, [userRedux]);
 
   const handleDateChange = (e) => {
 
@@ -139,36 +143,66 @@ const Update = ({ rowData, dataId, onUpdate }) => {
   const handleUpdate = (e) => {
     e.preventDefault();
 
-    const newData = { ...updateData, nk: selectedNK, cause: selectedCause, sens: selectedVoie ,hours: selectedHours.toString().padStart(2, '0'),
-      minutes: selectedMinutes.toString().padStart(2, '0')};
-      dispatch(updateForm({ id: dataId, data: newData }));
-      toast.success('تم تحديث البيانات بنجاح!', {
-        position: 'top-right',
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
+    const newData = {
+      ...updateData,
+      nk: selectedNK,
+      cause: selectedCause,
+      sens: selectedVoie,
+      hours: selectedHours.toString().padStart(2, '0'),
+      minutes: selectedMinutes.toString().padStart(2, '0'),
+    };
+
+    // Log data to verify it's correct
+    console.log('Data to update:', newData);
+    console.log('Data ID:', dataId);
+
+    dispatch(updateForm({ id: dataId, data: newData }))
+      .then(response => {
+        console.log('Update response:', response);
+        if (response.error) {
+          throw new Error(response.error.message);
+        }
+        toast.success('تم تحديث البيانات بنجاح!', {
+          position: 'top-right',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        setShowModal(false);
+        setUpdateData({
+          a: "",
+          b: "",
+          c: "",
+          d: "",
+          barrier: "",
+          sens: "",
+          nk: "",
+          mtr: "",
+          nbrmort: "",
+          nbrblesse: "",
+          cause: "",
+          ddate: "",
+          day: "",
+          months: "",
+          years: "",
+          hours: "",
+          minutes: "",
+        });
+        setTimeout(function () {
+          window.location.reload();
+        }, 800);
+      })
+      .catch(error => {
+        console.error('Update failed:', error);
+        toast.error('فشل تحديث البيانات. يرجى المحاولة مرة أخرى.', {
+          position: 'top-right',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       });
-    setShowModal(false);
-    setUpdateData({
-      matricule: "",
-      barrier: "",
-      sens: "",
-      nk: "",
-      nbrmort: "",
-      nbrblesse: "",
-      cause: "",
-      ddate: "",
-      day: "",
-      months: "",
-      years: "",
-      hours: "",
-      minutes: "",
-    });
-     
-    setTimeout(function () {
-      window.location.reload();
-    }, 2000);
   };
   
 
@@ -192,11 +226,54 @@ const Update = ({ rowData, dataId, onUpdate }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!updateData.a) newErrors.a = 'لوحة منجمية is required';
-    if (!updateData.nk) newErrors.nk = 'نقطة كلمترية is required';
-    if (!updateData.nbrmort) newErrors.nbrmort = 'عدد الجرحى is required';
-    if (!updateData.nbrblesse) newErrors.nbrblesse = 'عدد الموتى is required';
+    if (!updateData.a) newErrors.a = 'لوحة منجمية إجبارية';
+    if (!updateData.nk) newErrors.nk = 'نقطة كلمترية إجبارية';
+    if (!updateData.nbrmort) newErrors.nbrmort = 'عدد الجرحى إجباري';
+    if (!updateData.nbrblesse) newErrors.nbrblesse = 'عدد الموتى إجباري';
     return newErrors;
+  };
+
+  const generateOptionsNK = (region) => {
+    let start, range;
+    switch (region) {
+      case 'gabes':
+        start = 317;
+        range = 75;
+        break;
+      case 'sfax':
+        start = 395;
+        range = 75;
+        break;
+      default:
+        start = 317;
+        range = 75;
+    }
+
+    return Array.from({ length: range }, (_, i) => {
+      const value = start + i;
+      return (
+        <option key={value} value={value}>
+          {value}
+        </option>
+      );
+    });
+  };
+
+  const getSenseByRegion = (region) => {
+    switch (region) {
+      case 'gabes':
+        return [
+          { value: 'اتجاه قابس', label: 'اتجاه قابس' },
+          { value: 'اتجاه صفاقس', label: 'اتجاه صفاقس' },
+        ];
+      case 'sfax':
+        return [
+          { value: 'اتجاه تونس', label: 'اتجاه تونس' },
+          { value: 'اتجاه صخيرة', label: 'اتجاه صخيرة' },
+        ];
+      default:
+        return [];
+    }
   };
 
   return (
@@ -266,17 +343,8 @@ const Update = ({ rowData, dataId, onUpdate }) => {
               :زلاقات
             </Row>
             <Row>
-            <Form.Select
-              style={{ width: '80px' }}
-              name="nk"
-              value={updateData.nk}
-              onChange={newData}
-            >
-              {generateOptionss(75)}
-            </Form.Select>
-            {errors.nk && <p style={{ color: 'red' }}>{errors.nk}</p>}
             <Form.Control
-              style={{ width: '150px' }}
+              style={{ width: '194px', height: "30px" }}
               type="number"
               min="0"
               name="mtr"
@@ -284,6 +352,15 @@ const Update = ({ rowData, dataId, onUpdate }) => {
               onChange={newData}
               required
             />
+            :البعد بالمتر
+            <Form.Select
+              style={{ width: '80px' }}
+              name="nk"
+              value={updateData.nk}
+              onChange={newData}
+            >
+              {userRedux && userRedux.region ? generateOptionsNK(userRedux.region) : null}
+            </Form.Select>
             :نقطة كلمترية
           </Row>
             <Row>
@@ -292,8 +369,11 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                 value={selectedVoie || rowData.sens}
                 onChange={(e) => setSelectedVoie(e.target.value)}
               >
-                <option value="اتجاه قابس">اتجاه قابس</option>
-                <option value="اتجاه صفاقس">اتجاه صفاقس</option>
+                {getSenseByRegion(userRedux?.region).map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </Form.Select>
               :الاتجاه
             </Row>

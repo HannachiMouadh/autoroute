@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { deleteForm, fetchForms, updateForm } from '../../JS/formSlice/FormSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Add from '../Forms/Add';
@@ -17,6 +17,7 @@ import html2canvas from 'html2canvas';
 
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { getAllUsers } from '../../JS/userSlice/userSlice';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -34,7 +35,7 @@ const StyledTable = styled(Table)`
 `;
 
 
-const HomeSens = () => {
+const HomeSens = ({userSens}) => {
   const dispatch = useDispatch();
   const chartAccRef = useRef(null);
   const chartInjurRef = useRef(null);
@@ -53,37 +54,71 @@ const HomeSens = () => {
   }
 
 
+  const userRedux = useSelector((state) => state.user.users);
+  const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
+  useEffect(() => {
+    dispatch(getAllUsers());
+}, [dispatch]);
+  useEffect(() => {
+    setUser(userRedux);
+  }, [userRedux]);
+
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
-  const formatStartDate = moment(startDate).format("yyyy-MM-DD");
-  const formatEndDate = moment(endDate).format("yyyy-MM-DD");
+  const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
+  const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
 
-  const filteredData = (start, end) => {
-    return data.filter((form) => {
-      const formDate = moment(form.ddate, "yyyy-MM-DD"); 
-      return formDate.isSameOrAfter(start) && formDate.isSameOrBefore(end);
+
+ 
+
+
+  const filterData = (data) => {
+    if (!data || !userRedux) {
+      return [];
+    }
+
+    const usersFromTargetRegion = userRedux
+      .filter((user) => user.region === userSens)
+      .map((user) => user._id);
+
+    const filteredDatas = data.filter((form) => usersFromTargetRegion.includes(form.createdBy));
+
+    return filteredDatas;
+  };
+  console.log(filterData(data));
+
+  const filteredData = (data, start, end) => {
+    if (!start && !end) {
+      return filterData(data)
+    }
+    return filterData(data).filter((form) => {
+      const formDate = moment(form.ddate, "YYYY-MM-DD");
+      const isAfterOrSameStart = !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
+      const isBeforeOrSameEnd = !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
+      return isAfterOrSameStart && isBeforeOrSameEnd ;
     });
   };
+  const filteredDataArray = userRedux ? filteredData(data, formatStartDate, formatEndDate) : [];
 
 
-  const injurGabes = filteredData(formatStartDate, formatEndDate)
+  const injurGabes = filteredDataArray
     .filter((form) => form.sens == 'اتجاه قابس')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
-  const injurSfax = filteredData(formatStartDate, formatEndDate)
+  const injurSfax = filteredDataArray
     .filter((form) => form.sens == 'اتجاه صفاقس')
     .reduce((acc, form) => acc + form.nbrblesse, 0);
 
-  const accGabes = filteredData(formatStartDate, formatEndDate)
+  const accGabes = filteredDataArray
     .filter((form) => form.sens == 'اتجاه قابس')
     .reduce((acc, form) => acc + 1, 0);
-  const accSfax = filteredData(formatStartDate, formatEndDate)
+  const accSfax = filteredDataArray
     .filter((form) => form.sens == 'اتجاه صفاقس')
     .reduce((acc, form) => acc + 1, 0);
 
-  const deadGabes = filteredData(formatStartDate, formatEndDate)
+  const deadGabes = filteredDataArray
     .filter((form) => form.sens == 'اتجاه قابس')
     .reduce((acc, form) => acc + form.nbrmort, 0);
-  const deadSfax = filteredData(formatStartDate, formatEndDate)
+  const deadSfax = filteredDataArray
     .filter((form) => form.sens == 'اتجاه صفاقس')
     .reduce((acc, form) => acc + form.nbrmort, 0);
 
@@ -100,7 +135,7 @@ const HomeSens = () => {
 
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Statistics'); 
+    const worksheet = workbook.addWorksheet('Statistics');
 
     worksheet.columns = [
       { header: '%جرحى', key: 'iinjuries', width: 20 },
@@ -110,40 +145,40 @@ const HomeSens = () => {
       { header: '%حوادث', key: 'aaccidents', width: 20 },
       { header: 'عدد حوادث', key: 'accidents', width: 20 },
       { header: 'الاتجاه', key: 'direction', width: 20 },
-  ];
+    ];
 
-      const tableHeaderRow = worksheet.getRow(2);
-      tableHeaderRow.values = worksheet.columns.map(col => col.header);
-      tableHeaderRow.eachCell(cell => {
+    const tableHeaderRow = worksheet.getRow(2);
+    tableHeaderRow.values = worksheet.columns.map(col => col.header);
+    tableHeaderRow.eachCell(cell => {
       cell.font = { bold: true };
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
-  });
+    });
 
-  worksheet.mergeCells('A1:G1');
-  const headerRow = worksheet.getRow(1);
-  const headerCell = headerRow.getCell(1);
-  headerCell.value = `Rapport Statistique Par Sense: ${formatStartDate} - ${formatEndDate}`;
-  headerCell.font = { bold: true };
-  headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.mergeCells('A1:G1');
+    const headerRow = worksheet.getRow(1);
+    const headerCell = headerRow.getCell(1);
+    headerCell.value = `Rapport Statistique Par Sense: ${formatStartDate} - ${formatEndDate}`;
+    headerCell.font = { bold: true };
+    headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
 
 
-    worksheet.addRow({  injuries: injurGabes,iinjuries:(injurGabes * 100 / sumInjur).toFixed(2) + '%', deaths: deadGabes,ddeaths:(deadGabes * 100 / sumDead).toFixed(2) + '%', accidents: accGabes,aaccidents:(accGabes * 100 / sumAcc).toFixed(2) + '%',direction: 'اتجاه قابس'});
-    worksheet.addRow({  injuries: injurSfax,iinjuries:(injurSfax * 100 / sumInjur).toFixed(2) + '%', deaths: deadSfax,ddeaths:(deadSfax * 100 / sumDead).toFixed(2) + '%', accidents: accSfax,aaccidents:(accSfax * 100 / sumAcc).toFixed(2) + '%', direction: 'اتجاه صفاقس'});
-    worksheet.addRow({  injuries:sumInjur,iinjuries: '',deaths:sumDead, ddeaths: '', accidents: sumAcc,aaccidents:'',direction: '' });
-    
+    worksheet.addRow({ injuries: injurGabes, iinjuries: (injurGabes * 100 / sumInjur).toFixed(2) + '%', deaths: deadGabes, ddeaths: (deadGabes * 100 / sumDead).toFixed(2) + '%', accidents: accGabes, aaccidents: (accGabes * 100 / sumAcc).toFixed(2) + '%', direction: 'اتجاه قابس' });
+    worksheet.addRow({ injuries: injurSfax, iinjuries: (injurSfax * 100 / sumInjur).toFixed(2) + '%', deaths: deadSfax, ddeaths: (deadSfax * 100 / sumDead).toFixed(2) + '%', accidents: accSfax, aaccidents: (accSfax * 100 / sumAcc).toFixed(2) + '%', direction: 'اتجاه صفاقس' });
+    worksheet.addRow({ injuries: sumInjur, iinjuries: '', deaths: sumDead, ddeaths: '', accidents: sumAcc, aaccidents: '', direction: '' });
+
     const borderStyle = {
       top: { style: 'thin' },
       left: { style: 'thin' },
       bottom: { style: 'thin' },
       right: { style: 'thin' }
     };
-  
+
     worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
       row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
         cell.border = borderStyle;
       });
     });
-    
+
 
     const chartAccCanvas = await html2canvas(chartAccRef.current);
     const chartAccImage = chartAccCanvas.toDataURL('image/png');
@@ -173,34 +208,42 @@ const HomeSens = () => {
   return (
     <div>
       {isMobile ? (<StyledTable><h1 className="title"> إحصائيات حوادث المرور حسب الإتجاه </h1>
-      <div className="datepickers-container">
-                <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    placeholderText="Start Date"
-                    className="custom-datepicker"
-                />
-                <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    placeholderText="End Date"
-                    minDate={startDate}
-                    className="custom-datepicker"
-                />
+        <div className="custom-form-container">
+          <div className="datepickers-container">
+            <div>
+              <label className="datepicker-label">:بداية التاريخ</label>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText="Start Date"
+                className="custom-datepicker"
+              />
             </div>
+            <div>
+              <label className="datepicker-label">:نهاية التاريخ</label>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText="End Date"
+                minDate={startDate}
+                className="custom-datepicker"
+              />
+            </div>
+          </div>
+        </div>
         <div>
           <Button variant="secondary" onClick={resetFilters}>
-          إعادة تعيين المرشحات
+            إعادة تعيين المرشحات
           </Button>
         </div>
         {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-        <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
+          <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
         </div>)}
         <div>
           <p>You are viewing on a mobile.</p>
@@ -216,8 +259,8 @@ const HomeSens = () => {
                 <th>الاتجاه</th>
               </tr>
             </thead>
-            {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="8">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7">الرجاء اختيار التاريخ</td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
-               <tr>
+            {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
+              <tr>
                 <td>%{(injurGabes * 100 / sumInjur).toFixed(2)}</td>
                 <td>{injurGabes}</td>
                 <td>%{(deadGabes * 100 / sumDead).toFixed(2)}</td>
@@ -247,60 +290,60 @@ const HomeSens = () => {
             </tbody>)}
 
           </Table>
-          <div> {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+          <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
             <div>
               <div ref={chartAccRef}>
-              <Bar
-                data={{
-                  labels: ['اتجاه قابس', 'اتجاه صفاقس'],
-                  datasets: [
-                    {
-                      label: 'عدد الحوادث',
-                      data: [accGabes, accSfax],
-                      backgroundColor: 'dark grey',
-                      borderColor: 'rgba(75, 192, 192, 1)',
-                      borderWidth: 1,
+                <Bar
+                  data={{
+                    labels: ['اتجاه قابس', 'اتجاه صفاقس'],
+                    datasets: [
+                      {
+                        label: 'عدد الحوادث',
+                        data: [accGabes, accSfax],
+                        backgroundColor: 'dark grey',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                      },
+                    ],
+                  }}
+                  options={{
+                    responsive: true,
+                    plugins: {
+                      legend: { position: 'top' },
+                      title: { display: true, text: 'عدد الحوادث حسب الاتجاه', font: { size: 60 } },
                     },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'عدد الحوادث حسب الاتجاه',font: { size: 60 }  },
-                  },
-                }}
-              />
+                  }}
+                />
               </div>
               <div ref={chartInjurRef}>
-              <Bar
-                data={{
-                  labels: ['اتجاه قابس', 'اتجاه صفاقس'],
-                  datasets: [
-                    {
-                      label: 'عدد الجرحى',
-                      data: [injurGabes, injurSfax],
-                      backgroundColor: 'blue',
-                      borderColor: 'rgba(255, 206, 86, 1)',
-                      borderWidth: 1,
+                <Bar
+                  data={{
+                    labels: ['اتجاه قابس', 'اتجاه صفاقس'],
+                    datasets: [
+                      {
+                        label: 'عدد الجرحى',
+                        data: [injurGabes, injurSfax],
+                        backgroundColor: 'blue',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1,
+                      },
+                      {
+                        label: 'عدد الموتى',
+                        data: [deadGabes, deadSfax],
+                        backgroundColor: 'red',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                      },
+                    ],
+                  }}
+                  options={{
+                    responsive: true,
+                    plugins: {
+                      legend: { position: 'top' },
+                      title: { display: true, text: 'عدد الجرحى و الموتى حسب الاتجاه', font: { size: 60 } },
                     },
-                    {
-                      label: 'عدد الموتى',
-                      data: [deadGabes, deadSfax],
-                      backgroundColor: 'red',
-                      borderColor: 'rgba(255, 99, 132, 1)',
-                      borderWidth: 1,
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'عدد الجرحى و الموتى حسب الاتجاه',font: { size: 60 }  },
-                  },
-                }}
-              />
+                  }}
+                />
               </div>
             </div>
           )}</div>
@@ -308,35 +351,43 @@ const HomeSens = () => {
         <StyledTable>
           <h1 className="title"> إحصائيات حوادث المرور حسب الإتجاه </h1>
 
-          <div className="datepickers-container">
+          <div className="custom-form-container">
+            <div className="datepickers-container">
+              <div>
+                <label className="datepicker-label">:بداية التاريخ</label>
                 <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    placeholderText="Start Date"
-                    className="custom-datepicker"
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  placeholderText="Start Date"
+                  className="custom-datepicker"
                 />
+              </div>
+              <div>
+                <label className="datepicker-label">:نهاية التاريخ</label>
                 <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    placeholderText="End Date"
-                    minDate={startDate}
-                    className="custom-datepicker"
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  placeholderText="End Date"
+                  minDate={startDate}
+                  className="custom-datepicker"
                 />
+              </div>
             </div>
+          </div>
           <div>
             <Button variant="secondary" onClick={resetFilters}>
-            إعادة تعيين المرشحات
+              إعادة تعيين المرشحات
             </Button>
           </div>
           {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-        <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
-        </div>)}
+            <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
+          </div>)}
           <div>
             <p>You are viewing on a larger screen.</p>
             <Table className="margin" striped bordered hover >
@@ -351,16 +402,16 @@ const HomeSens = () => {
                   <th>الاتجاه</th>
                 </tr>
               </thead>
-              {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7">الرجاء اختيار التاريخ</td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
-                  <tr>
-                <td>%{(injurGabes * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurGabes}</td>
-                <td>%{(deadGabes * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadGabes}</td>
-                <td>%{(accGabes * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accGabes}</td>
-                <td>اتجاه قابس</td>
-              </tr>
+              {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
+                <tr>
+                  <td>%{(injurGabes * 100 / sumInjur).toFixed(2)}</td>
+                  <td>{injurGabes}</td>
+                  <td>%{(deadGabes * 100 / sumDead).toFixed(2)}</td>
+                  <td>{deadGabes}</td>
+                  <td>%{(accGabes * 100 / sumAcc).toFixed(2)}</td>
+                  <td>{accGabes}</td>
+                  <td>اتجاه قابس</td>
+                </tr>
                 <tr>
                   <td>%{(injurSfax * 100 / sumInjur).toFixed(2)}</td>
                   <td>{injurSfax}</td>
@@ -382,63 +433,63 @@ const HomeSens = () => {
               </tbody>)}
 
             </Table>
-            <div> {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
-                <div>
-                  <div ref={chartAccRef}>
+            <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
+              <div>
+                <div ref={chartAccRef}>
                   <Bar
-                data={{
-                  labels: ['اتجاه قابس', 'اتجاه صفاقس'],
-                  datasets: [
-                    {
-                      label: 'عدد الحوادث',
-                      data: [accGabes, accSfax],
-                      backgroundColor: 'grey',
-                      borderColor: 'rgba(75, 192, 192, 1)',
-                      borderWidth: 1,
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'عدد الحوادث حسب الاتجاه',font: { size: 60 } },
-                  },
-                }}
-              />
-                  </div>
-                  <div ref={chartInjurRef}>
-                  <Bar
-                data={{
-                  labels: ['اتجاه قابس', 'اتجاه صفاقس'],
-                  datasets: [
-                    {
-                      label: 'عدد الجرحى',
-                      data: [injurGabes, injurSfax],
-                      backgroundColor: 'blue',
-                      borderColor: 'rgba(255, 206, 86, 1)',
-                      borderWidth: 1,
-                    },
-                    {
-                      label: 'عدد الموتى',
-                      data: [deadGabes, deadSfax],
-                      backgroundColor: 'red',
-                      borderColor: 'rgba(255, 99, 132, 1)',
-                      borderWidth: 1,
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'عدد الجرحى و الموتى حسب الاتجاه',font: { size: 60 } },
-                  },
-                }}
-              />
-                  </div>
+                    data={{
+                      labels: ['اتجاه قابس', 'اتجاه صفاقس'],
+                      datasets: [
+                        {
+                          label: 'عدد الحوادث',
+                          data: [accGabes, accSfax],
+                          backgroundColor: 'grey',
+                          borderColor: 'rgba(75, 192, 192, 1)',
+                          borderWidth: 1,
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'عدد الحوادث حسب الاتجاه', font: { size: 60 } },
+                      },
+                    }}
+                  />
                 </div>
-              )}
+                <div ref={chartInjurRef}>
+                  <Bar
+                    data={{
+                      labels: ['اتجاه قابس', 'اتجاه صفاقس'],
+                      datasets: [
+                        {
+                          label: 'عدد الجرحى',
+                          data: [injurGabes, injurSfax],
+                          backgroundColor: 'blue',
+                          borderColor: 'rgba(255, 206, 86, 1)',
+                          borderWidth: 1,
+                        },
+                        {
+                          label: 'عدد الموتى',
+                          data: [deadGabes, deadSfax],
+                          backgroundColor: 'red',
+                          borderColor: 'rgba(255, 99, 132, 1)',
+                          borderWidth: 1,
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'عدد الجرحى و الموتى حسب الاتجاه', font: { size: 60 } },
+                      },
+                    }}
+                  />
+                </div>
+              </div>
+            )}
             </div>
           </div></StyledTable>)}
     </div>

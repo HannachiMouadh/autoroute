@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addForm } from '../../JS/formSlice/FormSlice';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -14,13 +14,12 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 
-const Add = ({ onFormAdded }) => {
+const Add = ({ id }) => {
   const dispatch = useDispatch();
-  const [selectedNK, setSelectedNK] = useState("من  ن.ك 317  إلى   ن.ك 327");
   const [selectedCause, setSelectedCause] = useState("سرعة فائقة");
   const [selectedVoie, setSelectedVoie] = useState("اتجاه قابس");
   const [show, setShow] = useState(false);
-
+  const userRedux = useSelector((state) => state.user.user);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [errors, setErrors] = useState({});
@@ -77,6 +76,16 @@ const Add = ({ onFormAdded }) => {
         return "";
     }
   };
+  const getDefaultNK = (region) => {
+    switch (region) {
+      case 'gabes':
+        return 317;
+      case 'sfax':
+        return 395;
+      default:
+        return 317;
+    }
+  };
   const [formData, setFormData] = useState({
     a: "",
     b: "",
@@ -84,7 +93,7 @@ const Add = ({ onFormAdded }) => {
     d: "",
     barrier: "0",
     sens: "",
-    nk: "317",
+    nk: getDefaultNK(userRedux?.region),
     mtr: "0",
     nbrmort: "",
     nbrblesse: "",
@@ -95,6 +104,7 @@ const Add = ({ onFormAdded }) => {
     years: currentDate.getFullYear(),
     hours: "00",
     minutes: "00",
+    createdBy: "",
   });
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -103,6 +113,9 @@ const Add = ({ onFormAdded }) => {
       [name]: value,
     }));
   };
+  useEffect(() => {
+    setFormData({ ...formData, createdBy: userRedux?._id })
+  }, [userRedux]);
 
 
 
@@ -191,12 +204,12 @@ const Add = ({ onFormAdded }) => {
   };
 
 
-  const [mata, setA] = useState('');
-  const [matb, setB] = useState('');
-  const [matc, setC] = useState('');
-  const [matd, setD] = useState('');
-  const [pkilo, setPk] = useState('317');
-  const [metre, setMtr] = useState('0');
+  // const [mata, setA] = useState('');
+  // const [matb, setB] = useState('');
+  // const [matc, setC] = useState('');
+  // const [matd, setD] = useState('');
+  // const [pkilo, setPk] = useState('317');
+  // const [metre, setMtr] = useState('0');
 
 
   const validateForm = () => {
@@ -212,6 +225,10 @@ const Add = ({ onFormAdded }) => {
 
   const handleAddForm = (e) => {
     e.preventDefault();
+    if (!formData.createdBy) {
+      console.error("createdBy field is empty. Cannot submit form.");
+      return;
+    }
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -241,7 +258,7 @@ const Add = ({ onFormAdded }) => {
     setShow(false);
     setTimeout(function () {
       window.location.reload();
-    }, 1000);
+    }, 800);
 
   };
   const generateOptions = (range) => {
@@ -251,17 +268,48 @@ const Add = ({ onFormAdded }) => {
       </option>
     ));
   };
-  const generateOptionss = (range) => {
+  const generateOptionsNK = (region) => {
+    let start, range;
+    switch (region) {
+      case 'gabes':
+        start = 317;
+        range = 75;
+        break;
+      case 'sfax':
+        start = 395;
+        range = 75;
+        break;
+      default:
+        start = 317;
+        range = 75;
+    }
+
     return Array.from({ length: range }, (_, i) => {
-      const value = i + 317;
+      const value = start + i;
       return (
         <option key={value} value={value}>
-          {value < 10 ? `0${value}` : value}
+          {value}
         </option>
       );
     });
   };
 
+  const getSenseByRegion = (region) => {
+    switch (region) {
+      case 'gabes':
+        return [
+          { value: 'اتجاه قابس', label: 'اتجاه قابس' },
+          { value: 'اتجاه صفاقس', label: 'اتجاه صفاقس' },
+        ];
+      case 'sfax':
+        return [
+          { value: 'اتجاه تونس', label: 'اتجاه تونس' },
+          { value: 'اتجاه صخيرة', label: 'اتجاه صخيرة' },
+        ];
+      default:
+        return [];
+    }
+  };
 
 
   return (
@@ -274,192 +322,195 @@ const Add = ({ onFormAdded }) => {
           <Modal.Title>اضافة بيانات</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form.Group controlId="accident">
-          <Row>
-            <Col>
+          <Form.Group controlId="accident">
+            <Row>
+              <Col>
+                <Form.Control
+                  style={{ width: '150px' }}
+                  type="text"
+                  placeholder='أ'
+                  name="a"
+                  value={formData.a}
+                  onChange={handleInputChange}
+                  required
+                />
+                {errors.a && <p style={{ color: 'red' }}>{errors.a}</p>}
+                <Form.Control
+                  style={{ width: '150px' }}
+                  type="text"
+                  placeholder='ب'
+                  name="b"
+                  value={formData.b}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Col>
+              <Col>
+                <Form.Control
+                  style={{ width: '150px' }}
+                  type="text"
+                  placeholder='ج'
+                  name="c"
+                  value={formData.c}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Form.Control
+                  style={{ width: '150px' }}
+                  type="text"
+                  placeholder='د'
+                  name="d"
+                  value={formData.d}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Col>
+              :لوحة منجمية
+            </Row>
+            <Row>
               <Form.Control
-                style={{ width: '150px' }}
-                type="text"
-                placeholder='أ'
-                name="a"
-                value={formData.a}
+                style={{ width: '350px' }}
+                type="number"
+                min="0"
+                name="barrier"
+                value={formData.barrier}
                 onChange={handleInputChange}
                 required
               />
-              {errors.a && <p style={{ color: 'red' }}>{errors.a}</p>}
+              :زلاقات
+            </Row>
+            <Row>
               <Form.Control
-                style={{ width: '150px' }}
-                type="text"
-                placeholder='ب'
-                name="b"
-                value={formData.b}
+                style={{ width: '194px', height: "30px" }}
+                type="number"
+                min="0"
+                name="mtr"
+                value={formData.mtr}
                 onChange={handleInputChange}
                 required
               />
-            </Col>
-            <Col>
-              <Form.Control
-                style={{ width: '150px' }}
-                type="text"
-                placeholder='ج'
-                name="c"
-                value={formData.c}
+              :البعد بالمتر
+              <Form.Select
+                style={{ width: '80px' }}
+                name="nk"
+                value={formData.nk}
                 onChange={handleInputChange}
+              >
+                {userRedux && userRedux.region ? generateOptionsNK(userRedux.region) : null}
+              </Form.Select>
+              :نقطة كلمترية
+            </Row>
+            <Row>
+              <Form.Select style={{ width: '350px' }} aria-label="Default select example"
+                value={selectedVoie || ''}
+                onChange={(e) => setSelectedVoie(e.target.value)}
+              >
+                {getSenseByRegion(userRedux?.region).map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Form.Select>
+              :الاتجاه
+            </Row>
+            <Row>
+              <Form.Control
+                style={{ width: '350px' }}
+                type="number"
+                min="0"
+                value={formData.nbrmort}
+                onChange={(e) => setFormData({ ...formData, nbrmort: e.target.value })}
                 required
               />
+              {errors.nbrmort && <p style={{ color: 'red' }}>{errors.nbrmort}</p>}
+              :عدد الجرحى
+            </Row>
+            <Row>
               <Form.Control
-                style={{ width: '150px' }}
-                type="text"
-                placeholder='د'
-                name="d"
-                value={formData.d}
-                onChange={handleInputChange}
+                style={{ width: '350px' }}
+                type="number"
+                min="0"
+                value={formData.nbrblesse}
+                onChange={(e) => setFormData({ ...formData, nbrblesse: e.target.value })}
                 required
               />
-            </Col>
-            :لوحة منجمية
-          </Row>
-          <Row>
-            <Form.Control
-              style={{ width: '350px' }}
-              type="number"
-              min="0"
-              name="barrier"
-              value={formData.barrier}
-              onChange={handleInputChange}
-              required
-            />
-            :زلاقات
-          </Row>
-          <Row>
-          <Form.Control
-              style={{ width: '194px', height:"30px"}}
-              type="number"
-              min="0"
-              name="mtr"
-              value={formData.mtr}
-              onChange={handleInputChange}
-              required
-            />
-            :البعد بالمتر
-            <Form.Select
-              style={{ width: '80px' }}
-              name="nk"
-              value={formData.nk}
-              onChange={handleInputChange}
-            >
-              {generateOptionss(75)}
-            </Form.Select>
-            :نقطة كلمترية
-          </Row>
-          <Row>
-            <Form.Select style={{ width: '350px' }} aria-label="Default select example"
-              value={selectedVoie || ''}
-              onChange={(e) => setSelectedVoie(e.target.value)}
-            >
-              <option value="اتجاه قابس">اتجاه قابس</option>
-              <option value="اتجاه صفاقس">اتجاه صفاقس</option>
-            </Form.Select>
-            :الاتجاه
-          </Row>
-          <Row>
-            <Form.Control
-              style={{ width: '350px' }}
-              type="number"
-              min="0"
-              value={formData.nbrmort}
-              onChange={(e) => setFormData({ ...formData, nbrmort: e.target.value })}
-              required
-            />
-            {errors.nbrmort && <p style={{ color: 'red' }}>{errors.nbrmort}</p>}
-            :عدد الجرحى
-          </Row>
-          <Row>
-            <Form.Control
-              style={{ width: '350px' }}
-              type="number"
-              min="0"
-              value={formData.nbrblesse}
-              onChange={(e) => setFormData({ ...formData, nbrblesse: e.target.value })}
-              required
-            />
-            {errors.nbrblesse && <p style={{ color: 'red' }}>{errors.nbrblesse}</p>}
-            :عدد الموتى
-          </Row>
-          <Row>
-            <Form.Select
-              style={{ width: '350px' }}
-              aria-label="Default select example"
-              value={selectedCause || ''}
-              onChange={(e) => setSelectedCause(e.target.value)}
-            >
-              <option value="سرعة فائقة">سرعة فائقة</option>
-              <option value="انشطار اطار العجلة">انشطار اطار العجلة</option>
-              <option value="نعاس">نعاس</option>
-              <option value="مجاوزة فجئية">مجاوزة فجئية</option>
-              <option value="سياقة في حالة سكر">سياقة في حالة سكر</option>
-              <option value="طريق مبلل">طريق مبلل</option>
-              <option value="عدم انتباه">عدم انتباه</option>
-              <option value="وجود حفرة وسط الطريق">وجود حفرة وسط الطريق</option>
-              <option value="انقلاب الشاحنة">انقلاب الشاحنة</option>
-              <option value="حيوان على الطريق السيارة">حيوان على الطريق السيارة</option>
-              <option value="مترجل على الطريق السيارة">مترجل على الطريق السيارة</option>
-              <option value="الدوران في الإتجاه المعاكس">الدوران في الإتجاه المعاكس</option>
-              <option value="الخروج من فتحة عشوائية">الخروج من فتحة عشوائية</option>
-              <option value="اصطدام سيارة باخرى رابظة على طرف الطريق">اصطدام سيارة باخرى رابظة على طرف الطريق</option>
-              <option value="عطب مكانيكي/ عطب كهربائي">عطب مكانيكي/ عطب كهربائي</option>
-              <option value="مضايقة من الخلف">مضايقة من الخلف</option>
-              <option value="اصطدام السيارة بالدراجة النارية">اصطدام السيارة بالدراجة النارية</option>
-              <option value="وجود عجلة او بقايا عجلة على الطريق">وجود عجلة او بقايا عجلة على الطريق</option>
-              <option value="سقوط قرط على الطريق">سقوط قرط على الطريق</option>
-              <option value="اصطدام سيارتان او اكثر">اصطدام سيارتان او اكثر</option>
-              <option value="عدم التحكم في السيارة">عدم التحكم في السيارة</option>
-              <option value="السياقة تحت تأثير التعب و الإرهاق">السياقة تحت تأثير التعب و الإرهاق</option>
-            </Form.Select>
-            :السبب
-          </Row>
-          <Row>
-            <Form.Control
-              type='date'
-              style={{ width: '350px' }}
-              defaultValue={dateToday}
-              max={dateToday}
-              onChange={handleDateChange}
-              format="YYYY-MM-DD"
-            />
-            :التاريخ
-          </Row>
-          <Row>
-            <Form.Select
-              style={{ width: '80px' }}
-              aria-label="Select hours"
-              value={formData.hours}
-              onChange={(e) => setFormData({ ...formData, hours: e.target.value })}
-            >
-              {generateOptions(24)}
-            </Form.Select>:
-            <Form.Select
-              style={{ width: '80px' }}
-              aria-label="Select minutes"
-              value={formData.minutes}
-              onChange={(e) => setFormData({ ...formData, minutes: e.target.value })}
-            >
-              {generateOptions(60)}
-            </Form.Select>
-            :التوقيت
-          </Row>
-          {/* Other input fields... */}
-        </Form.Group>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          اغلاق
-        </Button>
-        <Button variant="primary" onClick={(e) => handleAddForm(e)}>
-          حفظ التغييرات
-        </Button>
-      </Modal.Footer>
-    </Modal>
+              {errors.nbrblesse && <p style={{ color: 'red' }}>{errors.nbrblesse}</p>}
+              :عدد الموتى
+            </Row>
+            <Row>
+              <Form.Select
+                style={{ width: '350px' }}
+                aria-label="Default select example"
+                value={selectedCause || ''}
+                onChange={(e) => setSelectedCause(e.target.value)}
+              >
+                <option value="سرعة فائقة">سرعة فائقة</option>
+                <option value="انشطار اطار العجلة">انشطار اطار العجلة</option>
+                <option value="نعاس">نعاس</option>
+                <option value="مجاوزة فجئية">مجاوزة فجئية</option>
+                <option value="سياقة في حالة سكر">سياقة في حالة سكر</option>
+                <option value="طريق مبلل">طريق مبلل</option>
+                <option value="عدم انتباه">عدم انتباه</option>
+                <option value="وجود حفرة وسط الطريق">وجود حفرة وسط الطريق</option>
+                <option value="انقلاب الشاحنة">انقلاب الشاحنة</option>
+                <option value="حيوان على الطريق السيارة">حيوان على الطريق السيارة</option>
+                <option value="مترجل على الطريق السيارة">مترجل على الطريق السيارة</option>
+                <option value="الدوران في الإتجاه المعاكس">الدوران في الإتجاه المعاكس</option>
+                <option value="الخروج من فتحة عشوائية">الخروج من فتحة عشوائية</option>
+                <option value="اصطدام سيارة باخرى رابظة على طرف الطريق">اصطدام سيارة باخرى رابظة على طرف الطريق</option>
+                <option value="عطب مكانيكي/ عطب كهربائي">عطب مكانيكي/ عطب كهربائي</option>
+                <option value="مضايقة من الخلف">مضايقة من الخلف</option>
+                <option value="اصطدام السيارة بالدراجة النارية">اصطدام السيارة بالدراجة النارية</option>
+                <option value="وجود عجلة او بقايا عجلة على الطريق">وجود عجلة او بقايا عجلة على الطريق</option>
+                <option value="سقوط قرط على الطريق">سقوط قرط على الطريق</option>
+                <option value="اصطدام سيارتان او اكثر">اصطدام سيارتان او اكثر</option>
+                <option value="عدم التحكم في السيارة">عدم التحكم في السيارة</option>
+                <option value="السياقة تحت تأثير التعب و الإرهاق">السياقة تحت تأثير التعب و الإرهاق</option>
+              </Form.Select>
+              :السبب
+            </Row>
+            <Row>
+              <Form.Control
+                type='date'
+                style={{ width: '350px' }}
+                defaultValue={dateToday}
+                max={dateToday}
+                onChange={handleDateChange}
+                format="YYYY-MM-DD"
+              />
+              :التاريخ
+            </Row>
+            <Row>
+              <Form.Select
+                style={{ width: '80px' }}
+                aria-label="Select hours"
+                value={formData.hours}
+                onChange={(e) => setFormData({ ...formData, hours: e.target.value })}
+              >
+                {generateOptions(24)}
+              </Form.Select>:
+              <Form.Select
+                style={{ width: '80px' }}
+                aria-label="Select minutes"
+                value={formData.minutes}
+                onChange={(e) => setFormData({ ...formData, minutes: e.target.value })}
+              >
+                {generateOptions(60)}
+              </Form.Select>
+              :التوقيت
+            </Row>
+            {/* Other input fields... */}
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            اغلاق
+          </Button>
+          <Button variant="primary" onClick={(e) => handleAddForm(e)}>
+            حفظ التغييرات
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div >
   );
 };

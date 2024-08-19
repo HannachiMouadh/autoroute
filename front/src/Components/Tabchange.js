@@ -15,7 +15,7 @@ import UsersMan from './usersMan/UsersMan.js';
 
 
 
-const Tabchange = () => {
+const Tabchange = ({ userRegion,curuser,userCause,userHoraire,userSemaine,userSens,userLieu }) => {
   const dispatch = useDispatch();
   const isAuth = localStorage.getItem("token");
   const isAdmin = localStorage.getItem("isAdmin") === "true";
@@ -50,7 +50,7 @@ const Tabchange = () => {
 }, []);
 
 useEffect(() => {
-  // Check internet connection status on component mount
+
   setOnline(navigator.onLine);
 }, []);
 
@@ -61,7 +61,7 @@ useEffect(() => {
   }
 }, [isAuth,isAdmin, navigate]);
   return (
-    <>
+    <div className="custom-tabs-container">
     {!online && (
         <Alert variant="danger">
           Connection lost! Please check your internet connection.
@@ -71,52 +71,73 @@ useEffect(() => {
         <>
         <div className="left">
         <h5>Bienvenue, administrateur {userRedux?.name}</h5>
+        <h6>District: {userRedux?.region}</h6>
             <Link onClick={handlelogout}>Deconnexion</Link>
             </div>
+            <div className="tabs-wrapper">
         <Tabs
         defaultActiveKey="home"
         id="uncontrolled-tab-example" className="custom-tabs"  >
         <Tab eventKey="home" title="Recap">
-        <Home/>
+        <div className="tab-content-container">
+        <Home userRegion={userRedux.region} curuser={userRedux}/>
+        </div>
       </Tab>
       <Tab  eventKey="profile" title="Par Semain" >
-      <HomeSemain/>
+      <div className="tab-content-container">
+      <HomeSemain userSemaine={userRedux.region}/>
+      </div>
       </Tab>
       <Tab  eventKey="kkk" title="Par Sens" >
-      <HomeSens/>
+      <div className="tab-content-container">
+      <HomeSens userSens={userRedux.region}/>
+      </div>
       </Tab>
       <Tab  eventKey="bbbb" title="Par Horaire" >
-      <HomeHoraire/>
+      <div className="tab-content-container">
+      <HomeHoraire userHoraire={userRedux.region}/>
+      </div>
       </Tab>
       <Tab  eventKey="cccc" title="Par Cause" >
-      <HomeCause/>
+      <div className="tab-content-container">
+      <HomeCause userCause={userRedux.region}/>
+      </div>
       </Tab>
       <Tab  eventKey="hjhj" title="Par Lieu" >
-      <HomeLieu/>
+      <div className="tab-content-container">
+      <HomeLieu userLieu={userRedux.region}/>
+      </div>
       </Tab>
       <Tab  eventKey="hjsdfdhj" title="Inscription" >
+      <div className="tab-content-container">
       <Signup/>
+      </div>
       </Tab>
       <Tab  eventKey="userss" title="Utilisateurs" >
+        <div className="tab-content-container">
       <UsersMan/>
+      </div>
       </Tab>
-      </Tabs></>
+      </Tabs></div></>
         ) : isAuth ? (
           <>
           <div className="left">
         <h5>Bienvenue {userRedux?.name}</h5>
+        <h6>District: {userRedux?.region}</h6>
         <Link onClick={handlelogout}>Deconnexion</Link></div>
         <Tabs
         defaultActiveKey="home"
         id="uncontrolled-tab-example" className="custom-tabs" >
         <Tab eventKey="home" title="Recap" >
-          <Home/>
+        <div className="tab-content-container">
+          <Home userRegion={userRedux.region}/>
+          </div>
         </Tab>
         </Tabs></>
       ) : (
         <></>
       )}
-    </>
+    </div>
   )
 }
 

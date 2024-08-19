@@ -15,6 +15,7 @@ import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { getAllUsers } from '../../JS/userSlice/userSlice';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -30,7 +31,7 @@ const StyledTable = styled(Table)`
 `;
 
 
-const HomeHoraire = () => {
+const HomeHoraire = ({userLieu}) => {
     const dispatch = useDispatch();
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
@@ -43,175 +44,209 @@ const HomeHoraire = () => {
         dispatch(fetchForms());
     }, [dispatch]);
 
-    const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
+    const userRedux = useSelector((state) => state.user.users);
+  const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
+  useEffect(() => {
+    dispatch(getAllUsers());
+}, [dispatch]);
+  useEffect(() => {
+    setUser(userRedux);
+  }, [userRedux]);
 
-    const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
-    const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
+  const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
-    const filteredData = (start, end) => {
-        return data.filter((form) => {
-            const formDate = moment(form.ddate, "yyyy-MM-DD"); // Adjust the format if needed
-            return formDate.isSameOrAfter(start) && formDate.isSameOrBefore(end);
-        });
-    };
+  const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
+  const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
 
 
-    const injurTwenty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 317 && form.nk >= 327 && form.sens === "اتجاه قابس")
+ 
+
+
+  const filterData = (data) => {
+    if (!data || !userRedux) {
+      return [];
+    }
+
+    const usersFromTargetRegion = userRedux
+      .filter((user) => user.region === userLieu)
+      .map((user) => user._id);
+
+    const filteredDatas = data.filter((form) => usersFromTargetRegion.includes(form.createdBy));
+
+    return filteredDatas;
+  };
+  console.log(filterData(data));
+
+  const filteredData = (data, start, end) => {
+    if (!start && !end) {
+      return filterData(data)
+    }
+    return filterData(data).filter((form) => {
+      const formDate = moment(form.ddate, "YYYY-MM-DD");
+      const isAfterOrSameStart = !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
+      const isBeforeOrSameEnd = !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
+      return isAfterOrSameStart && isBeforeOrSameEnd ;
+    });
+  };
+  const filteredDataArray = userRedux ? filteredData(data, formatStartDate, formatEndDate) : [];
+
+
+    const injurTwenty = filteredDataArray
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurThirty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 337 && form.nk >= 327 && form.sens === "اتجاه قابس")
+    const injurThirty = filteredDataArray
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurForty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 347 && form.nk >= 337  && form.sens === "اتجاه قابس")
+    const injurForty = filteredDataArray
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurFifty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 357 && form.nk >= 347 && form.sens === "اتجاه قابس")
+    const injurFifty = filteredDataArray
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurSixty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 367 && form.nk >= 357 && form.sens === "اتجاه قابس")
+    const injurSixty = filteredDataArray
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurSeventy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 377 && form.nk >= 367 && form.sens === "اتجاه قابس")
+    const injurSeventy = filteredDataArray
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurEighty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 387 && form.nk >= 377 && form.sens === "اتجاه قابس")
+    const injurEighty = filteredDataArray
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurNinety = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 397 && form.nk >= 387 && form.sens === "اتجاه قابس")
+    const injurNinety = filteredDataArray
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
 
 
-    const deadTwenty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 317 && form.nk >= 327 && form.sens === "اتجاه قابس")
+    const deadTwenty = filteredDataArray
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadThirty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 337 && form.nk >= 327 && form.sens === "اتجاه قابس")
+    const deadThirty = filteredDataArray
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadForty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 347 && form.nk >= 337 && form.sens === "اتجاه قابس")
+    const deadForty = filteredDataArray
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadFifty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 357 && form.nk >= 347 && form.sens === "اتجاه قابس")
+    const deadFifty = filteredDataArray
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadSixty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 367 && form.nk >= 357 && form.sens === "اتجاه قابس")
+    const deadSixty = filteredDataArray
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadSeventy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 377 && form.nk >= 367 && form.sens === "اتجاه قابس")
+    const deadSeventy = filteredDataArray
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadEighty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 387 && form.nk >= 377 && form.sens === "اتجاه قابس")
+    const deadEighty = filteredDataArray
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadNinety = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 397 && form.nk >= 387 && form.sens === "اتجاه قابس")
+    const deadNinety = filteredDataArray
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
 
 
 
-    const accTwenty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 317 && form.nk >= 327 && form.sens === "اتجاه قابس")
+    const accTwenty = filteredDataArray
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + 1, 0);
-    const accThirty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 337 && form.nk >= 327 && form.sens === "اتجاه قابس")
+    const accThirty = filteredDataArray
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + 1, 0);
-    const accForty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 347 && form.nk >= 337 && form.sens === "اتجاه قابس")
+    const accForty = filteredDataArray
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + 1, 0);
-    const accFifty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 357 && form.nk >= 347 && form.sens === "اتجاه قابس")
+    const accFifty = filteredDataArray
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + 1, 0);
-    const accSixty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 367 && form.nk >= 357 && form.sens === "اتجاه قابس")
+    const accSixty = filteredDataArray
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + 1, 0);
-    const accSeventy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 377 && form.nk >= 367 && form.sens === "اتجاه قابس")
+    const accSeventy = filteredDataArray
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + 1, 0);
-    const accEighty = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 387 && form.nk >= 377 && form.sens === "اتجاه قابس")
+    const accEighty = filteredDataArray
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + 1, 0);
-    const accNinety = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 397 && form.nk >= 387 && form.sens === "اتجاه قابس")
+    const accNinety = filteredDataArray
+        .filter((form) => form.nk >= 397 && form.nk <=387 && form.sens === "اتجاه قابس")
         .reduce((acc, form) => acc + 1, 0);
 
 
 
-    const injurTwentyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 317 && form.nk >= 327 && form.sens === "اتجاه صفاقس")
+    const injurTwentyy = filteredDataArray
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurThirtyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 337 && form.nk >= 327 && form.sens === "اتجاه صفاقس")
+    const injurThirtyy = filteredDataArray
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurFortyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 347 && form.nk >= 337 && form.sens === "اتجاه صفاقس")
+    const injurFortyy = filteredDataArray
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurFiftyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 357 && form.nk >= 347 && form.sens === "اتجاه صفاقس")
+    const injurFiftyy = filteredDataArray
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurSixtyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 367 && form.nk >= 357 && form.sens === "اتجاه صفاقس")
+    const injurSixtyy = filteredDataArray
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurSeventyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 377 && form.nk >= 367 && form.sens === "اتجاه صفاقس")
+    const injurSeventyy = filteredDataArray
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurEightyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 387 && form.nk >= 377 && form.sens === "اتجاه صفاقس")
+    const injurEightyy = filteredDataArray
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurNinetyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 397 && form.nk >= 387 && form.sens === "اتجاه صفاقس")
+    const injurNinetyy = filteredDataArray
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrblesse, 0);
 
 
-    const deadTwentyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 317 && form.nk >= 327 && form.sens === "اتجاه صفاقس")
+    const deadTwentyy = filteredDataArray
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadThirtyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 337 && form.nk >= 327 && form.sens === "اتجاه صفاقس")
+    const deadThirtyy = filteredDataArray
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadFortyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 347 && form.nk >= 337 && form.sens === "اتجاه صفاقس")
+    const deadFortyy = filteredDataArray
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadFiftyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 357 && form.nk >= 347 && form.sens === "اتجاه صفاقس")
+    const deadFiftyy = filteredDataArray
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadSixtyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 367 && form.nk >= 357 && form.sens === "اتجاه صفاقس")
+    const deadSixtyy = filteredDataArray
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadSeventyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 377 && form.nk >= 367 && form.sens === "اتجاه صفاقس")
+    const deadSeventyy = filteredDataArray
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadEightyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 387 && form.nk >= 377 && form.sens === "اتجاه صفاقس")
+    const deadEightyy = filteredDataArray
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadNinetyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 397 && form.nk >= 387 && form.sens === "اتجاه صفاقس")
+    const deadNinetyy = filteredDataArray
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + form.nbrmort, 0);
 
 
 
-    const accTwentyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 317 && form.nk >= 327 && form.sens === "اتجاه صفاقس")
+    const accTwentyy = filteredDataArray
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + 1, 0);
-    const accThirtyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 337 && form.nk >= 327 && form.sens === "اتجاه صفاقس")
+    const accThirtyy = filteredDataArray
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + 1, 0);
-    const accFortyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 347 && form.nk >= 337 && form.sens === "اتجاه صفاقس")
+    const accFortyy = filteredDataArray
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + 1, 0);
-    const accFiftyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 357 && form.nk >= 347 && form.sens === "اتجاه صفاقس")
+    const accFiftyy = filteredDataArray
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + 1, 0);
-    const accSixtyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 367 && form.nk >= 357 && form.sens === "اتجاه صفاقس")
+    const accSixtyy = filteredDataArray
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + 1, 0);
-    const accSeventyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 377 && form.nk >= 367 && form.sens === "اتجاه صفاقس")
+    const accSeventyy = filteredDataArray
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + 1, 0);
-    const accEightyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 387 && form.nk >= 377 && form.sens === "اتجاه صفاقس")
+    const accEightyy = filteredDataArray
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + 1, 0);
-    const accNinetyy = filteredData(formatStartDate, formatEndDate)
-        .filter((form) => form.nk <= 397 && form.nk >= 387 && form.sens === "اتجاه صفاقس")
+    const accNinetyy = filteredDataArray
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه صفاقس")
         .reduce((acc, form) => acc + 1, 0);
 
 
@@ -334,30 +369,38 @@ const HomeHoraire = () => {
         <div>
             {isMobile ? (<StyledTable>
                 <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
-                <div className="datepickers-container">
-                    <DatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        selectsStart
-                        startDate={startDate}
-                        endDate={endDate}
-                        placeholderText="Start Date"
-                        className="custom-datepicker"
-                    />
-                    <DatePicker
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date)}
-                        selectsEnd
-                        startDate={startDate}
-                        endDate={endDate}
-                        placeholderText="End Date"
-                        minDate={startDate}
-                        className="custom-datepicker"
-                    />
+                <div className="custom-form-container">
+                    <div className="datepickers-container">
+                        <div>
+                            <label className="datepicker-label">:بداية التاريخ</label>
+                            <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                selectsStart
+                                startDate={startDate}
+                                endDate={endDate}
+                                placeholderText="Start Date"
+                                className="custom-datepicker"
+                            />
+                        </div>
+                        <div>
+                            <label className="datepicker-label">:نهاية التاريخ</label>
+                            <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                selectsEnd
+                                startDate={startDate}
+                                endDate={endDate}
+                                placeholderText="End Date"
+                                minDate={startDate}
+                                className="custom-datepicker"
+                            />
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <Button variant="secondary" onClick={resetFilters}>
-                    إعادة تعيين المرشحات
+                        إعادة تعيين المرشحات
                     </Button>
                 </div>
                 {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
@@ -378,7 +421,7 @@ const HomeHoraire = () => {
                                 <th></th>
                             </tr>
                         </thead>
-                        {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="8">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="8">الرجاء اختيار التاريخ</td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="8">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
+                        {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
                             <tr>
                                 <td>%{(injurTwenty * 100 / sumInjur).toFixed(2)}</td>
                                 <td>{injurTwenty}</td>
@@ -532,12 +575,13 @@ const HomeHoraire = () => {
                                 <td>{sumDead}</td>
                                 <td></td>
                                 <td>{sumAcc}</td>
-                                <td colSpan="2">الاجمالي</td>
+                                <td></td>
+                                <td >الاجمالي</td>
                             </tr>
                         </tbody>)}
                     </Table>
                     <div>
-                   {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+                    {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
                             <div>
                                 <div ref={chartAccRef}>
                                     <Bar
@@ -547,14 +591,14 @@ const HomeHoraire = () => {
                                                 {
                                                     label: 'قابس',
                                                     data: [injurTwenty, injurThirty, injurForty, injurFifty, injurSixty, injurSeventy, injurEighty, injurNinety],
-                                                    backgroundColor: 'dark grey',
+                                                    backgroundColor: 'blue',
                                                     borderColor: 'grey',
                                                     borderWidth: 1,
                                                 },
                                                 {
                                                     label: 'صفاقس',
                                                     data: [injurTwentyy, injurThirtyy, injurFortyy, injurFiftyy, injurSixtyy, injurSeventyy, injurEightyy, injurNinetyy],
-                                                    backgroundColor: 'dark grey',
+                                                    backgroundColor: 'cyan',
                                                     borderColor: 'grey',
                                                     borderWidth: 1,
                                                 },
@@ -635,30 +679,38 @@ const HomeHoraire = () => {
                 </div></StyledTable>) : (
                 <StyledTable>
                     <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
-                    <div className="datepickers-container">
-                        <DatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            selectsStart
-                            startDate={startDate}
-                            endDate={endDate}
-                            placeholderText="Start Date"
-                            className="custom-datepicker"
-                        />
-                        <DatePicker
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            selectsEnd
-                            startDate={startDate}
-                            endDate={endDate}
-                            placeholderText="End Date"
-                            minDate={startDate}
-                            className="custom-datepicker"
-                        />
+                    <div className="custom-form-container">
+                        <div className="datepickers-container">
+                            <div>
+                                <label className="datepicker-label">:بداية التاريخ</label>
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    selectsStart
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    placeholderText="Start Date"
+                                    className="custom-datepicker"
+                                />
+                            </div>
+                            <div>
+                                <label className="datepicker-label">:نهاية التاريخ</label>
+                                <DatePicker
+                                    selected={endDate}
+                                    onChange={(date) => setEndDate(date)}
+                                    selectsEnd
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    placeholderText="End Date"
+                                    minDate={startDate}
+                                    className="custom-datepicker"
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <Button variant="secondary" onClick={resetFilters}>
-                        إعادة تعيين المرشحات
+                            إعادة تعيين المرشحات
                         </Button>
                     </div>
                     {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
@@ -676,10 +728,10 @@ const HomeHoraire = () => {
                                     <th>%</th>
                                     <th>حوادث</th>
                                     <th>المكان</th>
-                                    <th></th>
+                                    
                                 </tr>
                             </thead>
-                            {data == ""  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="8">الرجاء تعمير الجدول و اختيار التاريخ</td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="8">الرجاء اختيار التاريخ</td></tr></tbody>) : startDate && endDate != null && filteredData(startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="8">لا توجد بيانات في هذا التاريخ</td></tr></tbody>) : (<tbody >
+                            {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
                                 <tr>
                                     <td>%{(injurTwenty * 100 / sumInjur).toFixed(2)}</td>
                                     <td>{injurTwenty}</td>
@@ -833,12 +885,12 @@ const HomeHoraire = () => {
                                     <td>{sumDead}</td>
                                     <td></td>
                                     <td>{sumAcc}</td>
-                                    <td colSpan="2">الاجمالي</td>
+                                    <td></td>
+                                    <td>الاجمالي</td>
                                 </tr>
                             </tbody>)}
                         </Table>
-                        <div>
-                       {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
+                        <div>{(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
                                 <div>
                                     <div ref={chartAccRef}>
                                         <Bar
@@ -848,14 +900,14 @@ const HomeHoraire = () => {
                                                     {
                                                         label: 'قابس',
                                                         data: [injurTwenty, injurThirty, injurForty, injurFifty, injurSixty, injurSeventy, injurEighty, injurNinety],
-                                                        backgroundColor: 'dark grey',
+                                                        backgroundColor: 'blue',
                                                         borderColor: 'grey',
                                                         borderWidth: 1,
                                                     },
                                                     {
                                                         label: 'صفاقس',
                                                         data: [injurTwentyy, injurThirtyy, injurFortyy, injurFiftyy, injurSixtyy, injurSeventyy, injurEightyy, injurNinetyy],
-                                                        backgroundColor: 'dark grey',
+                                                        backgroundColor: 'cyan',
                                                         borderColor: 'grey',
                                                         borderWidth: 1,
                                                     },

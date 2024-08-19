@@ -63,6 +63,7 @@ export const currentUser = createAsyncThunk("current", async () => {
 export const getAllUsers = createAsyncThunk("getAllUsers", async () => {
   try {
     const result = await axios.get("http://localhost:5000/api/user/");
+    console.log(result.data);
     return result.data;
   } catch (error) {
     console.log(error);
@@ -79,7 +80,7 @@ export const deleteUser = createAsyncThunk("user/dalete", async (id) => {
 });
 
 const initialState = {
-  user: null,
+  user: [],
   status: 'idle',
   users: null,
 };

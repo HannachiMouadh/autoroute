@@ -67,6 +67,7 @@ const UsersMan = () => {
             <th>Last Name</th>
             <th>Email</th>
             <th>Phone</th>
+            <th>District</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -77,6 +78,7 @@ const UsersMan = () => {
               <td>{user.lastName}</td>
               <td>{user.email}</td>
               <td>{user.phone}</td>
+              <td>{user.region}</td>
               <td><UpdateUser dataId={user._id} rowData={user} />
                 <button 
                   className="btn btn-danger" 
@@ -104,6 +106,7 @@ const UsersMan = () => {
             <th>Last Name</th>
             <th>Email</th>
             <th>Phone</th>
+            <th>District</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -114,6 +117,7 @@ const UsersMan = () => {
               <td>{user.lastName}</td>
               <td>{user.email}</td>
               <td>{user.phone}</td>
+              <td>{user.region}</td>
               <td><UpdateUser dataId={user._id} rowData={user} /></td>
             </tr>
           )) : (

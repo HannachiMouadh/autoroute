@@ -1,14 +1,22 @@
 .nav-link.active {
     color: black !important;
-    background-color: rgb(66, 192, 255) !important;
+    background-color: burlywood !important;
   }
   
 .nav-link {
-    color: white !important;
-    background-color: rgb(52, 62, 194) !important;
+  border: 2px solid rgb(245, 177, 88) !important;
+    color: rgb(134, 75, 75) !important;
+    background-color: rgb(229, 163, 78) !important;
   }
 .left{
     text-align: right;
     margin-right: 50px;
+    margin-bottom: 2rem;
   }
+.tab-content-container {
+    background-color: burlywood;
+    padding: 1px;
+    padding-bottom: 30%;
+  }
+  
   
