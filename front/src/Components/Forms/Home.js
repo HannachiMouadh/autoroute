@@ -18,6 +18,9 @@ import { saveAs } from 'file-saver';
 import { currentUser, deleteUser, getAllUsers } from '../../JS/userSlice/userSlice';
 import { RxCross1 } from "react-icons/rx";
 import Swal from "sweetalert2";
+import { lineWobble } from 'ldrs'
+
+lineWobble.register()
 
 const StyledTable = styled(Table)`
   margin-top: 20px;
@@ -45,7 +48,7 @@ const Home = ({ userRegion, curuser }) => {
     if (isAuth && isAdmin) {
       dispatch(currentUser());
     }
-  }, [dispatch,isAdmin, isAuth]);
+  }, [dispatch, isAdmin, isAuth]);
   useEffect(() => {
     dispatch(getAllUsers());
   }, [dispatch]);
@@ -58,7 +61,7 @@ const Home = ({ userRegion, curuser }) => {
     setUser(userRedux);
   }, [userRedux]);
 
-  
+
   const handleDelete = (id) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -176,14 +179,14 @@ const Home = ({ userRegion, curuser }) => {
     if (!data || !userRedux) {
       return [];
     }
-  
+
     const usersFromTargetRegion = userRedux
       .filter((user) => user.region === userRegion)
       .map((user) => user._id);
-  
+
     return data.filter((form) => usersFromTargetRegion.includes(form.createdBy));
   };
-  
+
   const filteredData = (data, start, end) => {
     if (!start && !end) {
       return filterData(data);
@@ -195,7 +198,7 @@ const Home = ({ userRegion, curuser }) => {
       return isAfterOrSameStart && isBeforeOrSameEnd;
     });
   };
-  
+
   const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
   const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
   // const [donne, setDonne] = useState(() => filterData(data));
@@ -204,30 +207,30 @@ const Home = ({ userRegion, curuser }) => {
   //   // Update the donne state to reflect the filtered data
   //   setDonne(filteredDataArray);
   // }, [filteredDataArray]);
-  
-  
-  
+
+
+
   const sumInjur = filteredDataArray.reduce((acc, form) => acc + (form.nbrblesse || 0), 0);
   const sumDead = filteredDataArray.reduce((acc, form) => acc + (form.nbrmort || 0), 0);
-  
+
   // const sorting = (col) => {
   //   const sorted = [...filteredDataArray].sort((a, b) => {
   //     const valA = typeof a[col] === 'string' ? a[col].toLowerCase() : a[col];
   //     const valB = typeof b[col] === 'string' ? b[col].toLowerCase() : b[col];
-  
+
   //     if (order === "ASC") {
   //       return valA > valB ? 1 : -1;
   //     } else {
   //       return valA < valB ? 1 : -1;
   //     }
   //   });
-  
+
   //   setDonne(sorted);
   //   setOrder(order === "ASC" ? "DSC" : "ASC");
   // };
-  
-  
-  
+
+
+
 
   return (
     <div className='backcolor'>
@@ -301,7 +304,13 @@ const Home = ({ userRegion, curuser }) => {
                 <th> </th>
               </tr>
             </thead>
-            {filteredDataArray.length === 0 ? (<tbody><tr><td colSpan="10" style={{ textAlign: "center" }}><img src="https://i.gifer.com/YCZH.gif" alt="logo" /></td><td><Add /></td></tr></tbody>) : (<tbody >
+            {filteredDataArray.length === 0 ? (<tbody><tr><td colSpan="10" style={{ textAlign: "center" }}><l-line-wobble
+              size="80"
+              stroke="5"
+              bg-opacity="0.1"
+              speed="1.75"
+              color="black"
+            ></l-line-wobble></td><td><Add /></td></tr></tbody>) : (<tbody >
               {(!formatStartDate && !formatEndDate ? filteredDataArray : filteredDataArray.filter(form => form.ddate >= formatStartDate && form.ddate <= formatEndDate)).map((form) => (
                 <tr key={form._id}>
                   <td>{parseFloat(form.barrier) * 4 + 'm'},({form.barrier})</td>
@@ -400,20 +409,26 @@ const Home = ({ userRegion, curuser }) => {
                 <th onClick={() => sorting("day")}>اليوم </th>
                 <th onClick={() => sorting("ddate")}>التاريخ </th>
                 <th> </th> */}
-                <th>زلاقات</th>
-                <th>موتى</th>
-                <th>جرحى </th>
-                <th>السبب </th>
-                <th>لوحة منجمية</th>
-                <th>اتجاه</th>
-                <th>ن.ك</th>
-                <th>الساعة </th>
-                <th>اليوم </th>
-                <th>التاريخ </th>
-                <th> </th>
+                  <th>زلاقات</th>
+                  <th>موتى</th>
+                  <th>جرحى </th>
+                  <th>السبب </th>
+                  <th>لوحة منجمية</th>
+                  <th>اتجاه</th>
+                  <th>ن.ك</th>
+                  <th>الساعة </th>
+                  <th>اليوم </th>
+                  <th>التاريخ </th>
+                  <th> </th>
                 </tr>
               </thead>
-              {filteredDataArray.length === 0 ? (<tbody><tr><td colSpan="10" style={{ textAlign: "center" }}><img src="https://i.gifer.com/YCZH.gif" alt="logo" /></td><td><Add /></td></tr></tbody>) : (<tbody >
+              {filteredDataArray.length === 0 ? (<tbody><tr><td colSpan="10" style={{ textAlign: "center" }}><l-line-wobble
+                size="80"
+                stroke="5"
+                bg-opacity="0.1"
+                speed="1.75"
+                color="black"
+              ></l-line-wobble></td><td><Add /></td></tr></tbody>) : (<tbody >
                 {(!formatStartDate && !formatEndDate ? filteredDataArray : filteredDataArray.filter(form => form.ddate >= formatStartDate && form.ddate <= formatEndDate)).map((form) => (
                   <tr key={form._id}>
                     <td>{parseFloat(form.barrier) * 4 + 'm'},({form.barrier})</td>
