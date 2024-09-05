@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const registerUser = createAsyncThunk("register", async (user) => {
   try {
-    let result = await axios.post("http://localhost:5000/api/user/register",user);
+    let result = await axios.post("https://autoroute-api.vercel.app/api/user/register",user);
     console.log(result.data);
     console.log("hello result");
     return result.data;
@@ -17,7 +17,7 @@ export const updateUser = createAsyncThunk("update", async ({_id,user}) => {
   const token = localStorage.getItem('token');
   try {
     console.log(user);
-    let result = await axios.put(`http://localhost:5000/api/user/${_id}`,
+    let result = await axios.put(`https://autoroute-api.vercel.app/api/user/${_id}`,
       user,
       {
         headers: {
@@ -36,7 +36,7 @@ export const updateUser = createAsyncThunk("update", async ({_id,user}) => {
 
 export const loginUser = createAsyncThunk("login", async (user) => {
   try {
-    const result = await axios.post("http://localhost:5000/api/user/login",user);
+    const result = await axios.post("https://autoroute-api.vercel.app/api/user/login",user);
     console.log(result);
     return result.data;
   } catch (error) {
@@ -51,7 +51,7 @@ export const currentUser = createAsyncThunk("current", async () => {
     },
   };
   try {
-    const result = await axios.get("http://localhost:5000/api/user/current",opts);
+    const result = await axios.get("https://autoroute-api.vercel.app/api/user/current",opts);
     return result.data;
     console.log(result.data)
   } catch (error) {
@@ -62,7 +62,7 @@ export const currentUser = createAsyncThunk("current", async () => {
 
 export const getAllUsers = createAsyncThunk("getAllUsers", async () => {
   try {
-    const result = await axios.get("http://localhost:5000/api/user/");
+    const result = await axios.get("https://autoroute-api.vercel.app/api/user/");
     console.log(result.data);
     return result.data;
   } catch (error) {
