@@ -72,7 +72,7 @@ export const getAllUsers = createAsyncThunk("getAllUsers", async () => {
 
 export const deleteUser = createAsyncThunk("user/dalete", async (id) => {
   try {
-    const result = await axios.delete(`http://localhost:5000/api/user/${id}`);
+    const result = await axios.delete(`https://autoroute-api.vercel.app/api/user/${id}`);
     return result.data;
   } catch (error) {
     console.log(error)
