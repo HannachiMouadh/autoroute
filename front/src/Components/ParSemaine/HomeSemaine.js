@@ -428,6 +428,7 @@ const HomeSemaine = ({ userSemaine }) => {
             selectsStart
             startDate={startDate}
             endDate={endDate}
+            maxDate={dateToday}
             placeholderText="Start Date"
             className="custom-datepicker"
           />
