@@ -40,6 +40,7 @@ const HomeSemaine = ({ userSemaine }) => {
   const chartAccRef = useRef(null);
   const chartInjurRef = useRef(null);
   const data = useSelector((state) => state.data.data);
+  const [dateToday, setDateToday] = useState(moment().format("YYYY-MM-DD"))
 
   useEffect(() => {
     dispatch(fetchForms());
