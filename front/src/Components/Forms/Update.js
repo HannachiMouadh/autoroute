@@ -15,8 +15,8 @@ const Update = ({ rowData, dataId, onUpdate }) => {
   const [selectedNK, setSelectedNK] = useState(rowData.nk || 317);
   const [selectedCause, setSelectedCause] = useState(rowData.cause || "سرعة فائقة");
   const [selectedVoie, setSelectedVoie] = useState(rowData.sens || "اتجاه قابس");
-  const [selectedHours,setSelectedHours] = useState(rowData.hours || 0 );
-  const [selectedMinutes,setSelectedMinutes] = useState(rowData.minutes || 0 );
+  const [selectedHours, setSelectedHours] = useState(rowData.hours || 0);
+  const [selectedMinutes, setSelectedMinutes] = useState(rowData.minutes || 0);
   const userRedux = useSelector((state) => state.user.user);
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -204,7 +204,7 @@ const Update = ({ rowData, dataId, onUpdate }) => {
         });
       });
   };
-  
+
 
   const generateOptions = (range) => {
     return Array.from({ length: range }, (_, i) => (
@@ -278,8 +278,11 @@ const Update = ({ rowData, dataId, onUpdate }) => {
 
   return (
     <>
-      <Button variant="primary" onClick={() => setShowModal(true)} style={{ width: "40px" }}>
-        <FiEdit />
+      <Button variant="info" onClick={() => setShowModal(true)} style={{ width: "40px"}}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+        </svg>
       </Button>
       <Modal show={showModal} onHide={() => setShowModal(false)} >
         <Modal.Header closeButton>
@@ -287,50 +290,50 @@ const Update = ({ rowData, dataId, onUpdate }) => {
         </Modal.Header>
         <Modal.Body >
           <Form.Group controlId="accident">
-          <Row>
-            <Col>
-              <Form.Control
-                style={{ width: '150px' }}
-                type="text"
-                placeholder='أ'
-                name="a"
-                value={updateData.a}
-                onChange={newData}
-                required
-              />
+            <Row>
+              <Col>
+                <Form.Control
+                  style={{ width: '150px' }}
+                  type="text"
+                  placeholder='أ'
+                  name="a"
+                  value={updateData.a}
+                  onChange={newData}
+                  required
+                />
                 {errors.a && <p style={{ color: 'red' }}>{errors.a}</p>}
-              <Form.Control
-                style={{ width: '150px' }}
-                type="text"
-                placeholder='ب'
-                name="b"
-                value={updateData.b}
-                onChange={newData}
-                required
-              />
-            </Col>
-            <Col>
-              <Form.Control
-                style={{ width: '150px' }}
-                type="text"
-                placeholder='ج'
-                name="c"
-                value={updateData.c}
-                onChange={newData}
-                required
-              />
-              <Form.Control
-                style={{ width: '150px' }}
-                type="text"
-                placeholder='د'
-                name="d"
-                value={updateData.d}
-                onChange={newData}
-                required
-              />
-            </Col>
-            :لوحة منجمية
-          </Row>
+                <Form.Control
+                  style={{ width: '150px' }}
+                  type="text"
+                  placeholder='ب'
+                  name="b"
+                  value={updateData.b}
+                  onChange={newData}
+                  required
+                />
+              </Col>
+              <Col>
+                <Form.Control
+                  style={{ width: '150px' }}
+                  type="text"
+                  placeholder='ج'
+                  name="c"
+                  value={updateData.c}
+                  onChange={newData}
+                  required
+                />
+                <Form.Control
+                  style={{ width: '150px' }}
+                  type="text"
+                  placeholder='د'
+                  name="d"
+                  value={updateData.d}
+                  onChange={newData}
+                  required
+                />
+              </Col>
+              :لوحة منجمية
+            </Row>
             <Row>
               <Form.Control
                 style={{ width: '350px' }}
@@ -343,26 +346,26 @@ const Update = ({ rowData, dataId, onUpdate }) => {
               :زلاقات
             </Row>
             <Row>
-            <Form.Control
-              style={{ width: '194px', height: "30px" }}
-              type="number"
-              min="0"
-              name="mtr"
-              value={updateData.mtr}
-              onChange={newData}
-              required
-            />
-            :البعد بالمتر
-            <Form.Select
-              style={{ width: '80px' }}
-              name="nk"
-              value={updateData.nk}
-              onChange={newData}
-            >
-              {userRedux && userRedux.region ? generateOptionsNK(userRedux.region) : null}
-            </Form.Select>
-            :نقطة كلمترية
-          </Row>
+              <Form.Control
+                style={{ width: '194px', height: "30px" }}
+                type="number"
+                min="0"
+                name="mtr"
+                value={updateData.mtr}
+                onChange={newData}
+                required
+              />
+              :البعد بالمتر
+              <Form.Select
+                style={{ width: '80px' }}
+                name="nk"
+                value={updateData.nk}
+                onChange={newData}
+              >
+                {userRedux && userRedux.region ? generateOptionsNK(userRedux.region) : null}
+              </Form.Select>
+              :نقطة كلمترية
+            </Row>
             <Row>
               <Form.Select aria-label="Default select example"
                 style={{ width: '350px' }}
@@ -378,30 +381,30 @@ const Update = ({ rowData, dataId, onUpdate }) => {
               :الاتجاه
             </Row>
             <Row>
-            <Form.Control
-              style={{ width: '350px' }}
-              type="number"
-              name="nbrmort"
-              min="0"
-              placeholder="nombre de mort"
-              value={updateData.nbrmort}
-              onChange={newData}
-            />
-            {errors.nbrmort && <p style={{ color: 'red' }}>{errors.nbrmort}</p>}
-            :عدد الموتى
+              <Form.Control
+                style={{ width: '350px' }}
+                type="number"
+                name="nbrmort"
+                min="0"
+                placeholder="nombre de mort"
+                value={updateData.nbrmort}
+                onChange={newData}
+              />
+              {errors.nbrmort && <p style={{ color: 'red' }}>{errors.nbrmort}</p>}
+              :عدد الموتى
             </Row>
             <Row>
-            <Form.Control
-              style={{ width: '350px' }}
-              type="number"
-              name="nbrblesse"
-              min="0"
-              placeholder="nombre des blessé"
-              value={updateData.nbrblesse}
-              onChange={newData}
-            />
-            {errors.nbrblesse && <p style={{ color: 'red' }}>{errors.nbrblesse}</p>}
-            :عدد الجرحى
+              <Form.Control
+                style={{ width: '350px' }}
+                type="number"
+                name="nbrblesse"
+                min="0"
+                placeholder="nombre des blessé"
+                value={updateData.nbrblesse}
+                onChange={newData}
+              />
+              {errors.nbrblesse && <p style={{ color: 'red' }}>{errors.nbrblesse}</p>}
+              :عدد الجرحى
             </Row>
             <Row>
               <Form.Select aria-label="Default select example"
@@ -466,10 +469,10 @@ const Update = ({ rowData, dataId, onUpdate }) => {
         </Modal.Body>
         <Modal.Footer  >
           <Button variant="secondary" onClick={() => setShowModal(false)}>
-          الغاء العملية
+            الغاء العملية
           </Button>
-          <Button variant="primary" onClick={(e) => {handleUpdate(e)}}>
-          حفظ التغييرات
+          <Button variant="primary" onClick={(e) => { handleUpdate(e) }}>
+            حفظ التغييرات
           </Button>
         </Modal.Footer>
       </Modal>

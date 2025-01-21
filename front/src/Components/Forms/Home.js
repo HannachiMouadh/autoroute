@@ -4,11 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import Add from './Add';
 import Delete from './Delete';
 import Update from './Update';
-import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 import './Home.css';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
-import { Button } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from "moment";
@@ -18,19 +24,17 @@ import { saveAs } from 'file-saver';
 import { currentUser, deleteUser, getAllUsers } from '../../JS/userSlice/userSlice';
 import { RxCross1 } from "react-icons/rx";
 import Swal from "sweetalert2";
-import { lineWobble } from 'ldrs'
+import { tailChase } from 'ldrs'
+import { useLocation } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { TableSortLabel } from '@mui/material';
 
-lineWobble.register()
+tailChase.register()
 
-const StyledTable = styled(Table)`
-  margin-top: 20px;
-  padding: 30px;
-  ${({ isMobile }) => isMobile && `
-    font-size: 70%;
-    & th, & td {
-      padding: 8px;
-    }
-  `}
+const StyledTableCell = styled(TableCell)`
+  color: black;
+  background-color: rgb(213, 213, 213);
+    padding-top: 0%;
 `;
 
 
@@ -212,268 +216,136 @@ const Home = ({ userRegion, curuser }) => {
 
   const sumInjur = filteredDataArray.reduce((acc, form) => acc + (form.nbrblesse || 0), 0);
   const sumDead = filteredDataArray.reduce((acc, form) => acc + (form.nbrmort || 0), 0);
+  const sumDays = filteredDataArray.reduce((acc, form) => acc + 1, 0);
 
-  // const sorting = (col) => {
-  //   const sorted = [...filteredDataArray].sort((a, b) => {
-  //     const valA = typeof a[col] === 'string' ? a[col].toLowerCase() : a[col];
-  //     const valB = typeof b[col] === 'string' ? b[col].toLowerCase() : b[col];
-
-  //     if (order === "ASC") {
-  //       return valA > valB ? 1 : -1;
-  //     } else {
-  //       return valA < valB ? 1 : -1;
-  //     }
-  //   });
-
-  //   setDonne(sorted);
-  //   setOrder(order === "ASC" ? "DSC" : "ASC");
-  // };
+  const noDataIndication = () => (
+    <div>
+      
+    </div>
+  );
 
 
 
 
   return (
-    <div className='backcolor'>
-      {isMobile ? (<StyledTable>
-        <div className="custom-form-container">
-          <div className="datepickers-container">
-            <div>
-              <label className="datepicker-label">:بداية التاريخ</label>
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                placeholderText="Start Date"
-                className="custom-datepicker"
-              />
-            </div>
-            <div>
-              <label className="datepicker-label">:نهاية التاريخ</label>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                placeholderText="End Date"
-                minDate={startDate}
-                className="custom-datepicker"
-              />
-            </div>
+    <div className='left-right-gap'>
+      <div className="custom-form-container">
+        <div className="datepickers-container">
+          <div>
+            <label className="datepicker-label">:بداية التاريخ</label>
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              selectsStart
+              startDate={startDate}
+              endDate={endDate}
+              placeholderText="Start Date"
+              className="custom-datepicker"
+            />
+          </div>
+          <div>
+            <label className="datepicker-label">:نهاية التاريخ</label>
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              selectsEnd
+              startDate={startDate}
+              endDate={endDate}
+              
+              placeholderText="End Date"
+              minDate={startDate}
+              className="custom-datepicker"
+            />
           </div>
         </div>
-        <div>
-          <Button variant="secondary" onClick={resetFilters}>
-            إعادة تعيين المرشحات
-          </Button>
-        </div>
-        <div>
-          <Button variant="primary" onClick={exportToExcel}>
-            تصدير إلى Excel
-          </Button>
-        </div>
-        <div>
-          <p>You are viewing on a mobile.</p>
-          {filteredDataArray.length === 0 ? <h4 style={{ marginTop: "20px", marginBottom: "20px" }}>الرجاء تعمير الجدول</h4> : <p></p>}
-          <Table className="margin" striped bordered hover >
-            <thead >
-              <tr>
-                {/* <th onClick={() => sorting("barrier")}>زلاقات</th>
-                <th onClick={() => sorting("nbrmort")}>موتى</th>
-                <th onClick={() => sorting("nbrblesse")}>جرحى </th>
-                <th onClick={() => sorting("cause")}>السبب </th>
-                <th onClick={() => sorting("a")}>لوحة منجمية</th>
-                <th onClick={() => sorting("sens")}>اتجاه</th>
-                <th onClick={() => sorting("nk")}>ن.ك</th>
-                <th onClick={() => sorting("hours")}>الساعة </th>
-                <th onClick={() => sorting("day")}>اليوم </th>
-                <th onClick={() => sorting("ddate")}>التاريخ </th>
-                <th> </th> */}
-                <th>زلاقات</th>
-                <th>موتى</th>
-                <th>جرحى </th>
-                <th>السبب </th>
-                <th>لوحة منجمية</th>
-                <th>اتجاه</th>
-                <th>ن.ك</th>
-                <th>الساعة </th>
-                <th>اليوم </th>
-                <th>التاريخ </th>
-                <th> </th>
-              </tr>
-            </thead>
-            {filteredDataArray.length === 0 ? (<tbody><tr><td colSpan="10" style={{ textAlign: "center" }}><l-line-wobble
-              size="80"
-              stroke="5"
-              bg-opacity="0.1"
-              speed="1.75"
-              color="black"
-            ></l-line-wobble></td><td><Add /></td></tr></tbody>) : (<tbody >
-              {(!formatStartDate && !formatEndDate ? filteredDataArray : filteredDataArray.filter(form => form.ddate >= formatStartDate && form.ddate <= formatEndDate)).map((form) => (
-                <tr key={form._id}>
-                  <td>{parseFloat(form.barrier) * 4 + 'm'},({form.barrier})</td>
-                  <td>{form.nbrmort}</td>
-                  <td>{form.nbrblesse}</td>
-                  <td>{form.cause}</td>
-                  <td>
-                    أ:{form.a}<br />
-                    ب:{form.b}<br />
-                    ج:{form.c}<br />
-                    د:{form.d}
-                  </td>
-                  <td>{form.sens}</td>
-                  <td>Pk:{form.nk},{form.mtr}m</td>
-                  <td>{form.hours}:{form.minutes}</td>
-                  <td>{form.day}</td>
-                  <td>{form.ddate}</td>
-                  <td>
+      </div>
+      <Button variant="primary" onClick={() => setStartDate(null) || setEndDate(null)}>
+        إعادة تعيين المرشحات
+      </Button>
+      <Button variant="primary" onClick={exportToExcel}>
+        تصدير إلى Excel
+      </Button>
+
+      {filteredDataArray.length === 0 ? (
+        <div><h4>!الرجاء تعمير الجدول</h4><l-tail-chase
+        size="40"
+        speed="1.75"
+        color="black"
+      ></l-tail-chase>
+      <Add /></div>
+      ) : (
+        <TableContainer component={Paper} className='tableContainer' style={{ width: '100%',backgroundColor:'rgb(204, 236, 238)', overflowX: 'hidden'}} >
+          <Table style={{ tableLayout: 'auto', width: '100%'}}>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>زلاقات</StyledTableCell>
+                <StyledTableCell>موتى</StyledTableCell>
+                <StyledTableCell>جرحى</StyledTableCell>
+                <StyledTableCell>السبب</StyledTableCell>
+                <StyledTableCell>لوحة منجمية</StyledTableCell>
+                <StyledTableCell>اتجاه</StyledTableCell>
+                <StyledTableCell>ن.ك</StyledTableCell>
+                <StyledTableCell>الساعة</StyledTableCell>
+                <StyledTableCell>اليوم</StyledTableCell>
+                <StyledTableCell>التاريخ</StyledTableCell>
+                <StyledTableCell>Actions</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredDataArray.map((row) => (
+                <TableRow key={row._id}>
+                  <TableCell>{parseFloat(row.barrier) * 4}m ({row.barrier})</TableCell>
+                  <TableCell>{row.nbrmort}</TableCell>
+                  <TableCell>{row.nbrblesse}</TableCell>
+                  <TableCell>{row.cause}</TableCell>
+                  <TableCell>
+                            {row.a && `أ: ${row.a} `}<br />
+                            {row.b && `ب: ${row.b} `}<br />
+                            {row.c && `ج: ${row.c} `}<br />
+                            {row.d && `د: ${row.d} `}
+                  </TableCell>
+                  <TableCell>{row.sens}</TableCell>
+                  <TableCell>{`Pk:${row.nk}, ${row.mtr}m`}</TableCell>
+                  <TableCell>{`${row.hours}:${row.minutes}`}</TableCell>
+                  <TableCell>{row.day}</TableCell>
+                  <TableCell>{row.ddate}</TableCell>
+                  <TableCell>
                     {curuser?.isAdmin ? (
                       <div className='wrap-center'>
                         <div className='top-buttons'>
-                          <Button variant="danger" onClick={() => handleDelete(form._id)}><RxCross1 /></Button>
-                          <Update dataId={form._id} rowData={form} />
+                          <Add />
+                          <Update dataId={row._id} rowData={row} />
+
+                          <Button variant="danger" onClick={() => handleDelete(row._id)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                          </svg></Button>
                         </div>
-                        <Add />
                       </div>
                     ) : (
                       <Add />
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-              <tr>
-                <td></td>
-                <td>{sumDead}</td>
-                <td>{sumInjur}</td>
-                <td colSpan="7"></td>
-                <td>الاجمالي</td>
-              </tr>
-            </tbody>)}
+              <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell>موتى{sumDead}</TableCell>
+                  <TableCell>جرحى{sumInjur}</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>حوادث  {sumDays}</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>:الاجمالي</TableCell>
+                  </TableRow>
+            </TableBody>
           </Table>
-        </div></StyledTable>) : (
-        <StyledTable>
-          <div className="custom-form-container">
-            <div className="datepickers-container">
-              <div>
-                <label className="datepicker-label">:بداية التاريخ</label>
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  selectsStart
-                  startDate={startDate}
-                  endDate={endDate}
-                  placeholderText="Start Date"
-                  className="custom-datepicker"
-                />
-              </div>
-              <div>
-                <label className="datepicker-label">:نهاية التاريخ</label>
-                <DatePicker
-                  selected={endDate}
-                  onChange={(date) => setEndDate(date)}
-                  selectsEnd
-                  startDate={startDate}
-                  endDate={endDate}
-                  placeholderText="End Date"
-                  minDate={startDate}
-                  className="custom-datepicker"
-                />
-              </div>
-            </div>
-          </div>
-          <div>
-            <Button variant="secondary" onClick={resetFilters}>
-              إعادة تعيين المرشحات
-            </Button>
-          </div>
-          <div>
-            <Button variant="primary" onClick={exportToExcel}>
-              تصدير إلى Excel
-            </Button>
-          </div>
-          <div>
-            {filteredDataArray.length === 0 ? <h4 style={{ marginTop: "20px", marginBottom: "20px", color: "red" }}>!الرجاء تعمير الجدول</h4> : <p></p>}
-            <Table className="margin" striped bordered hover >
-              <thead >
-                <tr>
-                  {/* <th onClick={() => sorting("barrier")}>زلاقات</th>
-                <th onClick={() => sorting("nbrmort")}>موتى</th>
-                <th onClick={() => sorting("nbrblesse")}>جرحى </th>
-                <th onClick={() => sorting("cause")}>السبب </th>
-                <th onClick={() => sorting("a")}>لوحة منجمية</th>
-                <th onClick={() => sorting("sens")}>اتجاه</th>
-                <th onClick={() => sorting("nk")}>ن.ك</th>
-                <th onClick={() => sorting("hours")}>الساعة </th>
-                <th onClick={() => sorting("day")}>اليوم </th>
-                <th onClick={() => sorting("ddate")}>التاريخ </th>
-                <th> </th> */}
-                  <th>زلاقات</th>
-                  <th>موتى</th>
-                  <th>جرحى </th>
-                  <th>السبب </th>
-                  <th>لوحة منجمية</th>
-                  <th>اتجاه</th>
-                  <th>ن.ك</th>
-                  <th>الساعة </th>
-                  <th>اليوم </th>
-                  <th>التاريخ </th>
-                  <th> </th>
-                </tr>
-              </thead>
-              {filteredDataArray.length === 0 ? (<tbody><tr><td colSpan="10" style={{ textAlign: "center" }}><l-line-wobble
-                size="80"
-                stroke="5"
-                bg-opacity="0.1"
-                speed="1.75"
-                color="black"
-              ></l-line-wobble></td><td><Add /></td></tr></tbody>) : (<tbody >
-                {(!formatStartDate && !formatEndDate ? filteredDataArray : filteredDataArray.filter(form => form.ddate >= formatStartDate && form.ddate <= formatEndDate)).map((form) => (
-                  <tr key={form._id}>
-                    <td>{parseFloat(form.barrier) * 4 + 'm'},({form.barrier})</td>
-                    <td>{form.nbrmort}</td>
-                    <td>{form.nbrblesse}</td>
-                    <td>{form.cause}</td>
-                    <td>
-                      أ:{form.a}<br />
-                      ب:{form.b}<br />
-                      ج:{form.c}<br />
-                      د:{form.d}
-                    </td>
-                    <td>{form.sens}</td>
-                    <td>Pk:{form.nk},{form.mtr}m</td>
-                    <td>{form.hours}:{form.minutes}</td>
-                    <td>{form.day}</td>
-                    <td>{form.ddate}</td>
-                    <td>
-                      {curuser?.isAdmin ? (
-                        <div className='wrap-center'>
-                          <div className='top-buttons'>
-                            <Button variant="danger" onClick={() => handleDelete(form._id)}><RxCross1 /></Button>
-                            <Update dataId={form._id} rowData={form} />
-                          </div>
-                          <Add />
-                        </div>
-                      ) : (
-                        <Add />
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                <tr>
-                  <td></td>
-                  <td>{sumDead}</td>
-                  <td>{sumInjur}</td>
-                  <td colSpan="7"></td>
-                  <td>الاجمالي</td>
-                </tr>
-              </tbody>)}
-            </Table>
-          </div></StyledTable>)
-      }
-    </div >
-
+        </TableContainer>
+      )}
+    </div>
   );
 };
 export default Home;

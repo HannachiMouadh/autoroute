@@ -18,6 +18,7 @@ import html2canvas from 'html2canvas';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { getAllUsers } from '../../JS/userSlice/userSlice';
+import { useLocation } from 'react-router-dom';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -47,6 +48,7 @@ const HomeSens = ({userSens}) => {
     dispatch(fetchForms());
   }, [dispatch]);
 
+
   const years = [];
   const currentYear = new Date().getFullYear();
   for (let i = 2020; i <= currentYear; i++) {
@@ -62,6 +64,8 @@ const HomeSens = ({userSens}) => {
   useEffect(() => {
     setUser(userRedux);
   }, [userRedux]);
+
+  const location = useLocation();
 
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
@@ -100,26 +104,42 @@ const HomeSens = ({userSens}) => {
   };
   const filteredDataArray = userRedux ? filteredData(data, formatStartDate, formatEndDate) : [];
 
+  const regionDirections =(userSens) => {
+    switch (userSens) {
+        case "sfax":
+          return ["اتجاه تونس", "اتجاه صخيرة"];
+        case "gabes":
+          return ["اتجاه قابس", "اتجاه صفاقس"];
+        default:
+          return "";
+    }
+};
+
+console.log(regionDirections(userSens)[1]);
+console.log('userSens: ',userSens);
+
+
+
 
   const injurGabes = filteredDataArray
-    .filter((form) => form.sens == 'اتجاه قابس')
+    .filter((form) => form.sens == regionDirections(userSens)[0])
     .reduce((acc, form) => acc + form.nbrblesse, 0);
   const injurSfax = filteredDataArray
-    .filter((form) => form.sens == 'اتجاه صفاقس')
+    .filter((form) => form.sens == regionDirections(userSens)[1])
     .reduce((acc, form) => acc + form.nbrblesse, 0);
 
   const accGabes = filteredDataArray
-    .filter((form) => form.sens == 'اتجاه قابس')
+    .filter((form) => form.sens == regionDirections(userSens)[0])
     .reduce((acc, form) => acc + 1, 0);
   const accSfax = filteredDataArray
-    .filter((form) => form.sens == 'اتجاه صفاقس')
+    .filter((form) => form.sens == regionDirections(userSens)[1])
     .reduce((acc, form) => acc + 1, 0);
 
   const deadGabes = filteredDataArray
-    .filter((form) => form.sens == 'اتجاه قابس')
+    .filter((form) => form.sens == regionDirections(userSens)[0])
     .reduce((acc, form) => acc + form.nbrmort, 0);
   const deadSfax = filteredDataArray
-    .filter((form) => form.sens == 'اتجاه صفاقس')
+    .filter((form) => form.sens == regionDirections(userSens)[1])
     .reduce((acc, form) => acc + form.nbrmort, 0);
 
 
@@ -206,8 +226,8 @@ const HomeSens = ({userSens}) => {
 
 
   return (
-    <div>
-      {isMobile ? (<StyledTable><h1 className="title"> إحصائيات حوادث المرور حسب الإتجاه </h1>
+    <div className='left-right-gap'>
+      {isMobile ? (<StyledTable><h1> إحصائيات حوادث المرور حسب الإتجاه </h1>
         <div className="custom-form-container">
           <div className="datepickers-container">
             <div>
@@ -267,7 +287,7 @@ const HomeSens = ({userSens}) => {
                 <td>{deadGabes}</td>
                 <td>%{(accGabes * 100 / sumAcc).toFixed(2)}</td>
                 <td>{accGabes}</td>
-                <td>اتجاه قابس</td>
+                <td>{regionDirections(userSens)[0]}</td>
               </tr>
               <tr>
                 <td>%{(injurSfax * 100 / sumInjur).toFixed(2)}</td>
@@ -276,7 +296,7 @@ const HomeSens = ({userSens}) => {
                 <td>{deadSfax}</td>
                 <td>%{(accSfax * 100 / sumAcc).toFixed(2)}</td>
                 <td>{accSfax}</td>
-                <td>اتجاه صفاقس</td>
+                <td>{regionDirections(userSens)[1]}</td>
               </tr>
               <tr>
                 <td></td>
@@ -290,7 +310,7 @@ const HomeSens = ({userSens}) => {
             </tbody>)}
 
           </Table>
-          <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
+          <div> {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
             <div>
               <div ref={chartAccRef}>
                 <Bar
@@ -349,7 +369,7 @@ const HomeSens = ({userSens}) => {
           )}</div>
         </div></StyledTable>) : (
         <StyledTable>
-          <h1 className="title"> إحصائيات حوادث المرور حسب الإتجاه </h1>
+          <h1 className='title-layout'> إحصائيات حوادث المرور حسب الإتجاه </h1>
 
           <div className="custom-form-container">
             <div className="datepickers-container">
@@ -410,7 +430,7 @@ const HomeSens = ({userSens}) => {
                   <td>{deadGabes}</td>
                   <td>%{(accGabes * 100 / sumAcc).toFixed(2)}</td>
                   <td>{accGabes}</td>
-                  <td>اتجاه قابس</td>
+                  <td>{regionDirections(userSens)[0]}</td>
                 </tr>
                 <tr>
                   <td>%{(injurSfax * 100 / sumInjur).toFixed(2)}</td>
@@ -419,7 +439,7 @@ const HomeSens = ({userSens}) => {
                   <td>{deadSfax}</td>
                   <td>%{(accSfax * 100 / sumAcc).toFixed(2)}</td>
                   <td>{accSfax}</td>
-                  <td>اتجاه صفاقس</td>
+                  <td>{regionDirections(userSens)[1]}</td>
                 </tr>
                 <tr>
                   <td></td>
@@ -433,7 +453,7 @@ const HomeSens = ({userSens}) => {
               </tbody>)}
 
             </Table>
-            <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
+            <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor : "rgb(160, 206, 209)"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor : "rgb(160, 206, 209)"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
               <div>
                 <div ref={chartAccRef}>
                   <Bar

@@ -60,7 +60,7 @@ const UsersMan = () => {
   return (
     <div className="users-container">
       <h2>Utilisateurs</h2>
-      <Table striped bordered hover responsive>
+      <Table striped bordered hover responsive className="tab">
         <thead>
           <tr>
           <th>Name</th>
@@ -99,7 +99,7 @@ const UsersMan = () => {
       </Table>
 
       <h2>Admininistrateur</h2>
-      <Table striped bordered hover responsive>
+      <Table striped bordered hover responsive className="tab">
         <thead>
           <tr>
             <th>Name</th>

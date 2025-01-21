@@ -59,6 +59,7 @@ const HomeHoraire = ({userLieu}) => {
   const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
 
 
+ console.log("lieu :",userLieu);
  
 
 
@@ -90,163 +91,186 @@ const HomeHoraire = ({userLieu}) => {
   };
   const filteredDataArray = userRedux ? filteredData(data, formatStartDate, formatEndDate) : [];
 
+  const regionDirections =(userLieu) => {
+    switch (userLieu) {
+        case "sfax":
+          return ["اتجاه تونس", "اتجاه صخيرة"];
+        case "gabes":
+          return ["اتجاه قابس", "اتجاه صفاقس"];
+        default:
+          return "";
+    }
+};
+
+const regionNK =(userLieu) => {
+    switch (userLieu) {
+        case "sfax":
+          return [387, 397, 407, 417, 427, 437, 447];
+        case "gabes":
+          return [317, 327, 337, 347, 357, 367, 377];
+        default:
+          return "";
+    }
+};
+console.log(regionDirections(userLieu)[1]);
+
 
     const injurTwenty = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurThirty = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurForty = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurFifty = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurSixty = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurSeventy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurEighty = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurNinety = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
 
 
     const deadTwenty = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadThirty = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadForty = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadFifty = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadSixty = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadSeventy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadEighty = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadNinety = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
 
 
 
     const accTwenty = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + 1, 0);
     const accThirty = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + 1, 0);
     const accForty = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + 1, 0);
     const accFifty = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + 1, 0);
     const accSixty = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + 1, 0);
     const accSeventy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + 1, 0);
     const accEighty = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + 1, 0);
     const accNinety = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <=387 && form.sens === "اتجاه قابس")
+        .filter((form) => form.nk >= 397 && form.nk <=387 && form.sens === regionDirections(userLieu)[0])
         .reduce((acc, form) => acc + 1, 0);
 
 
 
     const injurTwentyy = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurThirtyy = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurFortyy = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurFiftyy = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurSixtyy = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurSeventyy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurEightyy = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
     const injurNinetyy = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
 
 
     const deadTwentyy = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadThirtyy = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadFortyy = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadFiftyy = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadSixtyy = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadSeventyy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadEightyy = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrmort, 0);
     const deadNinetyy = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + form.nbrmort, 0);
 
 
 
     const accTwentyy = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + 1, 0);
     const accThirtyy = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + 1, 0);
     const accFortyy = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + 1, 0);
     const accFiftyy = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + 1, 0);
     const accSixtyy = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + 1, 0);
     const accSeventyy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + 1, 0);
     const accEightyy = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + 1, 0);
     const accNinetyy = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === "اتجاه صفاقس")
+        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[1])
         .reduce((acc, form) => acc + 1, 0);
 
 
@@ -366,7 +390,7 @@ const HomeHoraire = ({userLieu}) => {
 
 
     return (
-        <div>
+        <div className='left-right-gap'>
             {isMobile ? (<StyledTable>
                 <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
                 <div className="custom-form-container">
@@ -429,8 +453,8 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadTwenty}</td>
                                 <td>%{(accTwenty * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accTwenty}</td>
-                                <td>من  ن.ك 317  الى  ن.ك 327</td>
-                                <td rowSpan="8">اتجاه قابس</td>
+                                <td>من  ن.ك {regionNK(userLieu)[0]}  الى  ن.ك {regionNK(userLieu)[1]}</td>
+                                <td rowSpan="8">{regionDirections(userLieu)[0]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurThirty * 100 / sumInjur).toFixed(2)}</td>
@@ -439,7 +463,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadThirty}</td>
                                 <td>%{(accThirty * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accThirty}</td>
-                                <td>من  ن.ك 327  الى  ن.ك 337</td>
+                                <td>من  ن.ك {regionNK(userLieu)[1]}  الى  ن.ك {regionNK(userLieu)[2]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurForty * 100 / sumInjur).toFixed(2)}</td>
@@ -448,7 +472,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadForty}</td>
                                 <td>%{(accForty * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accForty}</td>
-                                <td>من  ن.ك 337  الى  ن.ك 347</td>
+                                <td>من  ن.ك {regionNK(userLieu)[2]}  الى  ن.ك {regionNK(userLieu)[3]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurFifty * 100 / sumInjur).toFixed(2)}</td>
@@ -457,7 +481,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadFifty}</td>
                                 <td>%{(accFifty * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accFifty}</td>
-                                <td>من  ن.ك 347  الى  ن.ك 357</td>
+                                <td>من  ن.ك {regionNK(userLieu)[3]}  الى  ن.ك {regionNK(userLieu)[4]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurSixty * 100 / sumInjur).toFixed(2)}</td>
@@ -466,7 +490,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadSixty}</td>
                                 <td>%{(accSixty * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accSixty}</td>
-                                <td>من  ن.ك 357  الى  ن.ك 367</td>
+                                <td>من  ن.ك {regionNK(userLieu)[4]}  الى  ن.ك {regionNK(userLieu)[5]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurSeventy * 100 / sumInjur).toFixed(2)}</td>
@@ -475,7 +499,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadSeventy}</td>
                                 <td>%{(accSeventy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accSeventy}</td>
-                                <td>من  ن.ك 367  الى  ن.ك 377</td>
+                                <td>من  ن.ك {regionNK(userLieu)[5]}  الى  ن.ك {regionNK(userLieu)[6]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurEighty * 100 / sumInjur).toFixed(2)}</td>
@@ -484,7 +508,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadEighty}</td>
                                 <td>%{(accEighty * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accEighty}</td>
-                                <td>من  ن.ك 377  الى  ن.ك 387</td>
+                                <td>من  ن.ك {regionNK(userLieu)[6]}  الى  ن.ك {regionNK(userLieu)[7]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurNinety * 100 / sumInjur).toFixed(2)}</td>
@@ -493,7 +517,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadNinety}</td>
                                 <td>%{(accNinety * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accNinety}</td>
-                                <td>من  ن.ك 387  الى  ن.ك 391</td>
+                                <td>من  ن.ك {regionNK(userLieu)[7]}  الى  ن.ك {regionNK(userLieu)[8]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurTwentyy * 100 / sumInjur).toFixed(2)}</td>
@@ -502,7 +526,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadTwentyy}</td>
                                 <td>%{(accTwentyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accTwentyy}</td>
-                                <td>من  ن.ك 317  الى  ن.ك 327</td>
+                                <td>من  ن.ك {regionNK(userLieu)[0]}  الى  ن.ك {regionNK(userLieu)[1]}</td>
                                 <td rowSpan="8">اتجاه صفاقس</td>
                             </tr>
                             <tr>
@@ -512,7 +536,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadThirtyy}</td>
                                 <td>%{(accThirtyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accThirtyy}</td>
-                                <td>من  ن.ك 327  الى  ن.ك 337</td>
+                                <td>من  ن.ك {regionNK(userLieu)[1]}  الى  ن.ك {regionNK(userLieu)[2]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurFortyy * 100 / sumInjur).toFixed(2)}</td>
@@ -521,7 +545,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadFortyy}</td>
                                 <td>%{(accFortyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accFortyy}</td>
-                                <td>من  ن.ك 337  الى  ن.ك 347</td>
+                                <td>من  ن.ك {regionNK(userLieu)[2]}  الى  ن.ك {regionNK(userLieu)[3]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurFiftyy * 100 / sumInjur).toFixed(2)}</td>
@@ -530,7 +554,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadFiftyy}</td>
                                 <td>%{(accFiftyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accFiftyy}</td>
-                                <td>من  ن.ك 347  الى  ن.ك 357</td>
+                                <td>من  ن.ك {regionNK(userLieu)[3]}  الى  ن.ك {regionNK(userLieu)[4]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurSixtyy * 100 / sumInjur).toFixed(2)}</td>
@@ -539,7 +563,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadSixtyy}</td>
                                 <td>%{(accSixtyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accSixtyy}</td>
-                                <td>من  ن.ك 357  الى  ن.ك 367</td>
+                                <td>من  ن.ك {regionNK(userLieu)[4]}  الى  ن.ك {regionNK(userLieu)[5]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurSeventyy * 100 / sumInjur).toFixed(2)}</td>
@@ -548,7 +572,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadSeventyy}</td>
                                 <td>%{(accSeventyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accSeventyy}</td>
-                                <td>من  ن.ك 367  الى  ن.ك 377</td>
+                                <td>من  ن.ك {regionNK(userLieu)[5]}  الى  ن.ك {regionNK(userLieu)[6]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurEightyy * 100 / sumInjur).toFixed(2)}</td>
@@ -557,7 +581,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadEightyy}</td>
                                 <td>%{(accEightyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accEightyy}</td>
-                                <td>من  ن.ك 377  الى  ن.ك 387</td>
+                                <td>من  ن.ك {regionNK(userLieu)[6]}  الى  ن.ك {regionNK(userLieu)[7]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurNinetyy * 100 / sumInjur).toFixed(2)}</td>
@@ -566,7 +590,7 @@ const HomeHoraire = ({userLieu}) => {
                                 <td>{deadNinetyy}</td>
                                 <td>%{(accNinetyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accNinetyy}</td>
-                                <td>من  ن.ك 387  الى  ن.ك 391</td>
+                                <td>من  ن.ك {regionNK(userLieu)[7]}  الى  ن.ك {regionNK(userLieu)[8]}</td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -581,7 +605,7 @@ const HomeHoraire = ({userLieu}) => {
                         </tbody>)}
                     </Table>
                     <div>
-                    {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
+                    {(!startDate || !endDate) ? (<h3 >الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 >لا توجد بيانات في هذا التاريخ</h3>) : (
                             <div>
                                 <div ref={chartAccRef}>
                                     <Bar
@@ -733,151 +757,151 @@ const HomeHoraire = ({userLieu}) => {
                             </thead>
                             {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
                                 <tr>
-                                    <td>%{(injurTwenty * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurTwenty}</td>
-                                    <td>%{(deadTwenty * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadTwenty}</td>
-                                    <td>%{(accTwenty * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accTwenty}</td>
-                                    <td>من  ن.ك 317  الى  ن.ك 327</td>
-                                    <td rowSpan="8">اتجاه قابس</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurThirty * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurThirty}</td>
-                                    <td>%{(deadThirty * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadThirty}</td>
-                                    <td>%{(accThirty * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accThirty}</td>
-                                    <td>من  ن.ك 327  الى  ن.ك 337</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurForty * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurForty}</td>
-                                    <td>%{(deadForty * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadForty}</td>
-                                    <td>%{(accForty * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accForty}</td>
-                                    <td>من  ن.ك 337  الى  ن.ك 347</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurFifty * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurFifty}</td>
-                                    <td>%{(deadFifty * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadFifty}</td>
-                                    <td>%{(accFifty * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accFifty}</td>
-                                    <td>من  ن.ك 347  الى  ن.ك 357</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurSixty * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurSixty}</td>
-                                    <td>%{(deadSixty * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadSixty}</td>
-                                    <td>%{(accSixty * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accSixty}</td>
-                                    <td>من  ن.ك 357  الى  ن.ك 367</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurSeventy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurSeventy}</td>
-                                    <td>%{(deadSeventy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadSeventy}</td>
-                                    <td>%{(accSeventy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accSeventy}</td>
-                                    <td>من  ن.ك 367  الى  ن.ك 377</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurEighty * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurEighty}</td>
-                                    <td>%{(deadEighty * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadEighty}</td>
-                                    <td>%{(accEighty * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accEighty}</td>
-                                    <td>من  ن.ك 377  الى  ن.ك 387</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurNinety * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurNinety}</td>
-                                    <td>%{(deadNinety * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadNinety}</td>
-                                    <td>%{(accNinety * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accNinety}</td>
-                                    <td>من  ن.ك 387  الى  ن.ك 391</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurTwentyy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurTwentyy}</td>
-                                    <td>%{(deadTwentyy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadTwentyy}</td>
-                                    <td>%{(accTwentyy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accTwentyy}</td>
-                                    <td>من  ن.ك 317  الى  ن.ك 327</td>
-                                    <td rowSpan="8">اتجاه صفاقس</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurThirtyy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurThirtyy}</td>
-                                    <td>%{(deadThirtyy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadThirtyy}</td>
-                                    <td>%{(accThirtyy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accThirtyy}</td>
-                                    <td>من  ن.ك 327  الى  ن.ك 337</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurFortyy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurFortyy}</td>
-                                    <td>%{(deadFortyy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadFortyy}</td>
-                                    <td>%{(accFortyy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accFortyy}</td>
-                                    <td>من  ن.ك 337  الى  ن.ك 347</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurFiftyy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurFiftyy}</td>
-                                    <td>%{(deadFiftyy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadFiftyy}</td>
-                                    <td>%{(accFiftyy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accFiftyy}</td>
-                                    <td>من  ن.ك 347  الى  ن.ك 357</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurSixtyy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurSixtyy}</td>
-                                    <td>%{(deadSixtyy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadSixtyy}</td>
-                                    <td>%{(accSixtyy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accSixtyy}</td>
-                                    <td>من  ن.ك 357  الى  ن.ك 367</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurSeventyy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurSeventyy}</td>
-                                    <td>%{(deadSeventyy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadSeventyy}</td>
-                                    <td>%{(accSeventyy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accSeventyy}</td>
-                                    <td>من  ن.ك 367  الى  ن.ك 377</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurEightyy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurEightyy}</td>
-                                    <td>%{(deadEightyy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadEightyy}</td>
-                                    <td>%{(accEightyy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accEightyy}</td>
-                                    <td>من  ن.ك 377  الى  ن.ك 387</td>
-                                </tr>
-                                <tr>
-                                    <td>%{(injurNinetyy * 100 / sumInjur).toFixed(2)}</td>
-                                    <td>{injurNinetyy}</td>
-                                    <td>%{(deadNinetyy * 100 / sumDead).toFixed(2)}</td>
-                                    <td>{deadNinetyy}</td>
-                                    <td>%{(accNinetyy * 100 / sumAcc).toFixed(2)}</td>
-                                    <td>{accNinetyy}</td>
-                                    <td>من  ن.ك 387  الى  ن.ك 391</td>
-                                </tr>
+                                <td>%{(injurTwenty * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurTwenty}</td>
+                                <td>%{(deadTwenty * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadTwenty}</td>
+                                <td>%{(accTwenty * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accTwenty}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[0]}  الى  ن.ك {regionNK(userLieu)[1]}</td>
+                                <td rowSpan="8">{regionDirections(userLieu)[0]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurThirty * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurThirty}</td>
+                                <td>%{(deadThirty * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadThirty}</td>
+                                <td>%{(accThirty * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accThirty}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[1]}  الى  ن.ك {regionNK(userLieu)[2]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurForty * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurForty}</td>
+                                <td>%{(deadForty * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadForty}</td>
+                                <td>%{(accForty * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accForty}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[2]}  الى  ن.ك {regionNK(userLieu)[3]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurFifty * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurFifty}</td>
+                                <td>%{(deadFifty * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadFifty}</td>
+                                <td>%{(accFifty * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accFifty}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[3]}  الى  ن.ك {regionNK(userLieu)[4]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurSixty * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurSixty}</td>
+                                <td>%{(deadSixty * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadSixty}</td>
+                                <td>%{(accSixty * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accSixty}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[4]}  الى  ن.ك {regionNK(userLieu)[5]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurSeventy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurSeventy}</td>
+                                <td>%{(deadSeventy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadSeventy}</td>
+                                <td>%{(accSeventy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accSeventy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[5]}  الى  ن.ك {regionNK(userLieu)[6]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurEighty * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurEighty}</td>
+                                <td>%{(deadEighty * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadEighty}</td>
+                                <td>%{(accEighty * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accEighty}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[6]}  الى  ن.ك {regionNK(userLieu)[7]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurNinety * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurNinety}</td>
+                                <td>%{(deadNinety * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadNinety}</td>
+                                <td>%{(accNinety * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accNinety}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[7]}  الى  ن.ك {regionNK(userLieu)[8]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurTwentyy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurTwentyy}</td>
+                                <td>%{(deadTwentyy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadTwentyy}</td>
+                                <td>%{(accTwentyy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accTwentyy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[0]}  الى  ن.ك {regionNK(userLieu)[1]}</td>
+                                <td rowSpan="8">اتجاه صفاقس</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurThirtyy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurThirtyy}</td>
+                                <td>%{(deadThirtyy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadThirtyy}</td>
+                                <td>%{(accThirtyy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accThirtyy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[1]}  الى  ن.ك {regionNK(userLieu)[2]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurFortyy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurFortyy}</td>
+                                <td>%{(deadFortyy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadFortyy}</td>
+                                <td>%{(accFortyy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accFortyy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[2]}  الى  ن.ك {regionNK(userLieu)[3]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurFiftyy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurFiftyy}</td>
+                                <td>%{(deadFiftyy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadFiftyy}</td>
+                                <td>%{(accFiftyy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accFiftyy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[3]}  الى  ن.ك {regionNK(userLieu)[4]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurSixtyy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurSixtyy}</td>
+                                <td>%{(deadSixtyy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadSixtyy}</td>
+                                <td>%{(accSixtyy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accSixtyy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[4]}  الى  ن.ك {regionNK(userLieu)[5]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurSeventyy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurSeventyy}</td>
+                                <td>%{(deadSeventyy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadSeventyy}</td>
+                                <td>%{(accSeventyy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accSeventyy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[5]}  الى  ن.ك {regionNK(userLieu)[6]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurEightyy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurEightyy}</td>
+                                <td>%{(deadEightyy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadEightyy}</td>
+                                <td>%{(accEightyy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accEightyy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[6]}  الى  ن.ك {regionNK(userLieu)[7]}</td>
+                            </tr>
+                            <tr>
+                                <td>%{(injurNinetyy * 100 / sumInjur).toFixed(2)}</td>
+                                <td>{injurNinetyy}</td>
+                                <td>%{(deadNinetyy * 100 / sumDead).toFixed(2)}</td>
+                                <td>{deadNinetyy}</td>
+                                <td>%{(accNinetyy * 100 / sumAcc).toFixed(2)}</td>
+                                <td>{accNinetyy}</td>
+                                <td>من  ن.ك {regionNK(userLieu)[7]}  الى  ن.ك {regionNK(userLieu)[8]}</td>
+                            </tr>
                                 <tr>
                                     <td></td>
                                     <td>{sumInjur}</td>
@@ -890,7 +914,7 @@ const HomeHoraire = ({userLieu}) => {
                                 </tr>
                             </tbody>)}
                         </Table>
-                        <div>{(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
+                        <div>{(!startDate || !endDate) ? (<h3 style={{backgroundColor : "rgb(160, 206, 209)"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor : "rgb(160, 206, 209)"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
                                 <div>
                                     <div ref={chartAccRef}>
                                         <Bar

@@ -1,14 +1,14 @@
 .users-container {
     padding: 20px;
     margin: 0 auto;
-    max-width: 1000px;
+    max-width: 1250px;
     background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  table {
-    width: 100%;
+  .tab {
+    width: 1200px !important;
     margin-top: 20px;
   }
   

@@ -21,7 +21,7 @@ const Tabchange = ({ userRegion,curuser,userCause,userHoraire,userSemaine,userSe
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   const userRedux = useSelector((state) => state.user.user);
   const [online, setOnline] = useState(true);
-  console.log(userRedux);
+  console.log(userRedux?.isAdmin);
   useEffect(() => {
     if (isAuth) {
       dispatch(currentUser());
@@ -30,7 +30,6 @@ const Tabchange = ({ userRegion,curuser,userCause,userHoraire,userSemaine,userSe
   const navigate = useNavigate();
   const handlelogout =()=>{
     dispatch(logout());
-    navigate('/');
     window.location.reload()
  }
 
@@ -60,6 +59,7 @@ useEffect(() => {
     navigate('/connection');
   }
 }, [isAuth,isAdmin, navigate]);
+
   return (
     <div className="custom-tabs-container">
     {!online && (
@@ -137,8 +137,8 @@ useEffect(() => {
       ) : (
         <></>
       )}
-    </div>
-  )
-}
+      </div>
+  );
+  };
 
 export default Tabchange;

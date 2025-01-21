@@ -19,15 +19,18 @@ td,
   vertical-align: middle;
   margin: auto;
 }
-.title {
-  margin-top: 3rem;
-  font-size: 300;
-  font-family: Georgia, 'Times New Roman', Times, serif;
-  font-style: oblique;
-  margin-bottom: 2rem;
+.title-layout {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  border: 4px solid #666666;
+  border-radius: 10px;
+  max-width: 700px;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
 } 
 .custom-form-container {
-  background-color: burlywood;
+  background-color: rgb(241, 241, 241) !important;
   padding: 3px;
   border-radius: 8px;
   max-width: 400px;
@@ -55,6 +58,8 @@ td,
   border: 1px solid #ccc ;
   border-radius: 4px;
 }
-
-
+.left-right-gap {
+  margin-left: 5px;
+  margin-right: 5px;
+}
 

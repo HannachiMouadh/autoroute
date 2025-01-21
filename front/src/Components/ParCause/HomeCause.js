@@ -401,7 +401,7 @@ const HomeSemaine = ({ userCause }) => {
 
 
   return (
-    <div>
+    <div className='left-right-gap'>
       {isMobile ? (<StyledTable>
         <h1 className="title">احصائيات حوادث المرور حسب الأسباب</h1>
         <div className="custom-form-container">
@@ -443,7 +443,7 @@ const HomeSemaine = ({ userCause }) => {
         </div>)}
         <div>
           <p>You are viewing on a mobile.</p>
-          <Table className="margin" striped bordered hover >
+          <Table className='left-right-gap' striped bordered hover >
             <thead >
               <tr>
                 <th>%</th>
@@ -666,7 +666,7 @@ const HomeSemaine = ({ userCause }) => {
             </tbody>)}
 
           </Table>
-          <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
+          <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor : "rgb(160, 206, 209);"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor : "rgb(160, 206, 209);"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
             <div>
               <div ref={chartAccRef}>
                 <Bar
@@ -767,7 +767,7 @@ const HomeSemaine = ({ userCause }) => {
           </div>)}
           <div>
             <p>You are viewing on large screen</p>
-            <Table className="margin" striped bordered hover >
+            <Table striped bordered hover >
               <thead >
                 <tr>
                   <th>%</th>
@@ -990,7 +990,7 @@ const HomeSemaine = ({ userCause }) => {
               </tbody>)}
 
             </Table>
-            <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor:"burlywood"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data, startDate, endDate).length === 0 ? (<h3 style={{backgroundColor:"burlywood"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
+            <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor : "rgb(160, 206, 209)"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data, startDate, endDate).length === 0 ? (<h3 style={{backgroundColor : "rgb(160, 206, 209)"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
               <div>
                 <div ref={chartAccRef}>
                   <Bar

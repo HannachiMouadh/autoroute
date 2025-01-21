@@ -1,22 +1,20 @@
 .nav-link.active {
-    color: black !important;
-    background-color: burlywood !important;
-  }
-  
+  color: black !important;
+  background-color: rgb(140, 140, 140) !important;
+}
+
 .nav-link {
-  border: 2px solid rgb(245, 177, 88) !important;
-    color: rgb(134, 75, 75) !important;
-    background-color: rgb(229, 163, 78) !important;
-  }
+  color: rgb(56, 56, 56) !important;
+  background-color: rgb(226, 226, 226) !important;
+}
 .left{
-    text-align: right;
-    margin-right: 50px;
-    margin-bottom: 2rem;
-  }
+  text-align: right;
+  margin-top: 10px;
+  margin-right: 30px;
+  margin-bottom: 2rem;
+}
 .tab-content-container {
-    background-color: burlywood;
-    padding: 1px;
-    padding-bottom: 30%;
-  }
-  
-  
+  background-color: rgb(204, 236, 238);
+  padding-bottom: 30%;
+  padding-top: 2%;
+}

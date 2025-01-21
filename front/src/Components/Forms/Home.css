@@ -1,40 +1,29 @@
-Table,
-Table th{
-  border: 1px solid #cccccc;
-  border-top: none !important;
-  border-bottom: none !important;
-  text-align: center;
-  width: 10%;
-  font-size: 90%;
-  padding: 4px 8px;
+
+.tableContainer{
+  padding-left: 0 !important;
+  margin-top: 30px;
 }
-th,
- td {
-  text-align: center;
-  vertical-align: middle;
-}
-td,
- td p {
-  text-align: center;
-  vertical-align: middle;
-  margin: auto;
+
+.h4{
+  font-family: 'Times New Roman', Times, serif;
 }
 .wrap-center {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 .wrap-center .top-buttons {
   display: flex;
   gap: 5px;
-  margin-bottom: 5px;
 }
 .custom-form-container {
-  background-color: burlywood;
+  margin-top: 3rem !important;
+  background-color: rgb(241, 241, 241) !important;
   padding: 3px;
   border-radius: 8px;
   max-width: 400px;
   margin: 0 auto;
+  margin-bottom: 1rem !important;
 }
 
 .datepickers-container {
@@ -57,4 +46,6 @@ td,
   padding: 10px;
   border: 1px solid #ccc ;
   border-radius: 4px;
+}
+.left-right-gap {
 }
