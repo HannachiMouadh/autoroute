@@ -243,180 +243,8 @@ const HomeSemaine = ({ userSemaine }) => {
 
   return (
     <div className='left-right-gap'>
-      {isMobile ? (<StyledTable>
-        <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
-        <div className="custom-form-container">
-      <div className="datepickers-container">
-        <div>
-        <label className="datepicker-label">:بداية التاريخ</label>
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            selectsStart
-            startDate={startDate}
-            endDate={endDate}
-            placeholderText="Start Date"
-            className="custom-datepicker"
-          />
-        </div>
-        <div>
-          <label className="datepicker-label">:نهاية التاريخ</label>
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date)}
-            selectsEnd
-            startDate={startDate}
-            endDate={endDate}
-            placeholderText="End Date"
-            minDate={startDate}
-            className="custom-datepicker"
-          />
-        </div>
-      </div>
-    </div>
-        <div>
-          <Button variant="secondary" onClick={resetFilters}>
-          إعادة تعيين المرشحات
-          </Button>
-        </div>
-        {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-          <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
-        </div>)}
-        <div>
-          <p>You are viewing on a mobile.</p>
-          <Table className="margin" striped bordered hover >
-            <thead >
-              <tr>
-                <th>%</th>
-                <th>جرحى </th>
-                <th>%</th>
-                <th>موتى</th>
-                <th>%</th>
-                <th>حوادث</th>
-                <th>أيام</th>
-              </tr>
-            </thead>
-            {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
-              <tr>
-                <td>%{(injurMonday * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurMonday}</td>
-                <td>%{(deadMonday * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadMonday}</td>
-                <td>%{(accMonday * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accMonday}</td>
-                <td>الأثنين</td>
-              </tr>
-              <tr>
-                <td>%{(injurTuesday * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTuesday}</td>
-                <td>%{(deadTuesday * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTuesday}</td>
-                <td>%{(accTuesday * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTuesday}</td>
-                <td>الثلاثاء</td>
-              </tr>
-              <tr>
-                <td>%{(injurWednesday * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurWednesday}</td>
-                <td>%{(deadWednesday * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadWednesday}</td>
-                <td>%{(accWednesday * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accWednesday}</td>
-                <td>الأربعاء</td>
-              </tr>
-              <tr>
-                <td>%{(injurThursday * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurThursday}</td>
-                <td>%{(deadThursday * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadThursday}</td>
-                <td>%{(accThursday * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accThursday}</td>
-                <td>الخميس</td>
-              </tr>
-              <tr>
-                <td>%{(injurFriday * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurFriday}</td>
-                <td>%{(deadFriday * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadFriday}</td>
-                <td>%{(accFriday * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accFriday}</td>
-                <td>الجمعه</td>
-              </tr>
-              <tr>
-                <td>%{(injurSaturday * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurSaturday}</td>
-                <td>%{(deadSaturday * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadSaturday}</td>
-                <td>%{(accSaturday * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accSaturday}</td>
-                <td>السبت</td>
-              </tr>
-              <tr>
-                <td>%{(injurSunday * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurSunday}</td>
-                <td>%{(deadSunday * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadSunday}</td>
-                <td>%{(accSunday * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accSunday}</td>
-                <td>الأحد</td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>{sumInjur}</td>
-                <td></td>
-                <td>{sumDead}</td>
-                <td></td>
-                <td>{sumAcc}</td>
-                <td>الاجمالي</td>
-              </tr>
-            </tbody>)}
-
-          </Table>
-          <div> {(!startDate || !endDate) ? (<h3>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3>لا توجد بيانات في هذا التاريخ</h3>) : (
-            <div>
-              <div ref={chartAccRef}>
-                <Bar
-                  data={{
-                    labels: ['الأثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعه', 'السبت', 'الأحد'],
-                    datasets: [
-
-                      {
-                        label: ['جرحى'],
-                        data: [injurMonday, injurTuesday, injurWednesday, injurThursday, injurFriday, injurSaturday, injurSunday],
-                        backgroundColor: 'blue',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                      {
-                        label: ['موتى'],
-                        data: [deadMonday, deadTuesday, deadWednesday, deadThursday, deadFriday, deadSaturday, deadSunday],
-                        backgroundColor: 'red',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                      {
-                        label: ['حوادث'],
-                        data: [accMonday, accTuesday, accWednesday, accThursday, accFriday, accSaturday, accSunday],
-                        backgroundColor: 'dark grey',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: { position: 'top' },
-                      title: { display: true, text: 'عدد الحوادث حسب ايام الاسبوع', font: { size: 60 } },
-                    },
-                  }}
-                />
-              </div>
-            </div>
-          )}</div>
-        </div></StyledTable>) : (
         <StyledTable>
-          <h1 className="title">إحصائيات حوادث المرور حسب أيام الاسبوع</h1>
+          <h1 className='title-layout'>إحصائيات حوادث المرور حسب أيام الاسبوع</h1>
           <div className="custom-form-container">
       <div className="datepickers-container">
         <div>
@@ -446,16 +274,14 @@ const HomeSemaine = ({ userSemaine }) => {
         </div>
       </div>
     </div>
-          <div>
-            <Button variant="secondary" onClick={resetFilters}>
+          {(!startDate || !endDate) ? (<div className='centerbtn'><Button variant="primary" disabled>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
+            إعادة تعيين المرشحات
+            </Button></div>) : (<div className='centerbtn'>
+            <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
             إعادة تعيين المرشحات
             </Button>
-          </div>
-          {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-            <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
           </div>)}
           <div>
-            <p>You are viewing on a larger screen.</p>
             <Table className="margin" striped bordered hover >
               <thead >
                 <tr>
@@ -582,13 +408,12 @@ const HomeSemaine = ({ userSemaine }) => {
                         title: { display: true, text: 'عدد الحوادث حسب ايام الاسبوع', font: { size: 60 } },
                       },
                     }}
+                    height={400}
                   />
                 </div>
               </div>
             )}</div>
-          </div></StyledTable>)}
-
-
+          </div></StyledTable>
     </div>
 
   );

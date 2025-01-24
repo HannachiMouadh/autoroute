@@ -30,6 +30,10 @@ const UserSchema = new Schema({
     isAuth:{
         type:Boolean,
         default:false
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false
     }
 });
 

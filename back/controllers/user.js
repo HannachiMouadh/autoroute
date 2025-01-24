@@ -7,30 +7,38 @@ module.exports = {
 
   register: async (req, res) => {
     const { name, lastName, email, password, phone, region } = req.body;
+  
+    if (!name || !lastName || !email || !password || !phone || !region) {
+      return res.status(400).json({ msg: "Tous les champs sont obligatoires" });
+    }
+  
     try {
+      // Vérifier si l'utilisateur existe
       const existingUser = await User.findOne({ email });
       if (existingUser) {
-        return res.status(400).json({ msg: "Email already exists" });
+        return res.status(400).json({ msg: "L'email existe déjà" });
       }
-
+  
+      // Hacher le mot de passe
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
-
+  
+      // Créer et enregistrer l'utilisateur
       const newUser = new User({
         name,
         lastName,
         email,
         password: hashedPassword,
         phone,
-        region
+        region,
       });
-
+  
       const savedUser = await newUser.save();
-
-      res.status(200).json({ msg: "User registered successfully" });
+  
+      res.status(200).json({ msg: "Utilisateur enregistré avec succès", user: savedUser });
     } catch (error) {
-      console.error("Registration error:", error);
-      res.status(500).json({ msg: "Registration failed" });
+      console.error("Erreur lors de l'enregistrement :", error.message);
+      res.status(500).json({ msg: "Erreur interne du serveur" });
     }
   },
 

@@ -6,10 +6,11 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+
   
-  .tab {
-    width: 1200px !important;
-    margin-top: 20px;
+  Table {
+    width: 100%;
+    table-layout: fixed;
   }
   
   thead {
@@ -32,6 +33,10 @@
   @media (max-width: 768px) {
     .users-container {
       padding: 10px;
+    }
+    Table {
+      width: 100%;
+      table-layout: fixed;
     }
     
     .btn {

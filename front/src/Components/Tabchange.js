@@ -6,12 +6,14 @@ import HomeHoraire from './ParHoraire/HomeHoraire.js';
 import HomeCause from './ParCause/HomeCause.js';
 import HomeLieu from './ParLieu/HomeLieu.js';
 import './tabchange.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { currentUser, logout } from "../JS/userSlice/userSlice.js";
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Signup from './Signup/Signup.js';
 import UsersMan from './usersMan/UsersMan.js';
+import { isMobile } from 'react-device-detect';
+import { Link, Routes, Route } from "react-router-dom";
 
 
 
@@ -19,6 +21,7 @@ const Tabchange = ({ userRegion,curuser,userCause,userHoraire,userSemaine,userSe
   const dispatch = useDispatch();
   const isAuth = localStorage.getItem("token");
   const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const isSuper = localStorage.getItem("isSuper") === "true";
   const userRedux = useSelector((state) => state.user.user);
   const [online, setOnline] = useState(true);
   console.log(userRedux?.isAdmin);
@@ -60,6 +63,10 @@ useEffect(() => {
   }
 }, [isAuth,isAdmin, navigate]);
 
+const isMobileView = isMobile;
+const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
   return (
     <div className="custom-tabs-container">
     {!online && (
@@ -67,13 +74,126 @@ useEffect(() => {
           Connection lost! Please check your internet connection.
         </Alert>
       )}
-       {userRedux?.isAdmin ? (
+       {(userRedux?.isAdmin && userRedux?.isSuper) && isMobileView ? (
         <>
-        <div className="left">
+        <div className="admin-container">
+        <button
+        className="hamburger-btn"
+        onClick={toggleMenu}
+        aria-label="Toggle Menu"
+      >
+        &#9776;
+      </button>
+        <div className="admin-info">
+        <h5>Bienvenue, super administrateur {userRedux?.name}</h5>
+        <h6>District: {userRedux?.region}</h6>
+        <Link onClick={handlelogout} className="logout-link">Déconnexion</Link>
+      </div>
+      <div className={`sidebar-menu ${isMenuOpen ? "open" : "closed"}`}>
+            <Link to="/recap" className="sidebar-item" onClick={toggleMenu}>
+              Recap
+            </Link>
+            <Link to="/par-semaine" className="sidebar-item" onClick={toggleMenu}>
+              Par Semain
+            </Link>
+            <Link to="/par-sens" className="sidebar-item" onClick={toggleMenu}>
+              Par Sens
+            </Link>
+            <Link to="/par-horaire" className="sidebar-item" onClick={toggleMenu}>
+              Par Horaire
+            </Link>
+            <Link to="/par-cause" className="sidebar-item" onClick={toggleMenu}>
+              Par Cause
+            </Link>
+            <Link to="/par-lieu" className="sidebar-item" onClick={toggleMenu}>
+              Par Lieu
+            </Link>
+            <Link to="/inscription" className="sidebar-item" onClick={toggleMenu}>
+              Inscription
+            </Link>
+            <Link to="/utilisateurs" className="sidebar-item" onClick={toggleMenu}>
+              Utilisateurs
+            </Link>
+          </div>
+
+          {/* Routes */}
+          <div className="content">
+            <Routes>
+              <Route
+                path="/recap"
+                element={
+                  <div className="tab-content-container">
+                    <Home userRegion={userRedux.region} curuser={userRedux} />
+                  </div>
+                }
+              />
+              <Route
+                path="/par-semaine"
+                element={
+                  <div className="tab-content-container">
+                    <HomeSemain userSemaine={userRedux.region} />
+                  </div>
+                }
+              />
+              <Route
+                path="/par-sens"
+                element={
+                  <div className="tab-content-container">
+                    <HomeSens userSens={userRedux.region} />
+                  </div>
+                }
+              />
+              <Route
+                path="/par-horaire"
+                element={
+                  <div className="tab-content-container">
+                    <HomeHoraire userHoraire={userRedux.region} />
+                  </div>
+                }
+              />
+              <Route
+                path="/par-cause"
+                element={
+                  <div className="tab-content-container">
+                    <HomeCause userCause={userRedux.region} />
+                  </div>
+                }
+              />
+              <Route
+                path="/par-lieu"
+                element={
+                  <div className="tab-content-container">
+                    <HomeLieu userLieu={userRedux.region} />
+                  </div>
+                }
+              />
+              <Route
+                path="/inscription"
+                element={
+                  <div className="tab-content-container">
+                    <Signup />
+                  </div>
+                }
+              />
+              <Route
+                path="/utilisateurs"
+                element={
+                  <div className="tab-content-container">
+                    <UsersMan />
+                  </div>
+                }
+              />
+            </Routes>
+          </div>
+        </div>
+      </>
+       ) : userRedux?.isAdmin ? (
+        <>
+        <div className="admin-info">
         <h5>Bienvenue, administrateur {userRedux?.name}</h5>
         <h6>District: {userRedux?.region}</h6>
-            <Link onClick={handlelogout}>Deconnexion</Link>
-            </div>
+        <Link onClick={handlelogout} className="logout-link">Déconnexion</Link>
+      </div>
             <div className="tabs-wrapper">
         <Tabs
         defaultActiveKey="home"
@@ -121,10 +241,11 @@ useEffect(() => {
       </Tabs></div></>
         ) : isAuth ? (
           <>
-          <div className="left">
+          <div className="admin-info">
         <h5>Bienvenue {userRedux?.name}</h5>
         <h6>District: {userRedux?.region}</h6>
-        <Link onClick={handlelogout}>Deconnexion</Link></div>
+        <Link onClick={handlelogout} className="logout-link">Déconnexion</Link>
+      </div>
         <Tabs
         defaultActiveKey="home"
         id="uncontrolled-tab-example" className="custom-tabs" >

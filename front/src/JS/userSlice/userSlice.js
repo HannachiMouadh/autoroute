@@ -2,14 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 
-export const registerUser = createAsyncThunk("register", async (user) => {
+export const registerUser = createAsyncThunk("register", async (user, { rejectWithValue }) => {
   try {
-    let result = await axios.post("http://localhost:5000/api/user/register",user);
-    console.log(result.data);
-    console.log("hello result");
+    const result = await axios.post("http://localhost:5000/api/user/register", user);
     return result.data;
   } catch (error) {
-    console.log("hello error:",error)
+    console.error("Erreur Axios :", error.response?.data || error.message);
+    return rejectWithValue(error.response?.data || { msg: "Erreur inconnue" });
   }
 });
 
@@ -102,8 +101,7 @@ export const userSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = 'success';
-        state.user = action.payload.user;
-        console.log(action.payload.user);
+        state.registerSuccess = true;
       })
       .addCase(registerUser.rejected, (state,action) => {
         state.status = 'fail';

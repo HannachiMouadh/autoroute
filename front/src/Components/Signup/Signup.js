@@ -13,36 +13,56 @@ const Signup = () => {
   const [register, setRegister] = useState({})
   const dispatch = useDispatch();
   const userRedux = useSelector((state) => state.user.user);
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
   
-
   const handleRegister = async (e) => {
     e.preventDefault();
-    dispatch(registerUser(register));
-    setRegister({
-      name: "",
-      lastName: "",
-      email: "",
-      password: "",
-      phone: "",
-      region: ""
-    });
-    toast.success('تم تحديث البيانات بنجاح!', {
-      position: 'top-right',
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-    setTimeout(function () {
-      window.location.reload();
-    }, 1000);
-  }
-  useEffect(() => {
-    if (userRedux?.isAdmin) {
-      setRegister({ region: userRedux.region });
+  
+    // Validation basique
+    if (!register.name || !register.lastName || !register.email || !register.password || !register.phone || !register.region) {
+      return toast.error('Tous les champs doivent être remplis !', {
+        position: 'top-right',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
-  }, [userRedux]);
+  
+    // Soumission des données
+    try {
+      await dispatch(registerUser(register));
+      setRegister({
+        name: "",
+        lastName: "",
+        email: "",
+        password: "",
+        phone: "",
+        region: userRedux?.region || "",
+        //isAdmin: true,
+        //isAuth: false,
+      });
+      toast.success('Utilisateur créé avec succès !', {
+        position: 'top-right',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      setTimeout(function () {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      toast.error('Erreur lors de la création de l’utilisateur.', {
+        position: 'top-right',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+    
+  };
+  
   return (
     <div className="signup-container">
       <p>
@@ -91,18 +111,18 @@ const Signup = () => {
           required
           id="region"
           name="region"
-          value={register.region}
+          value={register.region || ""}
           onChange={(e) => setRegister({ ...register, region: e.target.value })}
         >
           <option value="" disabled>Select Region</option>
           <option value="sfax" disabled={userRedux?.isAdmin && userRedux.region !== 'sfax'}>
-            Sfax
+            sfax
           </option>
           <option value="gabes" disabled={userRedux?.isAdmin && userRedux.region !== 'gabes'}>
-            Gabes
+            gabes
           </option>
           <option value="sousse" disabled={userRedux?.isAdmin && userRedux.region !== 'sousse'}>
-            Sousse
+            sousse
           </option>
           <option value="skhera" disabled={userRedux?.isAdmin && userRedux.region !== 'skhera'}>
             skhera
@@ -132,6 +152,18 @@ const Signup = () => {
           id="password"
           autoComplete="current-password"
           onChange={(e) => setRegister({ ...register, password: e.target.value })} />
+            {/* <Form.Check
+            type="checkbox"
+            id="isAdmin"
+            name="isAdmin"
+            label="Is Admin"
+            checked={register.isAdmin} 
+            onChange={(e) => setRegister({
+              ...register,
+              isAdmin: e.target.checked,
+              isAuth: !e.target.checked, 
+            })}
+                /> */}
         <Button
           fullWidth
           variant="primary"

@@ -51,7 +51,6 @@ const HomeSemaine = ({ userCause }) => {
   useEffect(() => {
     setUser(userRedux);
   }, [userRedux]);
-  console.log(userCause.region);
 
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
@@ -402,332 +401,8 @@ const HomeSemaine = ({ userCause }) => {
 
   return (
     <div className='left-right-gap'>
-      {isMobile ? (<StyledTable>
-        <h1 className="title">احصائيات حوادث المرور حسب الأسباب</h1>
-        <div className="custom-form-container">
-      <div className="datepickers-container">
-        <div>
-          <label className="datepicker-label">:بداية التاريخ</label>
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            selectsStart
-            startDate={startDate}
-            endDate={endDate}
-            placeholderText="Start Date"
-            className="custom-datepicker"
-          />
-        </div>
-        <div>
-          <label className="datepicker-label">:نهاية التاريخ</label>
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date)}
-            selectsEnd
-            startDate={startDate}
-            endDate={endDate}
-            placeholderText="End Date"
-            minDate={startDate}
-            className="custom-datepicker"
-          />
-        </div>
-      </div>
-    </div>
-        <div>
-          <Button variant="secondary" onClick={resetFilters}>
-          إعادة تعيين المرشحات
-          </Button>
-        </div>
-        {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-          <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
-        </div>)}
-        <div>
-          <p>You are viewing on a mobile.</p>
-          <Table className='left-right-gap' striped bordered hover >
-            <thead >
-              <tr>
-                <th>%</th>
-                <th>جرحى </th>
-                <th>%</th>
-                <th>موتى</th>
-                <th>%</th>
-                <th>حوادث</th>
-                <th> الأسباب</th>
-              </tr>
-            </thead>
-            {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
-              <tr>
-                <td>%{(injurVitesse * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurVitesse}</td>
-                <td>%{(deadVitesse * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadVitesse}</td>
-                <td>%{(accVitesse * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accVitesse}</td>
-                <td>سرعة فائقة</td>
-              </tr>
-              <tr>
-                <td>%{(injurEclat * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurEclat}</td>
-                <td>%{(deadEclat * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadEclat}</td>
-                <td>%{(accEclat * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accEclat}</td>
-                <td>انشطار اطار العجلة</td>
-              </tr>
-              <tr>
-                <td>%{(injurSleep * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurSleep}</td>
-                <td>%{(deadSleep * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadSleep}</td>
-                <td>%{(accSleep * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accSleep}</td>
-                <td>نعاس</td>
-              </tr>
-              <tr>
-                <td>%{(injurDouble * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurDouble}</td>
-                <td>%{(deadDouble * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadDouble}</td>
-                <td>%{(accDouble * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accDouble}</td>
-                <td>مجاوزة فجئية</td>
-              </tr>
-              <tr>
-                <td>%{(injurDrunk * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurDrunk}</td>
-                <td>%{(deadDrunk * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadDrunk}</td>
-                <td>%{(accDrunk * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accDrunk}</td>
-                <td>سياقة في حالة سكر</td>
-              </tr>
-              <tr>
-                <td>%{(injurWet * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurWet}</td>
-                <td>%{(deadWet * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadWet}</td>
-                <td>%{(accWet * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accWet}</td>
-                <td>طريق مبلل</td>
-              </tr>
-              <tr>
-                <td>%{(injurAtt * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurAtt}</td>
-                <td>%{(deadAtt * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadAtt}</td>
-                <td>%{(accAtt * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accAtt}</td>
-                <td>عدم انتباه</td>
-              </tr>
-              <tr>
-                <td>%{(injurHole * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurHole}</td>
-                <td>%{(deadHole * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadHole}</td>
-                <td>%{(accHole * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accHole}</td>
-                <td>وجود حفرة وسط الطريق</td>
-              </tr>
-              <tr>
-                <td>%{(injurTruck * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTruck}</td>
-                <td>%{(deadTruck * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTruck}</td>
-                <td>%{(accTruck * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTruck}</td>
-                <td>انقلاب الشاحنة</td>
-              </tr>
-              <tr>
-                <td>%{(injurAnimal * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurAnimal}</td>
-                <td>%{(deadAnimal * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadAnimal}</td>
-                <td>%{(accAnimal * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accAnimal}</td>
-                <td>حيوان على الطريق السيارة</td>
-              </tr>
-              <tr>
-                <td>%{(injurMan * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurMan}</td>
-                <td>%{(deadMan * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadMan}</td>
-                <td>%{(accMan * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accMan}</td>
-                <td>مترجل على الطريق السيارة</td>
-              </tr>
-              <tr>
-                <td>%{(injurTurn * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTurn}</td>
-                <td>%{(deadTurn * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTurn}</td>
-                <td>%{(accTurn * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTurn}</td>
-                <td>الدوران في الإتجاه المعاكس</td>
-              </tr>
-              <tr>
-                <td>%{(injurOut * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurOut}</td>
-                <td>%{(deadOut * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadOut}</td>
-                <td>%{(accOut * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accOut}</td>
-                <td>الخروج من فتحة عشوائية</td>
-              </tr>
-              <tr>
-                <td>%{(injurCar * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurCar}</td>
-                <td>%{(deadCar * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadCar}</td>
-                <td>%{(accCar * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accCar}</td>
-                <td>اصطدام سيارة باخرى رابظة على طرف الطريق</td>
-              </tr>
-              <tr>
-                <td>%{(injurPanne * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurPanne}</td>
-                <td>%{(deadPanne * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadPanne}</td>
-                <td>%{(accPanne * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accPanne}</td>
-                <td>عطب مكانيكي/ عطب كهربائي</td>
-              </tr>
-              <tr>
-                <td>%{(injurBehind * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurBehind}</td>
-                <td>%{(deadBehind * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadBehind}</td>
-                <td>%{(accBehind * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accBehind}</td>
-                <td>مضايقة من الخلف</td>
-              </tr>
-              <tr>
-                <td>%{(injurMoto * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurMoto}</td>
-                <td>%{(deadMoto * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadMoto}</td>
-                <td>%{(accMoto * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accMoto}</td>
-                <td>اصطدام السيارة بالدراجة النارية</td>
-              </tr>
-              <tr>
-                <td>%{(injurLeft * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurLeft}</td>
-                <td>%{(deadLeft * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadLeft}</td>
-                <td>%{(accLeft * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accLeft}</td>
-                <td>وجود عجلة او بقايا عجلة على الطريق</td>
-              </tr>
-              <tr>
-                <td>%{(injurHerb * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurHerb}</td>
-                <td>%{(deadHerb * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadHerb}</td>
-                <td>%{(accHerb * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accHerb}</td>
-                <td>سقوط قرط على الطريق</td>
-              </tr>
-              <tr>
-                <td>%{(injurAcc * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurAcc}</td>
-                <td>%{(deadAcc * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadAcc}</td>
-                <td>%{(accAcc * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accAcc}</td>
-                <td>اصطدام سيارتان او اكثر</td>
-              </tr>
-              <tr>
-                <td>%{(injurControl * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurControl}</td>
-                <td>%{(deadControl * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadControl}</td>
-                <td>%{(accControl * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accControl}</td>
-                <td>عدم التحكم في السيارة</td>
-              </tr>
-              <tr>
-                <td>%{(injurTired * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTired}</td>
-                <td>%{(deadTired * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTired}</td>
-                <td>%{(accTired * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTired}</td>
-                <td>السياقة تحت تأثير التعب و الإرهاق</td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>{sumInjur}</td>
-                <td></td>
-                <td>{sumDead}</td>
-                <td></td>
-                <td>{sumAcc}</td>
-                <td>الاجمالي</td>
-              </tr>
-            </tbody>)}
-
-          </Table>
-          <div> {(!startDate || !endDate) ? (<h3 style={{backgroundColor : "rgb(160, 206, 209);"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor : "rgb(160, 206, 209);"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
-            <div>
-              <div ref={chartAccRef}>
-                <Bar
-                  data={{
-                    labels: ['سرعة فائقة', 'انشطار اطار العجلة', 'نعاس', 'مجاوزة فجئية', 'سياقة في حالة سكر', 'طريق مبلل', 'عدم انتباه', 'وجود حفرة وسط الطريق', 'انقلاب الشاحنة', 'حيوان على الطريق السيارة', 'مترجل على الطريق السيارة', 'الدوران في الإتجاه المعاكس', 'الخروج من فتحة عشوائية', 'اصطدام سيارة باخرى رابظة على طرف الطريق', 'عطب مكانيكي/ عطب كهربائي', 'مضايقة من الخلف', 'اصطدام السيارة بالدراجة النارية', 'وجود عجلة او بقايا عجلة على الطريق', 'سقوط قرط على الطريق', 'اصطدام سيارتان او اكثر', 'عدم التحكم في السيارة', 'السياقة تحت تأثير التعب و الإرهاق'],
-                    datasets: [
-
-                      {
-                        label: ['حوادث'],
-                        data: [accVitesse, accEclat, accSleep, accDouble, accDrunk, accWet, accAtt, accHole, accTruck, accAnimal, accMan, accTurn, accOut, accCar, accPanne, accBehind, accMoto, accLeft, accHerb, accAcc, accControl, accTired],
-                        backgroundColor: 'dark grey',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: { position: 'top' },
-                      title: { display: true, text: 'عدد الحواث حسب الاسباب', font: { size: 60 } },
-                    },
-                  }}
-                />
-              </div>
-              <div ref={chartInjurRef}>
-                <Bar
-                  data={{
-                    labels: ['سرعة فائقة', 'انشطار اطار العجلة', 'نعاس', 'مجاوزة فجئية', 'سياقة في حالة سكر', 'طريق مبلل', 'عدم انتباه', 'وجود حفرة وسط الطريق', 'انقلاب الشاحنة', 'حيوان على الطريق السيارة', 'مترجل على الطريق السيارة', 'الدوران في الإتجاه المعاكس', 'الخروج من فتحة عشوائية', 'اصطدام سيارة باخرى رابظة على طرف الطريق', 'عطب مكانيكي/ عطب كهربائي', 'مضايقة من الخلف', 'اصطدام السيارة بالدراجة النارية', 'وجود عجلة او بقايا عجلة على الطريق', 'سقوط قرط على الطريق', 'اصطدام سيارتان او اكثر', 'عدم التحكم في السيارة', 'السياقة تحت تأثير التعب و الإرهاق'],
-                    datasets: [
-
-                      {
-                        label: ['جرحى'],
-                        data: [injurVitesse, injurEclat, injurSleep, injurDouble, injurDrunk, injurWet, injurAtt, injurHole, injurTruck, injurAnimal, injurMan, injurTurn, injurOut, injurCar, injurPanne, injurBehind, injurMoto, injurLeft, injurHerb, injurAcc, injurControl, injurTired],
-                        backgroundColor: 'blue',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                      {
-                        label: ['موتى'],
-                        data: [deadVitesse, deadEclat, deadSleep, deadDouble, deadDrunk, deadWet, deadAtt, deadHole, deadTruck, deadAnimal, deadMan, deadTurn, deadOut, deadCar, deadPanne, deadBehind, deadMoto, deadLeft, deadHerb, deadAcc, deadControl, deadTired],
-                        backgroundColor: 'red',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: { position: 'top' },
-                      title: { display: true, text: 'عدد الموتى و الجرحى حسب الاسباب', font: { size: 60 } },
-                    },
-                  }}
-                />
-              </div>
-            </div>
-          )}</div>
-        </div></StyledTable>) : (
         <StyledTable>
-          <h1 className="title">احصائيات حوادث المرور حسب الأسباب</h1>
+          <h1 className='title-layout'>احصائيات حوادث المرور حسب الأسباب</h1>
           <div className="custom-form-container">
       <div className="datepickers-container">
         <div>
@@ -757,16 +432,14 @@ const HomeSemaine = ({ userCause }) => {
         </div>
       </div>
     </div>
+          {(!startDate || !endDate) ? (<div className='centerbtn'><Button variant="primary" disabled>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
+                      إعادة تعيين المرشحات
+                      </Button></div>) : (<div className='centerbtn'>
+                      <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
+                      إعادة تعيين المرشحات
+                      </Button>
+                    </div>)}
           <div>
-            <Button variant="secondary" onClick={resetFilters}>
-            إعادة تعيين المرشحات
-            </Button>
-          </div>
-          {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-            <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
-          </div>)}
-          <div>
-            <p>You are viewing on large screen</p>
             <Table striped bordered hover >
               <thead >
                 <tr>
@@ -1014,6 +687,7 @@ const HomeSemaine = ({ userCause }) => {
                         title: { display: true, text: 'عدد الحواث حسب الاسباب', font: { size: 60 } },
                       },
                     }}
+                    height={400}
                   />
                 </div>
                 <div ref={chartInjurRef}>
@@ -1044,13 +718,12 @@ const HomeSemaine = ({ userCause }) => {
                         title: { display: true, text: 'عدد الموتى و الجرحى حسب الاسباب', font: { size: 60 } },
                       },
                     }}
+                    height={400}
                   />
                 </div>
               </div>
             )}</div>
-          </div></StyledTable>)}
-
-
+          </div></StyledTable>
     </div>
 
   );

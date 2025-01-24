@@ -164,6 +164,9 @@ const HomeHoraire = ({userHoraire}) => {
   const injurTwentythree = filteredDataArray
   .filter((form)=> form.hours >= 22 && form.hours < 23)
   .reduce((acc, form) => acc + form.nbrblesse, 0);
+  const injurTwentyzero = filteredDataArray
+  .filter((form)=> form.hours >= 23)
+  .reduce((acc, form) => acc + form.nbrblesse, 0);
 
 
   const deadOne = filteredDataArray
@@ -234,6 +237,9 @@ const HomeHoraire = ({userHoraire}) => {
   .reduce((acc, form) => acc + form.nbrmort, 0);
   const deadTwentythree = filteredDataArray
   .filter((form)=> form.hours >= 22 && form.hours < 23)
+  .reduce((acc, form) => acc + form.nbrmort, 0);
+  const deadTwentyzero = filteredDataArray
+  .filter((form)=> form.hours >= 23)
   .reduce((acc, form) => acc + form.nbrmort, 0);
   
 
@@ -306,14 +312,20 @@ const HomeHoraire = ({userHoraire}) => {
   const accTwentythree = filteredDataArray
   .filter((form)=> form.hours >= 22 && form.hours < 23)
   .reduce((acc, form) => acc + 1, 0);
+  const accTwentyzero = filteredDataArray
+  .filter((form)=> form.hours >= 23)
+  .reduce((acc, form) => acc + 1, 0);
   
   
   
   
 
-  const sumInjur= injurOne+injurTwo+injurThree+injurFour+injurFive+injurSix+injurSeven+injurEight+injurNine+injurTen+injurEleven+injurTwelve+injurThirteen+injurForteen+injurFifteen+injurSixteen+injurSeventeen+injurEighteen+injurNineteen+injurTwenty+injurTwentyone+injurTwentytwo+injurTwentythree;
-  const sumAcc= accOne+accTwo+accThree+accFour+accFive+accSix+accSeven+accEight+accNine+accTen+accEleven+accTwelve+accThirteen+accForteen+accFifteen+accSixteen+accSeventeen+accEighteen+accNineteen+accTwenty+accTwentyone+accTwentytwo+accTwentythree;
-  const sumDead=deadOne+deadTwo+deadThree+deadFour+deadFive+deadSix+deadSeven+deadEight+deadNine+deadTen+deadEleven+deadTwelve+deadThirteen+deadForteen+deadFifteen+deadSixteen+deadSeventeen+deadEighteen+deadNineteen+deadTwenty+deadTwentyone+deadTwentytwo+deadTwentythree;
+
+  const sumInjur= injurOne+injurTwo+injurThree+injurFour+injurFive+injurSix+injurSeven+injurEight+injurNine+injurTen+injurEleven+injurTwelve+injurThirteen+injurForteen+injurFifteen+injurSixteen+injurSeventeen+injurEighteen+injurNineteen+injurTwenty+injurTwentyone+injurTwentytwo+injurTwentythree+injurTwentyzero;
+  const sumAcc= accOne+accTwo+accThree+accFour+accFive+accSix+accSeven+accEight+accNine+accTen+accEleven+accTwelve+accThirteen+accForteen+accFifteen+accSixteen+accSeventeen+accEighteen+accNineteen+accTwenty+accTwentyone+accTwentytwo+accTwentythree+accTwentyzero;
+  const sumDead=deadOne+deadTwo+deadThree+deadFour+deadFive+deadSix+deadSeven+deadEight+deadNine+deadTen+deadEleven+deadTwelve+deadThirteen+deadForteen+deadFifteen+deadSixteen+deadSeventeen+deadEighteen+deadNineteen+deadTwenty+deadTwentyone+deadTwentytwo+deadTwentythree+deadTwentyzero;
+
+  console.log(accTwentyzero,deadTwentyzero,injurTwentyzero);
 
   const resetFilters = () => {
     setStartDate(null);
@@ -372,6 +384,7 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
     worksheet.addRow({ injuries: injurTwentyone, iinjuries: (injurTwentyone * 100 / sumInjur).toFixed(2) + '%', deaths: deadTwentyone, ddeaths: (deadTwentyone * 100 / sumDead).toFixed(2) + '%', accidents: accTwentyone, aaccidents: (accTwentyone * 100 / sumAcc).toFixed(2) + '%', cause: '20h00 - 21h00' });
     worksheet.addRow({ injuries: injurTwentytwo, iinjuries: (injurTwentytwo * 100 / sumInjur).toFixed(2) + '%', deaths: deadTwentytwo, ddeaths: (deadTwentytwo * 100 / sumDead).toFixed(2) + '%', accidents: accTwentytwo, aaccidents: (accTwentytwo * 100 / sumAcc).toFixed(2) + '%', cause: '21h00 - 22h00' });
     worksheet.addRow({ injuries: injurTwentythree, iinjuries: (injurTwentythree * 100 / sumInjur).toFixed(2) + '%', deaths: deadTwentythree, ddeaths: (deadTwentythree * 100 / sumDead).toFixed(2) + '%', accidents: accTwentythree, aaccidents: (accTwentythree * 100 / sumAcc).toFixed(2) + '%', cause: '22h00 - 23h00' });
+    worksheet.addRow({ injuries: injurTwentyzero, iinjuries: (injurTwentyzero * 100 / sumInjur).toFixed(2) + '%', deaths: deadTwentyzero, ddeaths: (deadTwentyzero * 100 / sumDead).toFixed(2) + '%', accidents: accTwentyzero, aaccidents: (accTwentyzero * 100 / sumAcc).toFixed(2) + '%', cause: '23h00 - 00h00' });
     worksheet.addRow({ injuries: sumInjur, iinjuries: '', deaths: sumDead, ddeaths: '', accidents: sumAcc, aaccidents: '', cause: 'الاجمالي' });
     
     
@@ -417,341 +430,8 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
 
   return (
     <div className='left-right-gap'>
-      {isMobile ? (<StyledTable>
-      <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
-      <div className="custom-form-container">
-      <div className="datepickers-container">
-        <div>
-        <label className="datepicker-label">:بداية التاريخ</label>
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            selectsStart
-            startDate={startDate}
-            endDate={endDate}
-            placeholderText="Start Date"
-            className="custom-datepicker"
-          />
-        </div>
-        <div>
-          <label className="datepicker-label">:نهاية التاريخ</label>
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date)}
-            selectsEnd
-            startDate={startDate}
-            endDate={endDate}
-            placeholderText="End Date"
-            minDate={startDate}
-            className="custom-datepicker"
-          />
-        </div>
-      </div>
-    </div>
-            <div>
-            <Button variant="secondary" onClick={resetFilters}>
-            إعادة تعيين المرشحات
-          </Button>
-          </div>
-          {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-        <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
-        </div>)}
-          <div>
-            <p>You are viewing on a mobile.</p>
-            <Table className="margin" striped bordered hover >
-              <thead >
-                <tr>
-                  <th>%</th>
-                  <th>جرحى </th>
-                  <th>%</th>
-                  <th>موتى</th>
-                  <th>%</th>
-                  <th>حوادث</th>
-                  <th>الساعة</th>
-                </tr>
-              </thead>
-              {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
-                <tr>
-                <td>%{(injurOne * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurOne}</td>
-                <td>%{(deadOne * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadOne}</td>
-                <td>%{(accOne * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accOne}</td>
-                    <td>0h00 - 1h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurTwo * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTwo}</td>
-                <td>%{(deadTwo * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTwo}</td>
-                <td>%{(accTwo * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTwo}</td>
-                    <td>1h00 - 2h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurThree * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurThree}</td>
-                <td>%{(deadThree * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadThree}</td>
-                <td>%{(accThree * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accThree}</td>
-                    <td>2h00 - 3h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurFour * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurFour}</td>
-                <td>%{(deadFour * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadFour}</td>
-                <td>%{(accFour * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accFour}</td>
-                    <td>3h00 - 4h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurFive * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurFive}</td>
-                <td>%{(deadFive * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadFive}</td>
-                <td>%{(accFive * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accFive}</td>
-                    <td>4h00 - 5h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurSix * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurFive}</td>
-                <td>%{(deadSix * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadSix}</td>
-                <td>%{(accSix * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accSix}</td>
-                    <td>5h00 - 6h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurSeven * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurSeven}</td>
-                <td>%{(deadSeven * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadSeven}</td>
-                <td>%{(accSeven * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accSeven}</td>
-                    <td>6h00 - 7h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurEight * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurEight}</td>
-                <td>%{(deadEight * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadEight}</td>
-                <td>%{(accEight * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accEight}</td>
-                    <td>7h00 - 8h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurNine * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurNine}</td>
-                <td>%{(deadNine * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadNine}</td>
-                <td>%{(accNine * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accNine}</td>
-                    <td>8h00 - 9h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurTen * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTen}</td>
-                <td>%{(deadTen * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTen}</td>
-                <td>%{(accTen * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTen}</td>
-                    <td>9h00 - 10h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurEleven * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurEleven}</td>
-                <td>%{(deadEleven * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadEleven}</td>
-                <td>%{(accEleven * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accEleven}</td>
-                    <td>10h00 - 11h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurTwelve * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTwelve}</td>
-                <td>%{(deadTwelve * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTwelve}</td>
-                <td>%{(accTwelve * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTwelve}</td>
-                    <td>11h00 - 12h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurThirteen * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurThirteen}</td>
-                <td>%{(deadThirteen * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadThirteen}</td>
-                <td>%{(accThirteen * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accThirteen}</td>
-                    <td>12h00 - 13h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurForteen * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurForteen}</td>
-                <td>%{(deadForteen * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadForteen}</td>
-                <td>%{(accForteen * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accForteen}</td>
-                    <td>13h00 - 14h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurFifteen * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurFifteen}</td>
-                <td>%{(deadFifteen * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadFifteen}</td>
-                <td>%{(accFifteen * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accFifteen}</td>
-                    <td>14h00 - 15h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurSixteen * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurSixteen}</td>
-                <td>%{(deadSixteen * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadSixteen}</td>
-                <td>%{(accSixteen * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accSixteen}</td>
-                    <td>15h00 - 16h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurSeventeen * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurSeventeen}</td>
-                <td>%{(deadSeventeen * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadSeventeen}</td>
-                <td>%{(accSeventeen * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accSeventeen}</td>
-                    <td>16h00 - 17h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurEighteen * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurEighteen}</td>
-                <td>%{(deadEighteen * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadEighteen}</td>
-                <td>%{(accEighteen * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accEighteen}</td>
-                    <td>17h00 - 18h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurNineteen * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurNineteen}</td>
-                <td>%{(deadNineteen * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadNineteen}</td>
-                <td>%{(accNineteen * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accNineteen}</td>
-                    <td>18h00 - 19h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurTwenty * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTwenty}</td>
-                <td>%{(deadTwenty * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTwenty}</td>
-                <td>%{(accTwenty * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTwenty}</td>
-                    <td>19h00 - 20h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurTwentyone * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTwentyone}</td>
-                <td>%{(deadTwentyone * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTwentyone}</td>
-                <td>%{(accTwentyone * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTwentyone}</td>
-                    <td>20h00 - 21h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurTwentytwo * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTwentytwo}</td>
-                <td>%{(deadTwentytwo * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTwentytwo}</td>
-                <td>%{(accTwentytwo * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTwentytwo}</td>
-                    <td>21h00 - 22h00</td>
-                  </tr>
-                  <tr>
-                  <td>%{(injurTwentythree * 100 / sumInjur).toFixed(2)}</td>
-                <td>{injurTwentythree}</td>
-                <td>%{(deadTwentythree * 100 / sumDead).toFixed(2)}</td>
-                <td>{deadTwentythree}</td>
-                <td>%{(accTwentythree * 100 / sumAcc).toFixed(2)}</td>
-                <td>{accTwentythree}</td>
-                    <td>22h00 - 23h00</td>
-                  </tr>
-                  <tr>
-                <td></td>
-                <td>{sumInjur}</td>
-                <td></td>
-                <td>{sumDead}</td>
-                <td></td>
-                <td>{sumAcc}</td>
-                <td>الاجمالي</td>
-              </tr>
-              </tbody>)}
-
-            </Table>
-            <div>
-            {(!startDate || !endDate) ? (<h3 >الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 >لا توجد بيانات في هذا التاريخ</h3>) : (
-            <div>
-              <div ref={chartAccRef}>
-                <Bar
-                  data={{
-                    labels: ['0h00 - 1h00', '1h00 - 2h00','2h00 - 3h00','3h00 - 4h00','4h00 - 5h00','5h00 - 6h00','6h00 - 7h00','7h00 - 8h00','8h00 - 9h00','9h00 - 10h00','10h00 - 11h00','11h00 - 12h00','12h00 - 13h00','13h00 - 14h00','14h00 - 15h00','15h00 - 16h00','16h00 - 17h00','17h00 - 18h00','18h00 - 19h00','19h00 - 20h00','20h00 - 21h00','21h00 - 22h00','22h00 - 23h00'],
-                    datasets: [
-                      {
-                        label: ' الحوادث',
-                        data: [accOne, accTwo,accThree,accFour,accFive,accSix,accSeven,accEight,accNine,accTen,accEleven,accTwelve,accThirteen,accForteen,accFifteen,accSixteen,accSeventeen,accEighteen,accNineteen,accTwenty,accTwentyone,accTwentytwo,accTwentythree],
-                        backgroundColor: 'dark grey',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: { position: 'top' },
-                      title: { display: true, text: 'عدد الحوادث حسب ساعات اليوم',font: { size: 60 }  },
-                    },
-                  }}
-                />
-              </div>
-              <div ref={chartInjurRef}>
-                <Bar
-                  data={{
-                    labels: ['0h00 - 1h00', '1h00 - 2h00','2h00 - 3h00','3h00 - 4h00','4h00 - 5h00','5h00 - 6h00','6h00 - 7h00','7h00 - 8h00','8h00 - 9h00','9h00 - 10h00','10h00 - 11h00','11h00 - 12h00','12h00 - 13h00','13h00 - 14h00','14h00 - 15h00','15h00 - 16h00','16h00 - 17h00','17h00 - 18h00','18h00 - 19h00','19h00 - 20h00','20h00 - 21h00','21h00 - 22h00','22h00 - 23h00'],
-                    datasets: [
-                      {
-                        label: 'جرحى',                       
-                        data: [deadOne, deadTwo,deadThree,deadFour,deadFive,deadSix,deadSeven,deadEight,deadNine,deadTen,deadEleven,deadTwelve,deadThirteen,deadForteen,deadFifteen,deadSixteen,deadSeventeen,deadEighteen,deadNineteen,deadTwenty,deadTwentyone,deadTwentytwo,deadTwentythree],
-                        backgroundColor: 'blue',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                      {
-                        label: 'موتى',
-                        data: [injurOne, injurTwo,injurThree,injurFour,injurFive,injurSix,injurSeven,injurEight,injurNine,injurTen,injurEleven,injurTwelve,injurThirteen,injurForteen,injurFifteen,injurSixteen,injurSeventeen,injurEighteen,injurNineteen,injurTwenty,injurTwentyone,injurTwentytwo,injurTwentythree],
-                        backgroundColor: 'red',
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: { position: 'top' },
-                      title: { display: true, text: 'عدد الجرحى و الموتى حسب ساعات اليوم',font: { size: 60 }  },
-                    },
-                  }}
-                />
-              </div>
-            </div>
-          )}
-            </div>
-          </div></StyledTable>) : (
         <StyledTable>
-          <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
+          <h1 className='title-layout'>احصائيات حوادث المرور حسب ساعات اليوم</h1>
           <div className="custom-form-container">
       <div className="datepickers-container">
         <div>
@@ -781,16 +461,14 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
         </div>
       </div>
     </div>
-            <div>
-            <Button variant="secondary" onClick={resetFilters}>
-            إعادة تعيين المرشحات
-          </Button>
-          </div>
-          {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-        <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
-        </div>)}
+            {(!startDate || !endDate) ? (<div className='centerbtn'><Button variant="primary" disabled>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
+                        إعادة تعيين المرشحات
+                        </Button></div>) : (<div className='centerbtn'>
+                        <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
+                        إعادة تعيين المرشحات
+                        </Button>
+                      </div>)}
           <div>
-            <p>You are viewing on a larger screen.</p>
             <Table className="margin" striped bordered hover >
             <thead >
                 <tr>
@@ -1012,6 +690,15 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
                     <td>22h00 - 23h00</td>
                   </tr>
                   <tr>
+                  <td>%{(injurTwentyzero * 100 / sumInjur).toFixed(2)}</td>
+                <td>{injurTwentyzero}</td>
+                <td>%{(deadTwentyzero * 100 / sumDead).toFixed(2)}</td>
+                <td>{deadTwentyzero}</td>
+                <td>%{(accTwentyzero * 100 / sumAcc).toFixed(2)}</td>
+                <td>{accTwentyzero}</td>
+                    <td>23h00 - 00h00</td>
+                  </tr>
+                  <tr>
                 <td></td>
                 <td>{sumInjur}</td>
                 <td></td>
@@ -1021,7 +708,6 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
                 <td>الاجمالي</td>
               </tr>
               </tbody>)}
-
             </Table>
             <div>{(!startDate || !endDate) ? (<h3 style={{backgroundColor : "rgb(160, 206, 209)"}}>الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 style={{backgroundColor : "rgb(160, 206, 209)"}}>لا توجد بيانات في هذا التاريخ</h3>) : (
             <div>
@@ -1046,6 +732,7 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
                       title: { display: true, text: 'عدد الحوادث حسب ساعات اليوم',font: { size: 60 }  },
                     },
                   }}
+                  height={400}
                 />
               </div>
               <div ref={chartInjurRef}>
@@ -1077,14 +764,13 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
                       title: { display: true, text: 'عدد الجرحى و الموتى حسب ساعات اليوم',font: { size: 60 }  },
                     },
                   }}
+                  height={400}
                 />
               </div>
             </div>
           )}
             </div>
-          </div></StyledTable>)}
-
-
+          </div></StyledTable>
     </div>
 
   );

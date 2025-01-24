@@ -105,176 +105,181 @@ const HomeHoraire = ({userLieu}) => {
 const regionNK =(userLieu) => {
     switch (userLieu) {
         case "sfax":
-          return [387, 397, 407, 417, 427, 437, 447];
+          return [387, 397, 407, 417, 427, 437, 447,457,467];
         case "gabes":
-          return [317, 327, 337, 347, 357, 367, 377];
+          return [317, 327, 337, 347, 357, 367, 377,387,397];
         default:
           return "";
     }
 };
-console.log(regionDirections(userLieu)[1]);
 
-
-    const injurTwenty = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
+const directions = regionNK(userLieu);
+const sense = regionDirections(userLieu);
+if (Array.isArray(directions) && Array.isArray(sense)) {
+    var injurTwenty = filteredDataArray
+        .filter((form) => form.nk >= directions[0] && form.nk <= directions[1] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurThirty = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
+    var injurThirty = filteredDataArray
+        .filter((form) => form.nk >= directions[1] && form.nk <= directions[2] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurForty = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[0])
+    var injurForty = filteredDataArray
+        .filter((form) => form.nk >= directions[2] && form.nk <= directions[3] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurFifty = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[0])
+    var injurFifty = filteredDataArray
+        .filter((form) => form.nk >= directions[3] && form.nk <= directions[4] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurSixty = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[0])
+    var injurSixty = filteredDataArray
+        .filter((form) => form.nk >= directions[4] && form.nk <= directions[5] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurSeventy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[0])
+    var injurSeventy = filteredDataArray
+        .filter((form) => form.nk >= directions[5] && form.nk <= directions[6] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurEighty = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[0])
+    var injurEighty = filteredDataArray
+        .filter((form) => form.nk >= directions[6] && form.nk <= directions[7] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurNinety = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrblesse, 0);
-
-
-    const deadTwenty = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadThirty = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadForty = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadFifty = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadSixty = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadSeventy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadEighty = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadNinety = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + form.nbrmort, 0);
-
-
-
-    const accTwenty = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + 1, 0);
-    const accThirty = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + 1, 0);
-    const accForty = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + 1, 0);
-    const accFifty = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + 1, 0);
-    const accSixty = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + 1, 0);
-    const accSeventy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + 1, 0);
-    const accEighty = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + 1, 0);
-    const accNinety = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <=387 && form.sens === regionDirections(userLieu)[0])
-        .reduce((acc, form) => acc + 1, 0);
-
-
-
-    const injurTwentyy = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
-        .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurThirtyy = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
-        .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurFortyy = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[1])
-        .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurFiftyy = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[1])
-        .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurSixtyy = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[1])
-        .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurSeventyy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[1])
-        .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurEightyy = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[1])
-        .reduce((acc, form) => acc + form.nbrblesse, 0);
-    const injurNinetyy = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[1])
+    var injurNinety = filteredDataArray
+        .filter((form) => form.nk >= directions[7] && form.nk <= directions[8] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrblesse, 0);
 
 
-    const deadTwentyy = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
+    var deadTwenty = filteredDataArray
+        .filter((form) => form.nk >= directions[0] && form.nk <= directions[1] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadThirtyy = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
+    var deadThirty = filteredDataArray
+        .filter((form) => form.nk >= directions[1] && form.nk <= directions[2] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadFortyy = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[1])
+    var deadForty = filteredDataArray
+        .filter((form) => form.nk >= directions[2] && form.nk <= directions[3] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadFiftyy = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[1])
+    var deadFifty = filteredDataArray
+        .filter((form) => form.nk >= directions[3] && form.nk <= directions[4] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadSixtyy = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[1])
+    var deadSixty = filteredDataArray
+        .filter((form) => form.nk >= directions[4] && form.nk <= directions[5] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadSeventyy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[1])
+    var deadSeventy = filteredDataArray
+        .filter((form) => form.nk >= directions[5] && form.nk <= directions[6] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadEightyy = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[1])
+    var deadEighty = filteredDataArray
+        .filter((form) => form.nk >= directions[6] && form.nk <= directions[7] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
-    const deadNinetyy = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[1])
+    var deadNinety = filteredDataArray
+        .filter((form) => form.nk >= directions[7] && form.nk <= directions[8] && form.sens === sense[0])
         .reduce((acc, form) => acc + form.nbrmort, 0);
 
 
 
-    const accTwentyy = filteredDataArray
-        .filter((form) => form.nk >= 317 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
+    var accTwenty = filteredDataArray
+        .filter((form) => form.nk >= directions[0] && form.nk <= directions[1] && form.sens === sense[0])
         .reduce((acc, form) => acc + 1, 0);
-    const accThirtyy = filteredDataArray
-        .filter((form) => form.nk >= 337 && form.nk <= 327 && form.sens === regionDirections(userLieu)[1])
+    var accThirty = filteredDataArray
+        .filter((form) => form.nk >= directions[1] && form.nk <= directions[2] && form.sens === sense[0])
         .reduce((acc, form) => acc + 1, 0);
-    const accFortyy = filteredDataArray
-        .filter((form) => form.nk >= 347 && form.nk <= 337 && form.sens === regionDirections(userLieu)[1])
+    var accForty = filteredDataArray
+        .filter((form) => form.nk >= directions[2] && form.nk <= directions[3] && form.sens === sense[0])
         .reduce((acc, form) => acc + 1, 0);
-    const accFiftyy = filteredDataArray
-        .filter((form) => form.nk >= 357 && form.nk <= 347 && form.sens === regionDirections(userLieu)[1])
+    var accFifty = filteredDataArray
+        .filter((form) => form.nk >= directions[3] && form.nk <= directions[4] && form.sens === sense[0])
         .reduce((acc, form) => acc + 1, 0);
-    const accSixtyy = filteredDataArray
-        .filter((form) => form.nk >= 367 && form.nk <= 357 && form.sens === regionDirections(userLieu)[1])
+    var accSixty = filteredDataArray
+        .filter((form) => form.nk >= directions[4] && form.nk <= directions[5] && form.sens === sense[0])
         .reduce((acc, form) => acc + 1, 0);
-    const accSeventyy = filteredDataArray
-        .filter((form) => form.nk >= 377 && form.nk <= 367 && form.sens === regionDirections(userLieu)[1])
+    var accSeventy = filteredDataArray
+        .filter((form) => form.nk >= directions[5] && form.nk <= directions[6] && form.sens === sense[0])
         .reduce((acc, form) => acc + 1, 0);
-    const accEightyy = filteredDataArray
-        .filter((form) => form.nk >= 387 && form.nk <= 377 && form.sens === regionDirections(userLieu)[1])
+    var accEighty = filteredDataArray
+        .filter((form) => form.nk >= directions[6] && form.nk <= directions[7] && form.sens === sense[0])
         .reduce((acc, form) => acc + 1, 0);
-    const accNinetyy = filteredDataArray
-        .filter((form) => form.nk >= 397 && form.nk <= 387 && form.sens === regionDirections(userLieu)[1])
+    var accNinety = filteredDataArray
+        .filter((form) => form.nk >= directions[7] && form.nk <=directions[8] && form.sens === sense[0])
         .reduce((acc, form) => acc + 1, 0);
 
 
 
+    var injurTwentyy = filteredDataArray
+        .filter((form) => form.nk >= directions[0] && form.nk <= directions[1] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrblesse, 0);
+    var injurThirtyy = filteredDataArray
+        .filter((form) => form.nk >= directions[1] && form.nk <= directions[2] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrblesse, 0);
+    var injurFortyy = filteredDataArray
+        .filter((form) => form.nk >= directions[2] && form.nk <= directions[3] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrblesse, 0);
+    var injurFiftyy = filteredDataArray
+        .filter((form) => form.nk >= directions[3] && form.nk <= directions[4] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrblesse, 0);
+    var injurSixtyy = filteredDataArray
+        .filter((form) => form.nk >= directions[4] && form.nk <= directions[5] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrblesse, 0);
+    var injurSeventyy = filteredDataArray
+        .filter((form) => form.nk >= directions[5] && form.nk <= directions[6] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrblesse, 0);
+    var injurEightyy = filteredDataArray
+        .filter((form) => form.nk >= directions[6] && form.nk <= directions[7] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrblesse, 0);
+    var injurNinetyy = filteredDataArray
+        .filter((form) => form.nk >= directions[7] && form.nk <= directions[8] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrblesse, 0);
+
+
+    var deadTwentyy = filteredDataArray
+        .filter((form) => form.nk >= directions[0] && form.nk <= directions[1] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrmort, 0);
+    var deadThirtyy = filteredDataArray
+        .filter((form) => form.nk >= directions[1] && form.nk <= directions[2] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrmort, 0);
+    var deadFortyy = filteredDataArray
+        .filter((form) => form.nk >= directions[2] && form.nk <= directions[3] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrmort, 0);
+    var deadFiftyy = filteredDataArray
+        .filter((form) => form.nk >= directions[3] && form.nk <= directions[4] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrmort, 0);
+    var deadSixtyy = filteredDataArray
+        .filter((form) => form.nk >= directions[4] && form.nk <= directions[5] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrmort, 0);
+    var deadSeventyy = filteredDataArray
+        .filter((form) => form.nk >= directions[5] && form.nk <= directions[6] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrmort, 0);
+    var deadEightyy = filteredDataArray
+        .filter((form) => form.nk >= directions[6] && form.nk <= directions[7] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrmort, 0);
+    var deadNinetyy = filteredDataArray
+        .filter((form) => form.nk >= directions[7] && form.nk <= directions[8] && form.sens === sense[1])
+        .reduce((acc, form) => acc + form.nbrmort, 0);
+
+
+
+    var accTwentyy = filteredDataArray
+        .filter((form) => form.nk >= directions[0] && form.nk <= directions[1] && form.sens === sense[1])
+        .reduce((acc, form) => acc + 1, 0);
+    var accThirtyy = filteredDataArray
+        .filter((form) => form.nk >= directions[1] && form.nk <= directions[2] && form.sens === sense[1])
+        .reduce((acc, form) => acc + 1, 0);
+    var accFortyy = filteredDataArray
+        .filter((form) => form.nk >= directions[2] && form.nk <= directions[3] && form.sens === sense[1])
+        .reduce((acc, form) => acc + 1, 0);
+    var accFiftyy = filteredDataArray
+        .filter((form) => form.nk >= directions[3] && form.nk <= directions[4] && form.sens === sense[1])
+        .reduce((acc, form) => acc + 1, 0);
+    var accSixtyy = filteredDataArray
+        .filter((form) => form.nk >= directions[4] && form.nk <= directions[5] && form.sens === sense[1])
+        .reduce((acc, form) => acc + 1, 0);
+    var accSeventyy = filteredDataArray
+        .filter((form) => form.nk >= directions[5] && form.nk <= directions[6] && form.sens === sense[1])
+        .reduce((acc, form) => acc + 1, 0);
+    var accEightyy = filteredDataArray
+        .filter((form) => form.nk >= directions[6] && form.nk <= directions[7] && form.sens === sense[1])
+        .reduce((acc, form) => acc + 1, 0);
+    var accNinetyy = filteredDataArray
+        .filter((form) => form.nk >= directions[7] && form.nk <= directions[8] && form.sens === sense[1])
+        .reduce((acc, form) => acc + 1, 0);
+} else {
+    console.log("Directions non disponibles");
+}
+    
+
+
+console.log(accFortyy);
 
     const sumInjur = injurTwenty + injurThirty + injurForty + injurFifty + injurSixty + injurSeventy + injurEighty + injurNinety + injurTwentyy + injurThirtyy + injurFortyy + injurFiftyy + injurSixtyy + injurSeventyy + injurEightyy + injurNinetyy;
     const sumAcc = accTwenty + accThirty + accForty + accFifty + accSixty + accSeventy + accEighty + accNinety + accTwentyy + accThirtyy + accFortyy + accFiftyy + accSixtyy + accSeventyy + accEightyy + accNinetyy;
@@ -391,318 +396,8 @@ console.log(regionDirections(userLieu)[1]);
 
     return (
         <div className='left-right-gap'>
-            {isMobile ? (<StyledTable>
-                <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
-                <div className="custom-form-container">
-                    <div className="datepickers-container">
-                        <div>
-                            <label className="datepicker-label">:بداية التاريخ</label>
-                            <DatePicker
-                                selected={startDate}
-                                onChange={(date) => setStartDate(date)}
-                                selectsStart
-                                startDate={startDate}
-                                endDate={endDate}
-                                placeholderText="Start Date"
-                                className="custom-datepicker"
-                            />
-                        </div>
-                        <div>
-                            <label className="datepicker-label">:نهاية التاريخ</label>
-                            <DatePicker
-                                selected={endDate}
-                                onChange={(date) => setEndDate(date)}
-                                selectsEnd
-                                startDate={startDate}
-                                endDate={endDate}
-                                placeholderText="End Date"
-                                minDate={startDate}
-                                className="custom-datepicker"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <Button variant="secondary" onClick={resetFilters}>
-                        إعادة تعيين المرشحات
-                    </Button>
-                </div>
-                {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-                    <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
-                </div>)}
-                <div>
-                    <p>You are viewing on a mobile.</p>
-                    <Table className="margin" striped bordered hover >
-                        <thead >
-                            <tr>
-                                <th>%</th>
-                                <th>جرحى </th>
-                                <th>%</th>
-                                <th>موتى</th>
-                                <th>%</th>
-                                <th>حوادث</th>
-                                <th>المكان</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
-                            <tr>
-                                <td>%{(injurTwenty * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurTwenty}</td>
-                                <td>%{(deadTwenty * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadTwenty}</td>
-                                <td>%{(accTwenty * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accTwenty}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[0]}  الى  ن.ك {regionNK(userLieu)[1]}</td>
-                                <td rowSpan="8">{regionDirections(userLieu)[0]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurThirty * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurThirty}</td>
-                                <td>%{(deadThirty * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadThirty}</td>
-                                <td>%{(accThirty * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accThirty}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[1]}  الى  ن.ك {regionNK(userLieu)[2]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurForty * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurForty}</td>
-                                <td>%{(deadForty * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadForty}</td>
-                                <td>%{(accForty * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accForty}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[2]}  الى  ن.ك {regionNK(userLieu)[3]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurFifty * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurFifty}</td>
-                                <td>%{(deadFifty * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadFifty}</td>
-                                <td>%{(accFifty * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accFifty}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[3]}  الى  ن.ك {regionNK(userLieu)[4]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurSixty * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurSixty}</td>
-                                <td>%{(deadSixty * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadSixty}</td>
-                                <td>%{(accSixty * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accSixty}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[4]}  الى  ن.ك {regionNK(userLieu)[5]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurSeventy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurSeventy}</td>
-                                <td>%{(deadSeventy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadSeventy}</td>
-                                <td>%{(accSeventy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accSeventy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[5]}  الى  ن.ك {regionNK(userLieu)[6]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurEighty * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurEighty}</td>
-                                <td>%{(deadEighty * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadEighty}</td>
-                                <td>%{(accEighty * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accEighty}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[6]}  الى  ن.ك {regionNK(userLieu)[7]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurNinety * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurNinety}</td>
-                                <td>%{(deadNinety * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadNinety}</td>
-                                <td>%{(accNinety * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accNinety}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[7]}  الى  ن.ك {regionNK(userLieu)[8]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurTwentyy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurTwentyy}</td>
-                                <td>%{(deadTwentyy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadTwentyy}</td>
-                                <td>%{(accTwentyy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accTwentyy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[0]}  الى  ن.ك {regionNK(userLieu)[1]}</td>
-                                <td rowSpan="8">اتجاه صفاقس</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurThirtyy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurThirtyy}</td>
-                                <td>%{(deadThirtyy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadThirtyy}</td>
-                                <td>%{(accThirtyy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accThirtyy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[1]}  الى  ن.ك {regionNK(userLieu)[2]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurFortyy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurFortyy}</td>
-                                <td>%{(deadFortyy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadFortyy}</td>
-                                <td>%{(accFortyy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accFortyy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[2]}  الى  ن.ك {regionNK(userLieu)[3]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurFiftyy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurFiftyy}</td>
-                                <td>%{(deadFiftyy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadFiftyy}</td>
-                                <td>%{(accFiftyy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accFiftyy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[3]}  الى  ن.ك {regionNK(userLieu)[4]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurSixtyy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurSixtyy}</td>
-                                <td>%{(deadSixtyy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadSixtyy}</td>
-                                <td>%{(accSixtyy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accSixtyy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[4]}  الى  ن.ك {regionNK(userLieu)[5]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurSeventyy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurSeventyy}</td>
-                                <td>%{(deadSeventyy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadSeventyy}</td>
-                                <td>%{(accSeventyy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accSeventyy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[5]}  الى  ن.ك {regionNK(userLieu)[6]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurEightyy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurEightyy}</td>
-                                <td>%{(deadEightyy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadEightyy}</td>
-                                <td>%{(accEightyy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accEightyy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[6]}  الى  ن.ك {regionNK(userLieu)[7]}</td>
-                            </tr>
-                            <tr>
-                                <td>%{(injurNinetyy * 100 / sumInjur).toFixed(2)}</td>
-                                <td>{injurNinetyy}</td>
-                                <td>%{(deadNinetyy * 100 / sumDead).toFixed(2)}</td>
-                                <td>{deadNinetyy}</td>
-                                <td>%{(accNinetyy * 100 / sumAcc).toFixed(2)}</td>
-                                <td>{accNinetyy}</td>
-                                <td>من  ن.ك {regionNK(userLieu)[7]}  الى  ن.ك {regionNK(userLieu)[8]}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>{sumInjur}</td>
-                                <td></td>
-                                <td>{sumDead}</td>
-                                <td></td>
-                                <td>{sumAcc}</td>
-                                <td></td>
-                                <td >الاجمالي</td>
-                            </tr>
-                        </tbody>)}
-                    </Table>
-                    <div>
-                    {(!startDate || !endDate) ? (<h3 >الرجاء اختيار التاريخ لرؤية الاحصائيات</h3>) : filteredData(data,startDate,endDate).length === 0 ? (<h3 >لا توجد بيانات في هذا التاريخ</h3>) : (
-                            <div>
-                                <div ref={chartAccRef}>
-                                    <Bar
-                                        data={{
-                                            labels: ['من  ن.ك 317  الى  ن.ك 327', 'من  ن.ك 327  الى  ن.ك 337', 'من  ن.ك 337  الى  ن.ك 347', 'من  ن.ك 347  الى  ن.ك 357', 'من  ن.ك 357  الى  ن.ك 367', 'من  ن.ك 367  الى  ن.ك 377', 'من  ن.ك 377  الى  ن.ك 387', 'من  ن.ك 387  الى  ن.ك 391'],
-                                            datasets: [
-                                                {
-                                                    label: 'قابس',
-                                                    data: [injurTwenty, injurThirty, injurForty, injurFifty, injurSixty, injurSeventy, injurEighty, injurNinety],
-                                                    backgroundColor: 'blue',
-                                                    borderColor: 'grey',
-                                                    borderWidth: 1,
-                                                },
-                                                {
-                                                    label: 'صفاقس',
-                                                    data: [injurTwentyy, injurThirtyy, injurFortyy, injurFiftyy, injurSixtyy, injurSeventyy, injurEightyy, injurNinetyy],
-                                                    backgroundColor: 'cyan',
-                                                    borderColor: 'grey',
-                                                    borderWidth: 1,
-                                                },
-                                            ],
-                                        }}
-                                        options={{
-                                            responsive: true,
-                                            plugins: {
-                                                legend: { position: 'top' },
-                                                title: { display: true, text: 'عددالحوادث حسب المكان', font: { size: 60 } },
-                                            },
-                                        }}
-                                    />
-                                </div>
-                                <div ref={chartInjurRef}>
-                                    <Bar
-                                        data={{
-                                            labels: ['من  ن.ك 317  الى  ن.ك 327', 'من  ن.ك 327  الى  ن.ك 337', 'من  ن.ك 337  الى  ن.ك 347', 'من  ن.ك 347  الى  ن.ك 357', 'من  ن.ك 357  الى  ن.ك 367', 'من  ن.ك 367  الى  ن.ك 377', 'من  ن.ك 377  الى  ن.ك 387', 'من  ن.ك 387  الى  ن.ك 391'],
-                                            datasets: [
-                                                {
-                                                    label: 'جرحى',
-                                                    data: [injurTwenty, injurThirty, injurForty, injurFifty, injurSixty, injurSeventy, injurEighty, injurNinety],
-                                                    backgroundColor: 'blue',
-                                                    borderColor: 'grey',
-                                                    borderWidth: 1,
-                                                },
-                                                {
-                                                    label: 'موتى',
-                                                    data: [deadTwenty, deadThirty, deadForty, deadFifty, deadSixty, deadSeventy, deadEighty, deadNinety],
-                                                    backgroundColor: 'red',
-                                                    borderColor: 'grey',
-                                                    borderWidth: 1,
-                                                },
-                                            ],
-                                        }}
-                                        options={{
-                                            responsive: true,
-                                            plugins: {
-                                                legend: { position: 'top' },
-                                                title: { display: true, text: 'عدد الجرحى و الموتى حسب اتجاه قابس', font: { size: 60 } },
-                                            },
-                                        }}
-                                    />
-                                </div>
-                                <div ref={chartInjurReff}>
-                                    <Bar
-                                        data={{
-                                            labels: ['من  ن.ك 317  الى  ن.ك 327', 'من  ن.ك 327  الى  ن.ك 337', 'من  ن.ك 337  الى  ن.ك 347', 'من  ن.ك 347  الى  ن.ك 357', 'من  ن.ك 357  الى  ن.ك 367', 'من  ن.ك 367  الى  ن.ك 377', 'من  ن.ك 377  الى  ن.ك 387', 'من  ن.ك 387  الى  ن.ك 391'],
-                                            datasets: [
-                                                {
-                                                    label: 'جرحى',
-                                                    data: [injurTwentyy, injurThirtyy, injurFortyy, injurFiftyy, injurSixtyy, injurSeventyy, injurEightyy, injurNinetyy],
-                                                    backgroundColor: 'blue',
-                                                    borderColor: 'grey',
-                                                    borderWidth: 1,
-                                                },
-                                                {
-                                                    label: 'موتى',
-                                                    data: [deadTwentyy, deadThirtyy, deadFortyy, deadFiftyy, deadSixtyy, deadSeventyy, deadEightyy, deadNinetyy],
-                                                    backgroundColor: 'red',
-                                                    borderColor: 'grey',
-                                                    borderWidth: 1,
-                                                },
-                                            ],
-                                        }}
-                                        options={{
-                                            responsive: true,
-                                            plugins: {
-                                                legend: { position: 'top' },
-                                                title: { display: true, text: 'عدد الجرحى و الموتى حسب اتجاه صفاقس', font: { size: 60 } },
-                                            },
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div></StyledTable>) : (
                 <StyledTable>
-                    <h1 className="title">احصائيات حوادث المرور حسب ساعات اليوم</h1>
+                    <h1 className='title-layout'>احصائيات حوادث المرور حسب ساعات اليوم</h1>
                     <div className="custom-form-container">
                         <div className="datepickers-container">
                             <div>
@@ -732,16 +427,14 @@ console.log(regionDirections(userLieu)[1]);
                             </div>
                         </div>
                     </div>
+                    {(!startDate || !endDate) ? (<div className='centerbtn'><Button variant="primary" disabled>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
+                                إعادة تعيين المرشحات
+                                </Button></div>) : (<div className='centerbtn'>
+                                <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
+                                إعادة تعيين المرشحات
+                                </Button>
+                              </div>)}
                     <div>
-                        <Button variant="secondary" onClick={resetFilters}>
-                            إعادة تعيين المرشحات
-                        </Button>
-                    </div>
-                    {(!startDate || !endDate) ? (<div><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div>
-                        <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
-                    </div>)}
-                    <div>
-                        <p>You are viewing on a larger screen.</p>
                         <Table className="margin" striped bordered hover >
                             <thead >
                                 <tr>
@@ -751,11 +444,10 @@ console.log(regionDirections(userLieu)[1]);
                                     <th>موتى</th>
                                     <th>%</th>
                                     <th>حوادث</th>
-                                    <th>المكان</th>
-                                    
+                                    <th>المكان</th>                                   
                                 </tr>
                             </thead>
-                            {filterData(data).length === 0  && (!startDate || !endDate) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
+                            {filterData(data).length === 0  && (!startDate || !endDate) && Array.isArray(regionDirections(userLieu)) ? (<tbody><tr><td colSpan="7"><h5>الرجاء تعمير الجدول و اختيار التاريخ</h5></td></tr></tbody>) : !startDate || !endDate ? (<tbody><tr><td colSpan="7"><h5>الرجاء اختيار التاريخ</h5></td></tr></tbody>) : startDate && endDate != null && filteredData(data,startDate,endDate).length === 0 ? (<tbody><tr><td colSpan="7"><h5>لا توجد بيانات في هذا التاريخ</h5></td></tr></tbody>) : (<tbody >
                                 <tr>
                                 <td>%{(injurTwenty * 100 / sumInjur).toFixed(2)}</td>
                                 <td>{injurTwenty}</td>
@@ -837,7 +529,7 @@ console.log(regionDirections(userLieu)[1]);
                                 <td>%{(accTwentyy * 100 / sumAcc).toFixed(2)}</td>
                                 <td>{accTwentyy}</td>
                                 <td>من  ن.ك {regionNK(userLieu)[0]}  الى  ن.ك {regionNK(userLieu)[1]}</td>
-                                <td rowSpan="8">اتجاه صفاقس</td>
+                                <td rowSpan="8">{regionDirections(userLieu)[1]}</td>
                             </tr>
                             <tr>
                                 <td>%{(injurThirtyy * 100 / sumInjur).toFixed(2)}</td>
@@ -944,6 +636,7 @@ console.log(regionDirections(userLieu)[1]);
                                                     title: { display: true, text: 'عددالحوادث حسب المكان', font: { size: 60 } },
                                                 },
                                             }}
+                                            height={400}
                                         />
                                     </div>
                                     <div ref={chartInjurRef}>
@@ -974,6 +667,7 @@ console.log(regionDirections(userLieu)[1]);
                                                     title: { display: true, text: 'عدد الجرحى و الموتى حسب اتجاه قابس', font: { size: 60 } },
                                                 },
                                             }}
+                                            height={400}
                                         />
                                     </div>
                                     <div ref={chartInjurReff}>
@@ -1004,12 +698,13 @@ console.log(regionDirections(userLieu)[1]);
                                                     title: { display: true, text: 'عدد الجرحى و الموتى حسب اتجاه صفاقس', font: { size: 60 } },
                                                 },
                                             }}
+                                            height={400}
                                         />
                                     </div>
                                 </div>
                             )}
                         </div>
-                    </div></StyledTable>)}
+                    </div></StyledTable>
         </div>
     );
 };

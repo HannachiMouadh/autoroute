@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 
-const Add = ({ id }) => {
+const Add = ({ id,userRegion }) => {
   const dispatch = useDispatch();
   const [selectedCause, setSelectedCause] = useState("سرعة فائقة");
   const [selectedVoie, setSelectedVoie] = useState("اتجاه قابس");
@@ -273,11 +273,11 @@ const Add = ({ id }) => {
     switch (region) {
       case 'gabes':
         start = 317;
-        range = 75;
+        range = 81;
         break;
       case 'sfax':
-        start = 395;
-        range = 75;
+        start = 387;
+        range = 81;
         break;
       default:
         start = 317;
@@ -311,6 +311,7 @@ const Add = ({ id }) => {
     }
   };
 
+  const region = getSenseByRegion(userRedux?.region);
 
   return (
     <div>
@@ -407,11 +408,14 @@ const Add = ({ id }) => {
                 value={selectedVoie || ''}
                 onChange={(e) => setSelectedVoie(e.target.value)}
               >
-                {getSenseByRegion(userRedux?.region).map((option) => (
-                  <option key={option.value} value={option.value}>
+                {Array.isArray(region) && region.length > 0 ? (region.map((option) => (
+                  <option value={option.value}>
                     {option.label}
                   </option>
-                ))}
+                  ))
+                ) : (
+                  <option disabled>لا توجد خيارات متاحة</option>
+                )}
               </Form.Select>
               :الاتجاه
             </Row>
