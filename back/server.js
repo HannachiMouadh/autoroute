@@ -7,12 +7,7 @@ const cors = require('cors');
 
 
 
-
-const corsOptions = {
-    origin: 'http://localhost:3000',
-    credentials: true,
-  };
-  app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 DBconnect();
 app.use("/api/user",require('./routes/user'));
