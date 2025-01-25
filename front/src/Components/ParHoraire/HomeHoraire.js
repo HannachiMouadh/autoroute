@@ -39,10 +39,7 @@ const HomeHoraire = ({userHoraire}) => {
   const chartAccRef = useRef(null);
   const chartInjurRef = useRef(null);
   const data = useSelector((state) => state.data.data);
-  //console.log("kkkkkkkkk data: ", data);
-  useEffect(() => {
-    dispatch(fetchForms());
-  }, [dispatch]);
+
   const years = [];
   const currentYear = new Date().getFullYear();
   for (let i = 2020; i <= currentYear; i++) {
@@ -50,12 +47,11 @@ const HomeHoraire = ({userHoraire}) => {
   }
   const userRedux = useSelector((state) => state.user.users);
   const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
-  useEffect(() => {
-    dispatch(getAllUsers());
-}, [dispatch]);
-  useEffect(() => {
-    setUser(userRedux);
-  }, [userRedux]);
+useEffect(() => {
+  dispatch(getAllUsers());
+  dispatch(fetchForms());
+setUser(userRedux);
+}, [dispatch,userRedux]);
 
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
