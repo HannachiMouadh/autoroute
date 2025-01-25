@@ -354,8 +354,8 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
             </TableRow>
           ))}
           <TableRow>
-            <TableCell className='wcell'>جرحى: {sumInjur}</TableCell>
             <TableCell className='wcell'>موتى: {sumDead}</TableCell>
+            <TableCell className='wcell'>جرحى: {sumInjur}</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell className='wcell' colSpan={2}>اجمالي حوادث: {sumDays}</TableCell>
@@ -428,9 +428,16 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
             </TableRow>
           ))}
           <TableRow>
-            <TableCell colSpan={5}>اجمالي حوادث: {sumDays}</TableCell>
-            <TableCell colSpan={3}>جرحى: {sumInjur}</TableCell>
-            <TableCell colSpan={3}>موتى: {sumDead}</TableCell>
+            <TableCell></TableCell>
+            <TableCell>موتى: {sumDead}</TableCell>
+            <TableCell>جرحى: {sumInjur}</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell colSpan={2}>اجمالي حوادث: {sumDays}</TableCell>
           </TableRow>
         </TableBody>
         </Table>
