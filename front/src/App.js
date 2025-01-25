@@ -17,8 +17,7 @@ function App() {
      <div className="App">
       <Tabchange/>
         <Routes>
-          <Route path="/Home" element={<Home />} />
-          <Route path="/Signup" element={<Signup />} />
+          <Route path="/Home" element={<Tabchange />} />
           <Route path="/connection" element={<Signin />} />
           <Route path="/" element={<PrivateRouteHome />} />
         </Routes>
