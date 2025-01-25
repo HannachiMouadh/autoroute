@@ -43,11 +43,6 @@ const HomeSens = ({userSens}) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const data = useSelector((state) => state.data.data);
-  //console.log("kkkkkkkkk data: ", data);
-  useEffect(() => {
-    dispatch(fetchForms());
-  }, [dispatch]);
-
 
   const years = [];
   const currentYear = new Date().getFullYear();
@@ -58,12 +53,11 @@ const HomeSens = ({userSens}) => {
 
   const userRedux = useSelector((state) => state.user.users);
   const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
-  useEffect(() => {
-    dispatch(getAllUsers());
-}, [dispatch]);
-  useEffect(() => {
-    setUser(userRedux);
-  }, [userRedux]);
+useEffect(() => {
+  dispatch(getAllUsers());
+  dispatch(fetchForms());
+setUser(userRedux);
+}, [dispatch,userRedux]);
 
   const location = useLocation();
 
