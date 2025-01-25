@@ -39,18 +39,15 @@ const HomeSemaine = ({ userCause }) => {
   const chartInjurRef = useRef(null);
   const data = useSelector((state) => state.data.data);
   const isAuth = localStorage.getItem("token");
-  useEffect(() => {
-    dispatch(fetchForms());
-  }, [dispatch]);
+
 
   const userRedux = useSelector((state) => state.user.users);
   const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
-  useEffect(() => {
-    dispatch(getAllUsers());
-}, [dispatch]);
-  useEffect(() => {
-    setUser(userRedux);
-  }, [userRedux]);
+useEffect(() => {
+  dispatch(getAllUsers());
+  dispatch(fetchForms());
+setUser(userRedux);
+}, [dispatch,userRedux]);
 
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
