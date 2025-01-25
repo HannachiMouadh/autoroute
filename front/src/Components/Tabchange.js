@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Signup from './Signup/Signup.js';
 import UsersMan from './usersMan/UsersMan.js';
-import { isMobile } from 'react-device-detect';
 import { Link, Routes, Route } from "react-router-dom";
 
 
@@ -20,16 +19,16 @@ import { Link, Routes, Route } from "react-router-dom";
 const Tabchange = ({ userRegion,curuser,userCause,userHoraire,userSemaine,userSens,userLieu }) => {
   const dispatch = useDispatch();
   const isAuth = localStorage.getItem("token");
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
-  const isSuper = localStorage.getItem("isSuper") === "true";
   const userRedux = useSelector((state) => state.user.user);
   const [online, setOnline] = useState(true);
-  console.log(userRedux?.isAdmin);
   useEffect(() => {
-    if (isAuth) {
-      dispatch(currentUser());
-    }
-  }, [dispatch, isAuth]);
+          dispatch(currentUser());
+        }, [dispatch]);
+        
+        const currentUserData = useSelector((state) => state.user.user);
+        const isSuper = currentUserData?.isSuper;
+        const isAdmin = currentUserData?.isAdmin;
+        
   const navigate = useNavigate();
   const handlelogout =()=>{
     dispatch(logout());
@@ -63,7 +62,26 @@ useEffect(() => {
   }
 }, [isAuth,isAdmin, navigate]);
 
-const isMobileView = isMobile;
+const [isMobileView, setIsMobileView] = useState(false);
+
+  useEffect(() => {
+    // Set up media query listener
+    const mediaQuery = window.matchMedia("(max-width: 1000px)");
+
+    // Update state based on media query
+    const handleResize = () => {
+      setIsMobileView(mediaQuery.matches);
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener
+    mediaQuery.addEventListener('change', handleResize);
+
+    // Cleanup listener on component unmount
+    return () => mediaQuery.removeEventListener('change', handleResize);
+  }, []);
 const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -74,7 +92,17 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
           Connection lost! Please check your internet connection.
         </Alert>
       )}
-       {(userRedux?.isAdmin && userRedux?.isSuper) && isMobileView ? (
+       {isAdmin || isSuper ? (
+        <>
+        <div className="admin-info">
+        <h5>
+            Bienvenue, {isSuper ? "super administrateur" : "administrateur"}{" "}
+            {userRedux?.name}
+          </h5>
+        <h6>District: {userRedux?.region}</h6>
+        <Link onClick={handlelogout} className="logout-link">Déconnexion</Link>
+      </div>
+      {isMobileView && (
         <>
         <div className="admin-container">
         <button
@@ -84,11 +112,6 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
       >
         &#9776;
       </button>
-        <div className="admin-info">
-        <h5>Bienvenue, super administrateur {userRedux?.name}</h5>
-        <h6>District: {userRedux?.region}</h6>
-        <Link onClick={handlelogout} className="logout-link">Déconnexion</Link>
-      </div>
       <div className={`sidebar-menu ${isMenuOpen ? "open" : "closed"}`}>
             <Link to="/recap" className="sidebar-item" onClick={toggleMenu}>
               Recap
@@ -115,8 +138,6 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
               Utilisateurs
             </Link>
           </div>
-
-          {/* Routes */}
           <div className="content">
             <Routes>
               <Route
@@ -187,13 +208,9 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
           </div>
         </div>
       </>
-       ) : userRedux?.isAdmin ? (
-        <>
-        <div className="admin-info">
-        <h5>Bienvenue, administrateur {userRedux?.name}</h5>
-        <h6>District: {userRedux?.region}</h6>
-        <Link onClick={handlelogout} className="logout-link">Déconnexion</Link>
-      </div>
+       )} 
+       {!isMobileView && (
+          <>
             <div className="tabs-wrapper">
         <Tabs
         defaultActiveKey="home"
@@ -239,7 +256,8 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
       </div>
       </Tab>
       </Tabs></div></>
-        ) : isAuth ? (
+        )}</>
+        ) : isAuth  && !isAdmin && !isSuper && (
           <>
           <div className="admin-info">
         <h5>Bienvenue {userRedux?.name}</h5>
@@ -255,8 +273,6 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
           </div>
         </Tab>
         </Tabs></>
-      ) : (
-        <></>
       )}
       </div>
   );

@@ -62,8 +62,14 @@ module.exports = {
   },
 
   current: async (req, res) => {
+    if (!req.user) {
+      console.log("Unauthorized: No user found in request");
+      return res.status(401).send({ message: 'Unauthorized' });
+    }
+    console.log("User found:", req.user);
     res.status(200).send({ user: req.user });
   },
+  
 
   update: async (req, res) => {
     const { id } = req.params;

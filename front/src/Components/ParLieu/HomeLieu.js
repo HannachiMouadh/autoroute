@@ -63,33 +63,42 @@ const HomeHoraire = ({userLieu}) => {
  
 
 
-  const filterData = (data) => {
-    if (!data || !userRedux) {
-      return [];
-    }
-
-    const usersFromTargetRegion = userRedux
-      .filter((user) => user.region === userLieu)
-      .map((user) => user._id);
-
-    const filteredDatas = data.filter((form) => usersFromTargetRegion.includes(form.createdBy));
-
-    return filteredDatas;
-  };
-  console.log(filterData(data));
-
-  const filteredData = (data, start, end) => {
-    if (!start && !end) {
-      return filterData(data)
-    }
-    return filterData(data).filter((form) => {
-      const formDate = moment(form.ddate, "YYYY-MM-DD");
-      const isAfterOrSameStart = !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
-      const isBeforeOrSameEnd = !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
-      return isAfterOrSameStart && isBeforeOrSameEnd ;
-    });
-  };
-  const filteredDataArray = userRedux ? filteredData(data, formatStartDate, formatEndDate) : [];
+   const filterData = (data) => {
+        if (!data || !userRedux) {
+          return [];
+        }
+      
+        // Get valid user IDs from the current userRedux state
+        const validUserIds = new Set(userRedux.map((user) => user._id));
+      
+        // Filter data based on valid user IDs and target region
+        const usersFromTargetRegion = userRedux
+          .filter((user) => (user.region || "") === userLieu)
+          .map((user) => user._id);
+      
+        return data.filter(
+          (form) =>
+            usersFromTargetRegion.includes(form.createdBy) &&
+            validUserIds.has(form.createdBy) // Ensure `createdBy` is still valid
+        );
+      };
+      
+      const filteredData = (data, start, end) => {
+        if (!start && !end) {
+          return filterData(data);
+        }
+      
+        return filterData(data).filter((form) => {
+          const formDate = moment(form.ddate, "YYYY-MM-DD");
+          const isAfterOrSameStart = !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
+          const isBeforeOrSameEnd = !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
+          return isAfterOrSameStart && isBeforeOrSameEnd;
+        });
+      };
+      
+      
+      // Filter data and calculate sums
+      const filteredDataArray = filteredData(data, formatStartDate, formatEndDate);
 
   const regionDirections =(userLieu) => {
     switch (userLieu) {
@@ -408,6 +417,7 @@ console.log(accFortyy);
                                     selectsStart
                                     startDate={startDate}
                                     endDate={endDate}
+                                    maxDate={new Date()}
                                     placeholderText="Start Date"
                                     className="custom-datepicker"
                                 />
@@ -422,18 +432,19 @@ console.log(accFortyy);
                                     endDate={endDate}
                                     placeholderText="End Date"
                                     minDate={startDate}
+                                    maxDate={new Date()}
                                     className="custom-datepicker"
                                 />
                             </div>
                         </div>
                     </div>
-                    {(!startDate || !endDate) ? (<div className='centerbtn'><Button variant="primary" disabled>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
-                                إعادة تعيين المرشحات
-                                </Button></div>) : (<div className='centerbtn'>
-                                <Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button><Button variant="primary" onClick={resetFilters}>
-                                إعادة تعيين المرشحات
-                                </Button>
-                              </div>)}
+                    {(!startDate || !endDate) ? (<div className='centerbtn'><Button variant="primary" onClick={resetFilters}>
+                                          إعادة تعيين المرشحات
+                                          </Button><Button variant="primary" disabled>تصدير إلى Excel</Button></div>) : (<div className='centerbtn'>
+                                            <Button variant="primary" onClick={resetFilters}>
+                                          إعادة تعيين المرشحات
+                                          </Button><Button variant="primary" onClick={exportToExcel}>تصدير إلى Excel</Button>
+                                        </div>)}
                     <div>
                         <Table className="margin" striped bordered hover >
                             <thead >

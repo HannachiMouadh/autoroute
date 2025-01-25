@@ -28,7 +28,7 @@ import { tailChase } from 'ldrs'
 import { useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TableSortLabel } from '@mui/material';
-import ShowForm from './ShowDataForm.js';
+import ShowForm from './ShowDataForm';
 
 tailChase.register()
 
@@ -183,18 +183,27 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
     if (!data || !userRedux) {
       return [];
     }
-
+  
+    // Get valid user IDs from the current userRedux state
+    const validUserIds = new Set(userRedux.map((user) => user._id));
+  
+    // Filter data based on valid user IDs and target region
     const usersFromTargetRegion = userRedux
-      .filter((user) => user.region === userRegion)
+      .filter((user) => (user.region || "") === userRegion)
       .map((user) => user._id);
-
-    return data.filter((form) => usersFromTargetRegion.includes(form.createdBy));
+  
+    return data.filter(
+      (form) =>
+        usersFromTargetRegion.includes(form.createdBy) &&
+        validUserIds.has(form.createdBy) // Ensure `createdBy` is still valid
+    );
   };
-
+  
   const filteredData = (data, start, end) => {
     if (!start && !end) {
       return filterData(data);
     }
+  
     return filterData(data).filter((form) => {
       const formDate = moment(form.ddate, "YYYY-MM-DD");
       const isAfterOrSameStart = !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
@@ -202,28 +211,24 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
       return isAfterOrSameStart && isBeforeOrSameEnd;
     });
   };
-
-  const formatStartDate = startDate ? moment(startDate).format("yyyy-MM-DD") : null;
-  const formatEndDate = endDate ? moment(endDate).format("yyyy-MM-DD") : null;
-  // const [donne, setDonne] = useState(() => filterData(data));
+  
+  // Format dates
+  const formatStartDate = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
+  const formatEndDate = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
+  
+  // Filter data and calculate sums
   const filteredDataArray = filteredData(data, formatStartDate, formatEndDate);
-  // useEffect(() => {
-  //   // Update the donne state to reflect the filtered data
-  //   setDonne(filteredDataArray);
-  // }, [filteredDataArray]);
-
-
-
   const sumInjur = filteredDataArray.reduce((acc, form) => acc + (form.nbrblesse || 0), 0);
   const sumDead = filteredDataArray.reduce((acc, form) => acc + (form.nbrmort || 0), 0);
-  const sumDays = filteredDataArray.reduce((acc, form) => acc + 1, 0);
+  const sumDays = filteredDataArray.length; 
+  
 
 
   const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
     // Set up media query listener
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const mediaQuery = window.matchMedia("(max-width: 1000px)");
 
     // Update state based on media query
     const handleResize = () => {
@@ -255,6 +260,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
               selectsStart
               startDate={startDate}
               endDate={endDate}
+              maxDate={new Date()}
               placeholderText="Start Date"
               className="custom-datepicker"
             />
@@ -270,6 +276,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
               
               placeholderText="End Date"
               minDate={startDate}
+              maxDate={new Date()}
               className="custom-datepicker"
             />
           </div>
@@ -282,7 +289,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
         تصدير إلى Excel
       </Button>
 
-      {filteredData(data, startDate, endDate).length === 0 ? ( <h4>لا توجد بيانات في هذا التاريخ</h4> ) : filteredDataArray.length === 0 ? (
+      {filteredData(data,startDate,endDate).length === 0 ? (<h4>لا توجد بيانات في هذا التاريخ</h4>) : filteredDataArray.length === 0 ? (
         <div><h4>!الرجاء تعمير الجدول</h4><l-tail-chase
         size="40"
         speed="1.75"

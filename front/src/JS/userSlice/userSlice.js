@@ -43,20 +43,52 @@ export const loginUser = createAsyncThunk("login", async (user) => {
   }
 });
 
-export const currentUser = createAsyncThunk("current", async () => {
-  let opts ={
-    headers:{
-      Authorization:localStorage.getItem("token"),
-    },
-  };
+export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => {
   try {
-    const result = await axios.get("http://localhost:5000/api/user/current",opts);
-    return result.data;
-    console.log(result.data)
+      const response = await axios.get("http://localhost:5000/api/user/current", {
+          headers: {
+              Authorization: localStorage.getItem("token"),
+          },
+      });
+      return response.data;
   } catch (error) {
-    console.log(error)
+      return thunkAPI.rejectWithValue(error.response.data);
   }
 });
+
+
+// export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => {
+//   const token = localStorage.getItem("token");
+//   if (!token) {
+//     return thunkAPI.rejectWithValue("No token available");
+//   }
+
+//   try {
+//     const response = await axios.get("http://localhost:5000/api/user/current", {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     return thunkAPI.rejectWithValue(error.response.data);
+//   }
+// });
+
+// export const currentUser = createAsyncThunk("current", async () => {
+//   let opts ={
+//     headers:{
+//       Authorization:localStorage.getItem("token"),
+//     },
+//   };
+//   try {
+//     const result = await axios.get("http://localhost:5000/api/user/current",opts);
+//     return result.data;
+//     console.log(result.data)
+//   } catch (error) {
+//     console.log(error)
+//   }
+// });
 
 
 export const getAllUsers = createAsyncThunk("getAllUsers", async () => {
@@ -91,7 +123,9 @@ export const userSlice = createSlice({
     logout: (state, action) => {
       localStorage.removeItem('token');
       localStorage.removeItem('isAuth');
+      state.status = 'idle';
       state.user = null;
+      state.isAuth = false;
     },
   },
   extraReducers: (builder) => {
@@ -125,6 +159,7 @@ export const userSlice = createSlice({
         state.status = 'pending';
       })
       .addCase(currentUser.fulfilled, (state, action) => {
+        console.log('Fulfilled action triggered Current User');
         state.status = 'success';
         state.user = action.payload.user;
       })
