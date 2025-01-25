@@ -11,7 +11,6 @@ import Signup from './Components/Signup/Signup.js';
 import PrivateRouteHome from './Components/PrivateRoute/PrivateRouteHome.js';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import HomeSens from './Components/ParSens/HomeSens.js';
 
 function App() {
   return (
@@ -21,7 +20,6 @@ function App() {
           <Route path="/Home" element={<Home />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/connection" element={<Signin />} />
-          <Route path="/HomeSens" element={<HomeSens />} />
           <Route path="/" element={<PrivateRouteHome />} />
         </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
