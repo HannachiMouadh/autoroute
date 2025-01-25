@@ -49,22 +49,17 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
   const [order, setOrder] = useState("ASC");
 
 
-  useEffect(() => {
-    if (isAuth && isAdmin) {
-      dispatch(currentUser());
-    }
-  }, [dispatch, isAdmin, isAuth]);
-  useEffect(() => {
-    dispatch(getAllUsers());
-  }, [dispatch]);
-  useEffect(() => {
-    dispatch(fetchForms());
-  }, [dispatch]);
   const userRedux = useSelector((state) => state.user.users);
   const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region: "" });
-  useEffect(() => {
-    setUser(userRedux);
-  }, [userRedux]);
+
+useEffect(() => {
+  if (isAuth && isAdmin) {
+    dispatch(currentUser());
+  }
+  dispatch(getAllUsers());
+  dispatch(fetchForms());
+setUser(userRedux);
+}, [dispatch, isAuth, isAdmin,userRedux]);
 
 
   const handleDelete = (id) => {
