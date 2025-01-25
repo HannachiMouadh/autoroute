@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const registerUser = createAsyncThunk("register", async (user, { rejectWithValue }) => {
   try {
-    const result = await axios.post("http://localhost:5000/api/user/register", user);
+    const result = await axios.post("https://autoroute-api.vercel.app/api/user/register", user);
     return result.data;
   } catch (error) {
     console.error("Erreur Axios :", error.response?.data || error.message);
@@ -16,7 +16,7 @@ export const updateUser = createAsyncThunk("update", async ({_id,user}) => {
   const token = localStorage.getItem('token');
   try {
     console.log(user);
-    let result = await axios.put(`http://localhost:5000/api/user/${_id}`,
+    let result = await axios.put(`https://autoroute-api.vercel.app/api/user/${_id}`,
       user,
       {
         headers: {
@@ -35,7 +35,7 @@ export const updateUser = createAsyncThunk("update", async ({_id,user}) => {
 
 export const loginUser = createAsyncThunk("login", async (user) => {
   try {
-    const result = await axios.post("http://localhost:5000/api/user/login",user);
+    const result = await axios.post("https://autoroute-api.vercel.app/api/user/login",user);
     console.log(result);
     return result.data;
   } catch (error) {
@@ -44,12 +44,13 @@ export const loginUser = createAsyncThunk("login", async (user) => {
 });
 
 export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => {
+  const token = localStorage.getItem("token");
   try {
-      const response = await axios.get("http://localhost:5000/api/user/current", {
-          headers: {
-              Authorization: localStorage.getItem("token"),
-          },
-      });
+    const response = await axios.get("https://autoroute-api.vercel.app/api/user/current", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
       return response.data;
   } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -57,43 +58,9 @@ export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => 
 });
 
 
-// export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => {
-//   const token = localStorage.getItem("token");
-//   if (!token) {
-//     return thunkAPI.rejectWithValue("No token available");
-//   }
-
-//   try {
-//     const response = await axios.get("http://localhost:5000/api/user/current", {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error.response.data);
-//   }
-// });
-
-// export const currentUser = createAsyncThunk("current", async () => {
-//   let opts ={
-//     headers:{
-//       Authorization:localStorage.getItem("token"),
-//     },
-//   };
-//   try {
-//     const result = await axios.get("http://localhost:5000/api/user/current",opts);
-//     return result.data;
-//     console.log(result.data)
-//   } catch (error) {
-//     console.log(error)
-//   }
-// });
-
-
 export const getAllUsers = createAsyncThunk("getAllUsers", async () => {
   try {
-    const result = await axios.get("http://localhost:5000/api/user/");
+    const result = await axios.get("https://autoroute-api.vercel.app/api/user/");
     console.log(result.data);
     return result.data;
   } catch (error) {
@@ -103,7 +70,7 @@ export const getAllUsers = createAsyncThunk("getAllUsers", async () => {
 
 export const deleteUser = createAsyncThunk("user/dalete", async (id) => {
   try {
-    const result = await axios.delete(`http://localhost:5000/api/user/${id}`);
+    const result = await axios.delete(`https://autoroute-api.vercel.app/api/user/${id}`);
     return result.data;
   } catch (error) {
     console.log(error)
