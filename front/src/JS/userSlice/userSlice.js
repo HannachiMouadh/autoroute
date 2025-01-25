@@ -44,13 +44,13 @@ export const loginUser = createAsyncThunk("login", async (user) => {
 });
 
 export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => {
-  const token = localStorage.getItem("token");
+  let opts ={
+    headers:{
+      Authorization:localStorage.getItem("token"),
+    },
+  };
   try {
-    const response = await axios.get("https://autoroute-api.vercel.app/api/user/current", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get("https://autoroute-api.vercel.app/api/user/current",opts);
       return response.data;
   } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
