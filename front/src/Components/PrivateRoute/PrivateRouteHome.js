@@ -22,7 +22,7 @@ const PrivateRouteHome = () => {
     return <div>Loading...</div>; // Add a spinner or loader component
   }
 
-  return isAuth || isAdmin ? <Outlet /> : <Navigate to="/connection" />;
+  return isAuth && isAdmin ? <Outlet /> : <Navigate to="/connection" />;
 };
 
 export default PrivateRouteHome;
