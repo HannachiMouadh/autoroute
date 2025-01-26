@@ -7,6 +7,7 @@ import HomeCause from './ParCause/HomeCause.js';
 import HomeLieu from './ParLieu/HomeLieu.js';
 import './tabchange.css';
 import { useNavigate } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
 import { currentUser, logout } from "../JS/userSlice/userSlice.js";
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
