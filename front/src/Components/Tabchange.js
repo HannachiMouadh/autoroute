@@ -56,12 +56,6 @@ useEffect(() => {
 }, []);
 
 
- useEffect(() => {
-  if (!isAuth && !isAdmin) {
-    navigate('/connection');
-  }
-}, [isAuth,isAdmin, navigate]);
-
 const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
