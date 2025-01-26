@@ -15,12 +15,11 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
      <div className="App">
-      <Routes>
-      <Route path="/connection" element={<Connection />} />
-      <Route element={<PrivateRouteHome />}>
-        <Route path="/admin" element={<TabChange />} />
-      </Route>
-    </Routes>
+            <Tabchange/>
+        <Routes>
+          <Route path="/connection" element={<Signin />} />
+          <Route path="/" element={<PrivateRouteHome />} />
+        </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );
