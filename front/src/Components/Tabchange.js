@@ -79,6 +79,9 @@ const [isMobileView, setIsMobileView] = useState(false);
 const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+const isLoading =
+    currentUserData === undefined || userRedux === undefined || isMobileView === undefined;
+
   return (
     <div className="custom-tabs-container">
     {!online && (
@@ -86,7 +89,12 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
           Connection lost! Please check your internet connection.
         </Alert>
       )}
-       {isAdmin || isSuper ? (
+        {isLoading ? (
+        <div className="loading-container">
+          <h2>Loading...</h2>
+          {/* You can add a spinner or other loading indicator */}
+        </div>
+      ) : (isAdmin || isSuper ? (
         <>
         <div className="admin-info">
         <h5>
@@ -268,7 +276,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
           </div>
         </Tab>
         </Tabs></>
-      )}
+      ))}
       </div>
   );
   };
