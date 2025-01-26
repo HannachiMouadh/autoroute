@@ -39,14 +39,18 @@ const HomeHoraire = ({userLieu}) => {
     const chartInjurRef = useRef(null);
     const chartInjurReff = useRef(null);
     const data = useSelector((state) => state.data.data);
+    useEffect(() => {
+        dispatch(fetchForms());
+    }, [dispatch]);
 
     const userRedux = useSelector((state) => state.user.users);
   const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
   useEffect(() => {
-  dispatch(getAllUsers());
-  dispatch(fetchForms());
-setUser(userRedux);
-}, [dispatch,userRedux]);
+    dispatch(getAllUsers());
+}, [dispatch]);
+  useEffect(() => {
+    setUser(userRedux);
+  }, [userRedux]);
 
 
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
