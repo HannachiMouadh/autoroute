@@ -80,8 +80,12 @@ const [isMobileView, setIsMobileView] = useState(false);
 const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-const isLoading =
-    !currentUserData || !userRedux;
+const [isLoading, setIsLoading] = useState(true); // Initialize loading as true
+
+  useEffect(() => {
+    // Update isLoading when currentUserData changes
+    setIsLoading(currentUserData === undefined);
+  }, [currentUserData]);
 
   return (
     <div className="custom-tabs-container">
