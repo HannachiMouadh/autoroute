@@ -82,10 +82,8 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 const [isLoading, setIsLoading] = useState(true); // Initialize loading as true
 
-  useEffect(() => {
-    // Update isLoading when currentUserData changes
-    setIsLoading(currentUserData === undefined);
-  }, [currentUserData]);
+    setIsLoading(currentUserData == undefined);
+
 
   return (
     <div className="custom-tabs-container">
