@@ -80,9 +80,7 @@ const [isMobileView, setIsMobileView] = useState(false);
 const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-const [isLoading, setIsLoading] = useState(true); // Initialize loading as true
-
-    setIsLoading(currentUserData == undefined);
+const isLoading = userRedux.region == undefined || userRedux.region == undefined || userRedux == undefined;
 
 
   return (
