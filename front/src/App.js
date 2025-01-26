@@ -15,14 +15,10 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
      <div className="App">
-            <Routes>
-      {/* Public Route */}
+   <Routes>
       <Route path="/connection" element={<Connection />} />
-
-      {/* Protected Routes */}
-      <Route element={<PrivateRouteHome />}>
-        <Route path="/" element={<TabChange />} />
-        {/* Add more nested routes if needed */}
+      <Route path="/" element={<PrivateRouteHome />}>
+        <Route path="/admin" element={<TabChange />} />
       </Route>
     </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
