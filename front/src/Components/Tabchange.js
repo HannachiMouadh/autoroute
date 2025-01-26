@@ -133,6 +133,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
             </Link>
           </div>
           <div className="content">
+            <Route path="/" element={<Navigate to="/recap" replace />} />
             <Routes>
               <Route
                 path="/recap"
