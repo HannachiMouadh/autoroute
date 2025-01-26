@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRouteHome = () => {
-  const isAuth = localStorage.getItem("token"); // Ensure token check logic is correct
-  const isAdmin = localStorage.getItem("isAdmin") === "true"; // Parse admin status properly
+  const [loading, setLoading] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
 
-  // Check if the user is authenticated and an admin
-  return isAuth || isAdmin ? <Outlet /> : <Navigate to="/connection" />;
+  useEffect(() => {
+    // Simulate token validation from localStorage or an API
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      setIsAuth(true);
+    }
+    setLoading(false); // Mark loading as complete
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // Add a spinner or loader component
+  }
+
+  return isAuth ? <Outlet /> : <Navigate to="/connection" />;
 };
 
 export default PrivateRouteHome;
