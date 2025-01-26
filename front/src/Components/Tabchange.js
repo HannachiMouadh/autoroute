@@ -80,7 +80,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
 const isLoading =
-    currentUserData === undefined || userRedux === undefined || isMobileView === undefined;
+    !currentUserData || !userRedux || isMobileView === undefined;
 
   return (
     <div className="custom-tabs-container">
@@ -92,7 +92,6 @@ const isLoading =
         {isLoading ? (
         <div className="loading-container">
           <h2>Loading...</h2>
-          {/* You can add a spinner or other loading indicator */}
         </div>
       ) : (isAdmin || isSuper ? (
         <>
