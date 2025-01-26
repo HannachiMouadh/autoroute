@@ -1,12 +1,12 @@
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-const PrivateRouteHome = () => {
-  const isAuth = localStorage.getItem("token"); // Ensure token check logic is correct
-  const isAdmin = localStorage.getItem("isAdmin") === "true"; // Parse admin status properly
+const PrivateRouteHome = ({ children }) => {
+  const isAuth = localStorage.getItem("token"); // Check if the user is authenticated
+  const isAdmin = localStorage.getItem("isAdmin") === "true"; // Check admin status
 
-  // Check if the user is authenticated and an admin
-  return isAuth && isAdmin ? <Outlet /> : <Navigate to="/connection" />;
+  // Render children if authenticated and admin, otherwise redirect to Signin
+  return isAuth && isAdmin ? children : <Navigate to="/connection" />;
 };
 
 export default PrivateRouteHome;
