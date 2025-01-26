@@ -26,7 +26,7 @@ const Signin = () => {
     try {
       const resultAction = await dispatch(loginUser(login));
       if (loginUser.fulfilled.match(resultAction)) {
-        navigate("/home");
+        navigate("/");
         window.location.reload();
       } else {
         setError("البريد الإلكتروني وكلمة المرور لا يتطابقان.");
