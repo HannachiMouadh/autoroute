@@ -17,8 +17,8 @@ function App() {
      <div className="App">
   <Routes>
   <Route path="/connection" element={<Signin />} />
-  <Route path="/" element={<PrivateRouteHome />}>
-<Route element={<Tabchange />}>
+  <Route path="/" element={<PrivateRouteHome />}/>
+<Route element={<Tabchange />}/>
   </Route>
 </Routes>
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
