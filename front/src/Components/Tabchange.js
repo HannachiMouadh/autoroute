@@ -34,6 +34,7 @@ const Tabchange = ({ userRegion,curuser,userCause,userHoraire,userSemaine,userSe
     dispatch(logout());
     window.location.reload()
  }
+consol.log(dispatch(currentUser());
 
 
  useEffect(() => {
@@ -80,7 +81,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
 const isLoading =
-    !currentUserData || !userRedux || isMobileView === undefined;
+    !currentUserData || !userRedux;
 
   return (
     <div className="custom-tabs-container">
