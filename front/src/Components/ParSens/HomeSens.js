@@ -44,20 +44,18 @@ const HomeSens = ({userSens}) => {
   const [endDate, setEndDate] = useState(null);
   const data = useSelector((state) => state.data.data);
 
-  const years = [];
-  const currentYear = new Date().getFullYear();
-  for (let i = 2020; i <= currentYear; i++) {
-    years.push(i.toString());
-  }
+    useEffect(() => {
+        dispatch(fetchForms());
+    }, [dispatch]);
 
-
-  const userRedux = useSelector((state) => state.user.users);
+    const userRedux = useSelector((state) => state.user.users);
   const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
-useEffect(() => {
-  dispatch(getAllUsers());
-  dispatch(fetchForms());
-setUser(userRedux);
-}, [dispatch,userRedux]);
+  useEffect(() => {
+    dispatch(getAllUsers());
+}, [dispatch]);
+  useEffect(() => {
+    setUser(userRedux);
+  }, [userRedux]);
 
   const location = useLocation();
 
