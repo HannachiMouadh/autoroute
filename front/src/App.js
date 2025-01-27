@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
      <div className="App">
+<Tabchange />
   <Routes>
   <Route path="/connection" element={<Signin />} />
   <Route path="/" element={<PrivateRouteHome />}/>
