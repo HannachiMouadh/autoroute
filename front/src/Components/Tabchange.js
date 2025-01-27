@@ -35,7 +35,6 @@ const Tabchange = ({ userRegion,curuser,userCause,userHoraire,userSemaine,userSe
     dispatch(logout());
     window.location.reload()
  }
-consol.log(dispatch(currentUser());
 
 
  useEffect(() => {
