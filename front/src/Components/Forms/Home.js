@@ -281,13 +281,14 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
           </div>
         </div>
       </div>
+      <div className='centerbtn'>
       <Button variant="primary" onClick={() => setStartDate(null) || setEndDate(null)}>
         إعادة تعيين المرشحات
       </Button>
       <Button variant="primary" onClick={exportToExcel}>
         تصدير إلى Excel
       </Button>
-
+      </div>
       {filteredData(data,startDate,endDate).length === 0 ? (<h4>لا توجد بيانات في هذا التاريخ</h4>) : filteredDataArray.length === 0 ? (
         <div><h4>!الرجاء تعمير الجدول</h4><l-tail-chase
         size="40"
