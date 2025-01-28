@@ -6,14 +6,14 @@ import HomeHoraire from './ParHoraire/HomeHoraire.js';
 import HomeCause from './ParCause/HomeCause.js';
 import HomeLieu from './ParLieu/HomeLieu.js';
 import './tabchange.css';
-import { useNavigate } from 'react-router-dom';
-import { Navigate } from "react-router-dom";
+import {Navigate,useNavigate } from 'react-router-dom';
+import {  } from "react-router-dom";
 import { currentUser, logout } from "../JS/userSlice/userSlice.js";
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Signup from './Signup/Signup.js';
 import UsersMan from './usersMan/UsersMan.js';
-import { Link, Routes, Route } from "react-router-dom";
+import { Link, Outlet, Routes, Route } from "react-router-dom";
 
 
 
@@ -35,6 +35,7 @@ const Tabchange = ({ userRegion,curuser,userCause,userHoraire,userSemaine,userSe
     dispatch(logout());
     window.location.reload()
  }
+
 
 
  useEffect(() => {
@@ -80,7 +81,7 @@ const [isMobileView, setIsMobileView] = useState(false);
 const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-const isLoading = userRedux.region == undefined || userRedux.region == undefined || userRedux == undefined;
+const isLoading = userRedux == undefined;
 
 
   return (
@@ -94,7 +95,9 @@ const isLoading = userRedux.region == undefined || userRedux.region == undefined
         <div className="loading-container">
           <h2>Loading...</h2>
         </div>
-      ) : (isAdmin || isSuper ? (
+      ) : (
+        <>
+          {(isAdmin || isSuper) && isMobileView ? (
         <>
         <div className="admin-info">
         <h5>
@@ -104,8 +107,7 @@ const isLoading = userRedux.region == undefined || userRedux.region == undefined
         <h6>District: {userRedux?.region}</h6>
         <Link onClick={handlelogout} className="logout-link">Déconnexion</Link>
       </div>
-      {isMobileView && (
-        <>
+
         <div className="admin-container">
         <button
         className="hamburger-btn"
@@ -141,79 +143,17 @@ const isLoading = userRedux.region == undefined || userRedux.region == undefined
             </Link>
           </div>
           <div className="content">
-            <Route path="/" element={<Navigate to="/recap" />} />
-            <Routes>
-              <Route
-                path="/recap"
-                element={
-                  <div className="tab-content-container">
-                    <Home userRegion={userRedux.region} curuser={userRedux} />
-                  </div>
-                }
-              />
-              <Route
-                path="/par-semaine"
-                element={
-                  <div className="tab-content-container">
-                    <HomeSemain userSemaine={userRedux.region} />
-                  </div>
-                }
-              />
-              <Route
-                path="/par-sens"
-                element={
-                  <div className="tab-content-container">
-                    <HomeSens userSens={userRedux.region} />
-                  </div>
-                }
-              />
-              <Route
-                path="/par-horaire"
-                element={
-                  <div className="tab-content-container">
-                    <HomeHoraire userHoraire={userRedux.region} />
-                  </div>
-                }
-              />
-              <Route
-                path="/par-cause"
-                element={
-                  <div className="tab-content-container">
-                    <HomeCause userCause={userRedux.region} />
-                  </div>
-                }
-              />
-              <Route
-                path="/par-lieu"
-                element={
-                  <div className="tab-content-container">
-                    <HomeLieu userLieu={userRedux.region} />
-                  </div>
-                }
-              />
-              <Route
-                path="/inscription"
-                element={
-                  <div className="tab-content-container">
-                    <Signup />
-                  </div>
-                }
-              />
-              <Route
-                path="/utilisateurs"
-                element={
-                  <div className="tab-content-container">
-                    <UsersMan />
-                  </div>
-                }
-              />
-            </Routes>
+           <Outlet />
           </div>
         </div>
-      </>
-       )} 
-       {!isMobileView && (
+        </>
+       ) : isAuth  && isAdmin && !isSuper && !isMobileView ? (
           <>
+          <div className="admin-info">
+        <h5>Bienvenue administrateur {userRedux?.name}</h5>
+        <h6>District: {userRedux?.region}</h6>
+        <Link onClick={handlelogout} className="logout-link">Déconnexion</Link>
+      </div>
             <div className="tabs-wrapper">
         <Tabs
         defaultActiveKey="home"
@@ -258,9 +198,9 @@ const isLoading = userRedux.region == undefined || userRedux.region == undefined
       <UsersMan/>
       </div>
       </Tab>
-      </Tabs></div></>
-        )}</>
-        ) : isAuth  && !isAdmin && !isSuper && (
+      </Tabs></div>
+      </>
+        ) : isAuth  && !isAdmin && !isSuper && !isMobileView ? (
           <>
           <div className="admin-info">
         <h5>Bienvenue {userRedux?.name}</h5>
@@ -275,9 +215,14 @@ const isLoading = userRedux.region == undefined || userRedux.region == undefined
           <Home userRegion={userRedux.region}/>
           </div>
         </Tab>
-        </Tabs></>
-      ))}
-      </div>
+        </Tabs>
+        </>
+      ) : (
+        <></>
+      )}
+    </>
+  )}
+</div>
   );
   };
 
