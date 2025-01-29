@@ -121,7 +121,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
     const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years, months, createdBy, ...rest }) => rest);
 
     const headerMapping = {
-      barrier: "زلاقات",
+      barrier: "اضرار مادية",
       nbrmort: "موتى",
       nbrblesse: "جرحى",
       cause: "السبب",
