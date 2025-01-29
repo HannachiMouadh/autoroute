@@ -223,26 +223,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
   
 
 
-  const [isMobileView, setIsMobileView] = useState(false);
-
-  useEffect(() => {
-    // Set up media query listener
-    const mediaQuery = window.matchMedia("(max-width: 1000px)");
-
-    // Update state based on media query
-    const handleResize = () => {
-      setIsMobileView(mediaQuery.matches);
-    };
-
-    // Initial check
-    handleResize();
-
-    // Add event listener
-    mediaQuery.addEventListener('change', handleResize);
-
-    // Cleanup listener on component unmount
-    return () => mediaQuery.removeEventListener('change', handleResize);
-  }, []);
+  const isMobileView = useMediaQuery({ query: '(max-width: 1000px)' });
 
   
 
