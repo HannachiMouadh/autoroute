@@ -118,10 +118,13 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
   const exportToExcel = () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Statistics');
-    const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years, months, createdBy, ...rest }) => rest);
+    const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years, months, createdBy, mtr, nk, ...rest }) => ({
+      ...rest,
+      mtr_nk: `${nk} + ${mtr}` 
+  }));
 
     const headerMapping = {
-      barrier: "اضرار مادية",
+      barrier: "زلاقات",
       nbrmort: "موتى",
       nbrblesse: "جرحى",
       cause: "السبب",
@@ -130,8 +133,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
       b: "ل.م:ب",
       a: "ل.م:أ",
       sens: "اتجاه",
-      mtr: "مسافة ن.ك",
-      nk: "ن.ك",
+      mtr_nk: "مسافة ن.ك",
       minutes: "دقائق",
       hours: "الساعة",
       day: "اليوم",
@@ -347,7 +349,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
       <Table style={{ tableLayout: "auto" }}>
         <TableHead>
           <TableRow>
-            <StyledTableCell>زلاقات</StyledTableCell>
+            <StyledTableCell>اضرار مادية</StyledTableCell>
             <StyledTableCell>موتى</StyledTableCell>
             <StyledTableCell>جرحى</StyledTableCell>
             <StyledTableCell>السبب</StyledTableCell>
@@ -363,7 +365,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
         <TableBody>
           {filteredDataArray.map((row) => (
             <TableRow key={row._id}>
-              <TableCell>{parseFloat(row.barrier) * 4}m ({row.barrier})</TableCell>
+              <TableCell>{row.barrier}</TableCell>
               <TableCell>{row.nbrmort}</TableCell>
               <TableCell>{row.nbrblesse}</TableCell>
               <TableCell>{row.cause}</TableCell>
@@ -374,7 +376,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
                 {row.d && `د: ${row.d}`}
               </TableCell>
               <TableCell>{row.sens}</TableCell>
-              <TableCell>{`Pk:${row.nk}, ${row.mtr}m`}</TableCell>
+              <TableCell>{`Pk:${row.nk}+${row.mtr}m`}</TableCell>
               <TableCell>{`${row.hours}:${row.minutes}`}</TableCell>
               <TableCell>{row.day}</TableCell>
               <TableCell>{row.ddate}</TableCell>
