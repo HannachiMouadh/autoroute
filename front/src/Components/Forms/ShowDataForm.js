@@ -48,8 +48,7 @@ const ShowForm = ({ ShowRowData }) => {
           <p><strong>المركبة د:</strong> {showData.d}</p>
           <p><strong>اضرار مادية:</strong> {showData.barrier}</p>
           <p><strong>الاتجاه:</strong> {showData.sens}</p>
-          <p><strong>الكم القريب (nk):</strong> {showData.nk}</p>
-          <p><strong>المسافة إلى الكم (متر):</strong> {showData.mtr}</p>
+          <p><strong>نقطة كلمترية :</strong> {showData.nk}+{showData.mtr}m</p>
           <p><strong>عدد الوفيات:</strong> {showData.nbrmort}</p>
           <p><strong>عدد المصابين:</strong> {showData.nbrblesse}</p>
           <p><strong>سبب الحادث:</strong> {showData.cause}</p>
