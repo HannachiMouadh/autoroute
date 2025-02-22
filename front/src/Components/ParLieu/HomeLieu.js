@@ -406,7 +406,7 @@ console.log(accFortyy);
     return (
         <div className='left-right-gap'>
                 <StyledTable>
-                    <h1 className='title-layout'>احصائيات حوادث المرور حسب ساعات اليوم</h1>
+                    <h1 className='title-layout'>احصائيات حوادث المرور حسب المكان</h1>
                     <div className="custom-form-container">
                         <div className="datepickers-container">
                             <div>
