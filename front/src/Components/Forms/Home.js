@@ -115,7 +115,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
     setEndDate(null);
   };
 
-const exportToExcel = () => {
+  const exportToExcel = () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Statistics');
     const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years, months, createdBy, mtr, nk,minutes,hours, ...rest }) => ({
@@ -219,8 +219,6 @@ const exportToExcel = () => {
   
   // Filter data and calculate sums
   const filteredDataArray = filteredData(data, formatStartDate, formatEndDate);
-  const sumInjur = filteredDataArray.reduce((acc, form) => acc + (form.nbrblesse || 0), 0);
-  const sumDead = filteredDataArray.reduce((acc, form) => acc + (form.nbrmort || 0), 0);
   const sumDays = filteredDataArray.length; 
   
 
@@ -288,22 +286,22 @@ const exportToExcel = () => {
       <Table>
         <TableHead>
           <TableRow>
-          <StyledTableCell className='wcell'>موتى</StyledTableCell>
-          <StyledTableCell className='wcell'>جرحى</StyledTableCell>
-          <StyledTableCell className='wcell'>الساعة</StyledTableCell>
-            <StyledTableCell className='wcell'>التاريخ</StyledTableCell>
             <StyledTableCell className='wcell'>اتجاه</StyledTableCell>
+            <StyledTableCell className='wcell'>ن.ك</StyledTableCell>
+            <StyledTableCell className='wcell'>الساعة</StyledTableCell>
+            <StyledTableCell className='wcell'>اليوم</StyledTableCell>
+            <StyledTableCell className='wcell'>التاريخ</StyledTableCell>
             <StyledTableCell className='wcell'>Actions</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {filteredDataArray.map((row) => (
+          {filteredDataArray.slice(-1).map((row) => (
             <TableRow key={row._id}>
-              <TableCell className='wcell'>{row.nbrmort}</TableCell>
-              <TableCell className='wcell'>{row.nbrblesse}</TableCell>
-              <TableCell className='wcell'>{`${row.hours}:${row.minutes}`}</TableCell>
-              <TableCell className='wcell'>{row.ddate}</TableCell>
               <TableCell className='wcell'>{row.sens}</TableCell>
+              <TableCell className='wcell'>{row.nk}</TableCell>
+              <TableCell className='wcell'>{`${row.hours}:${row.minutes}`}</TableCell>
+              <TableCell className='wcell'>{row.day}</TableCell>
+              <TableCell className='wcell'>{row.ddate}</TableCell>
               <TableCell>
                 {curuser?.isAdmin ? (
                   <>
@@ -337,11 +335,9 @@ const exportToExcel = () => {
             </TableRow>
           ))}
           <TableRow>
-            <TableCell className='wcell'>موتى: {sumDead}</TableCell>
-            <TableCell className='wcell'>جرحى: {sumInjur}</TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell className='wcell' colSpan={2}>اجمالي حوادث: {sumDays}</TableCell>
+          <TableCell>Index:</TableCell>
+          <TableCell>{sumDays}</TableCell>
+          <TableCell colSpan={4}></TableCell>
           </TableRow>
         </TableBody>
         </Table>
@@ -349,6 +345,7 @@ const exportToExcel = () => {
       <Table style={{ tableLayout: "auto" }}>
         <TableHead>
           <TableRow>
+            <StyledTableCell>Index</StyledTableCell>
             <StyledTableCell>اضرار مادية</StyledTableCell>
             <StyledTableCell>موتى</StyledTableCell>
             <StyledTableCell>جرحى</StyledTableCell>
@@ -363,8 +360,9 @@ const exportToExcel = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {filteredDataArray.map((row) => (
+          {filteredDataArray.slice(-1).map((row) => (
             <TableRow key={row._id}>
+              <TableCell>{sumDays}</TableCell>
               <TableCell>{row.barrier}</TableCell>
               <TableCell>{row.nbrmort}</TableCell>
               <TableCell>{row.nbrblesse}</TableCell>
@@ -410,18 +408,6 @@ const exportToExcel = () => {
               </TableCell>
             </TableRow>
           ))}
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>موتى: {sumDead}</TableCell>
-            <TableCell>جرحى: {sumInjur}</TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell colSpan={2}>اجمالي حوادث: {sumDays}</TableCell>
-          </TableRow>
         </TableBody>
         </Table>
     )}
