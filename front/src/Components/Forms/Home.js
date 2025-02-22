@@ -115,16 +115,17 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
     setEndDate(null);
   };
 
-  const exportToExcel = () => {
+const exportToExcel = () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Statistics');
-    const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years, months, createdBy, mtr, nk, ...rest }) => ({
+    const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years, months, createdBy, mtr, nk,minutes,hours, ...rest }) => ({
       ...rest,
-      mtr_nk: `${nk} + ${mtr}` 
+      mtr_nk: `${nk}+${mtr}m`,
+      hours_min: `${hours}:${minutes}`
   }));
 
     const headerMapping = {
-      barrier: "زلاقات",
+      barrier: "اضرار مادية",
       nbrmort: "موتى",
       nbrblesse: "جرحى",
       cause: "السبب",
@@ -133,11 +134,10 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
       b: "ل.م:ب",
       a: "ل.م:أ",
       sens: "اتجاه",
-      mtr_nk: "مسافة ن.ك",
-      minutes: "دقائق",
-      hours: "الساعة",
       day: "اليوم",
       ddate: "التاريخ",
+      mtr_nk: "مسافة ن.ك",
+      hours_min: "التوقيت",
     };
     console.log(headerMapping);
 
