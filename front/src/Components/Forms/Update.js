@@ -309,6 +309,83 @@ const Update = ({ rowData, dataId, onUpdate }) => {
             <Modal.Body>
               <Form.Group controlId="accident">
                 <Row>
+                  <Form.Control
+                    style={{ width: "180px" }}
+                    type="date"
+                    selected={
+                      updateData.ddate ? new Date(updateData.ddate) : null
+                    }
+                    value={updateData.ddate}
+                    onChange={handleDateChange}
+                    dateFormat="yyyy-MM-DD"
+                  />
+                  :التاريخ
+                </Row>
+                <Row
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  marginBottom: "10px",
+                }}
+                >
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    value={selectedHours}
+                    onChange={(e) => setSelectedHours(e.target.value)}
+                  >
+                    {generateOptions(24)}
+                  </Form.Select>
+                  :
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    value={selectedMinutes}
+                    onChange={(e) => setSelectedMinutes(e.target.value)}
+                  >
+                    {generateOptions(60)}
+                  </Form.Select>
+                  :التوقيت
+                </Row>
+                <Row>
+                  <Form.Control
+                    style={{ width: "80px" }}
+                    type="number"
+                    min="0"
+                    name="mtr"
+                    value={updateData.mtr}
+                    onChange={newData}
+                    required
+                  />
+                  +
+                  <Form.Select
+                    style={{ width: "90px", height: "40px" }}
+                    name="nk"
+                    value={updateData.nk}
+                    onChange={newData}
+                  >
+                    {userRedux && userRedux.region
+                      ? generateOptionsNK(userRedux.region)
+                      : null}
+                  </Form.Select>
+                  :نقطة كلمترية
+                </Row>
+                <Row>
+                  <Form.Select
+                    aria-label="Default select example"
+                    style={{ width: "180px" }}
+                    value={selectedVoie || rowData.sens}
+                    onChange={(e) => setSelectedVoie(e.target.value)}
+                  >
+                    {getSenseByRegion(userRedux?.region).map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  :الاتجاه
+                </Row>
+                <Row>
                   <Col>
                     <Form.Control
                       style={{ width: "90px" }}
@@ -350,86 +427,7 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                       required
                     />
                   </Col>
-                  :لوحة منجمية
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "180px" }}
-                    type="text"
-                    name="barrier"
-                    placeholder="اضرار مادية"
-                    value={updateData.barrier}
-                    onChange={newData}
-                  />
-                  :اضرار مادية
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "80px" }}
-                    type="number"
-                    min="0"
-                    name="mtr"
-                    value={updateData.mtr}
-                    onChange={newData}
-                    required
-                  />
-                  +
-                  <Form.Select
-                    style={{ width: "90px", height: "40px" }}
-                    name="nk"
-                    value={updateData.nk}
-                    onChange={newData}
-                  >
-                    {userRedux && userRedux.region
-                      ? generateOptionsNK(userRedux.region)
-                      : null}
-                  </Form.Select>
-                  :نقطة كلمترية
-                </Row>
-                <Row>
-                  <Form.Select
-                    aria-label="Default select example"
-                    style={{ width: "180px" }}
-                    value={selectedVoie || rowData.sens}
-                    onChange={(e) => setSelectedVoie(e.target.value)}
-                  >
-                    {getSenseByRegion(userRedux?.region).map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  :الاتجاه
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "180px" }}
-                    type="number"
-                    name="nbrmort"
-                    min="0"
-                    placeholder="nombre de mort"
-                    value={updateData.nbrmort}
-                    onChange={newData}
-                  />
-                  {errors.nbrmort && (
-                    <p style={{ color: "red" }}>{errors.nbrmort}</p>
-                  )}
-                  :عدد الموتى
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "180px" }}
-                    type="number"
-                    name="nbrblesse"
-                    min="0"
-                    placeholder="nombre des blessé"
-                    value={updateData.nbrblesse}
-                    onChange={newData}
-                  />
-                  {errors.nbrblesse && (
-                    <p style={{ color: "red" }}>{errors.nbrblesse}</p>
-                  )}
-                  :عدد الجرحى
+                  :لوحة المركبة
                 </Row>
                 <Row>
                   <Form.Select
@@ -494,33 +492,44 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                 <Row>
                   <Form.Control
                     style={{ width: "180px" }}
-                    type="date"
-                    selected={
-                      updateData.ddate ? new Date(updateData.ddate) : null
-                    }
-                    value={updateData.ddate}
-                    onChange={handleDateChange}
-                    dateFormat="yyyy-MM-DD"
+                    type="text"
+                    name="barrier"
+                    placeholder="اضرار مادية"
+                    value={updateData.barrier}
+                    onChange={newData}
                   />
-                  :التاريخ
+                  :اضرار مادية
+                </Row>
+
+                <Row>
+                  <Form.Control
+                    style={{ width: "180px" }}
+                    type="number"
+                    name="nbrmort"
+                    min="0"
+                    placeholder="nombre de mort"
+                    value={updateData.nbrmort}
+                    onChange={newData}
+                  />
+                  {errors.nbrmort && (
+                    <p style={{ color: "red" }}>{errors.nbrmort}</p>
+                  )}
+                  :عدد الموتى
                 </Row>
                 <Row>
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    value={selectedHours}
-                    onChange={(e) => setSelectedHours(e.target.value)}
-                  >
-                    {generateOptions(24)}
-                  </Form.Select>
-                  :
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    value={selectedMinutes}
-                    onChange={(e) => setSelectedMinutes(e.target.value)}
-                  >
-                    {generateOptions(60)}
-                  </Form.Select>
-                  :التوقيت
+                  <Form.Control
+                    style={{ width: "180px" }}
+                    type="number"
+                    name="nbrblesse"
+                    min="0"
+                    placeholder="nombre des blessé"
+                    value={updateData.nbrblesse}
+                    onChange={newData}
+                  />
+                  {errors.nbrblesse && (
+                    <p style={{ color: "red" }}>{errors.nbrblesse}</p>
+                  )}
+                  :عدد الجرحى
                 </Row>
               </Form.Group>
             </Modal.Body>
@@ -568,6 +577,83 @@ const Update = ({ rowData, dataId, onUpdate }) => {
             <Modal.Body>
               <Form.Group controlId="accident">
                 <Row>
+                  <Form.Control
+                    style={{ width: "350px" }}
+                    type="date"
+                    selected={
+                      updateData.ddate ? new Date(updateData.ddate) : null
+                    }
+                    value={updateData.ddate}
+                    onChange={handleDateChange}
+                    dateFormat="yyyy-MM-DD"
+                  />
+                  :التاريخ
+                </Row>
+                <Row
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  marginBottom: "10px",
+                }}
+                >
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    value={selectedHours}
+                    onChange={(e) => setSelectedHours(e.target.value)}
+                  >
+                    {generateOptions(24)}
+                  </Form.Select>
+                  :
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    value={selectedMinutes}
+                    onChange={(e) => setSelectedMinutes(e.target.value)}
+                  >
+                    {generateOptions(60)}
+                  </Form.Select>
+                  :التوقيت
+                </Row>
+                <Row>
+                  <Form.Control
+                    style={{ width: "194px", height: "30px" }}
+                    type="number"
+                    min="0"
+                    name="mtr"
+                    value={updateData.mtr}
+                    onChange={newData}
+                    required
+                  />
+                  :البعد بالمتر
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    name="nk"
+                    value={updateData.nk}
+                    onChange={newData}
+                  >
+                    {userRedux && userRedux.region
+                      ? generateOptionsNK(userRedux.region)
+                      : null}
+                  </Form.Select>
+                  :نقطة كلمترية
+                </Row>
+                <Row>
+                  <Form.Select
+                    aria-label="Default select example"
+                    style={{ width: "350px" }}
+                    value={selectedVoie || rowData.sens}
+                    onChange={(e) => setSelectedVoie(e.target.value)}
+                  >
+                    {getSenseByRegion(userRedux?.region).map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  :الاتجاه
+                </Row>
+                <Row>
                   <Col>
                     <Form.Control
                       style={{ width: "150px" }}
@@ -609,86 +695,7 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                       required
                     />
                   </Col>
-                  :لوحة منجمية
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "350px" }}
-                    type="text"
-                    name="barrier"
-                    placeholder="اضرار مادية"
-                    value={updateData.barrier}
-                    onChange={newData}
-                  />
-                  :اضرار مادية
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "194px", height: "30px" }}
-                    type="number"
-                    min="0"
-                    name="mtr"
-                    value={updateData.mtr}
-                    onChange={newData}
-                    required
-                  />
-                  :البعد بالمتر
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    name="nk"
-                    value={updateData.nk}
-                    onChange={newData}
-                  >
-                    {userRedux && userRedux.region
-                      ? generateOptionsNK(userRedux.region)
-                      : null}
-                  </Form.Select>
-                  :نقطة كلمترية
-                </Row>
-                <Row>
-                  <Form.Select
-                    aria-label="Default select example"
-                    style={{ width: "350px" }}
-                    value={selectedVoie || rowData.sens}
-                    onChange={(e) => setSelectedVoie(e.target.value)}
-                  >
-                    {getSenseByRegion(userRedux?.region).map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  :الاتجاه
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "350px" }}
-                    type="number"
-                    name="nbrmort"
-                    min="0"
-                    placeholder="nombre de mort"
-                    value={updateData.nbrmort}
-                    onChange={newData}
-                  />
-                  {errors.nbrmort && (
-                    <p style={{ color: "red" }}>{errors.nbrmort}</p>
-                  )}
-                  :عدد الموتى
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "350px" }}
-                    type="number"
-                    name="nbrblesse"
-                    min="0"
-                    placeholder="nombre des blessé"
-                    value={updateData.nbrblesse}
-                    onChange={newData}
-                  />
-                  {errors.nbrblesse && (
-                    <p style={{ color: "red" }}>{errors.nbrblesse}</p>
-                  )}
-                  :عدد الجرحى
+                  :لوحة المركبة
                 </Row>
                 <Row>
                   <Form.Select
@@ -753,33 +760,44 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                 <Row>
                   <Form.Control
                     style={{ width: "350px" }}
-                    type="date"
-                    selected={
-                      updateData.ddate ? new Date(updateData.ddate) : null
-                    }
-                    value={updateData.ddate}
-                    onChange={handleDateChange}
-                    dateFormat="yyyy-MM-DD"
+                    type="text"
+                    name="barrier"
+                    placeholder="اضرار مادية"
+                    value={updateData.barrier}
+                    onChange={newData}
                   />
-                  :التاريخ
+                  :اضرار مادية
+                </Row>
+
+                <Row>
+                  <Form.Control
+                    style={{ width: "350px" }}
+                    type="number"
+                    name="nbrmort"
+                    min="0"
+                    placeholder="nombre de mort"
+                    value={updateData.nbrmort}
+                    onChange={newData}
+                  />
+                  {errors.nbrmort && (
+                    <p style={{ color: "red" }}>{errors.nbrmort}</p>
+                  )}
+                  :عدد الموتى
                 </Row>
                 <Row>
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    value={selectedHours}
-                    onChange={(e) => setSelectedHours(e.target.value)}
-                  >
-                    {generateOptions(24)}
-                  </Form.Select>
-                  :
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    value={selectedMinutes}
-                    onChange={(e) => setSelectedMinutes(e.target.value)}
-                  >
-                    {generateOptions(60)}
-                  </Form.Select>
-                  :التوقيت
+                  <Form.Control
+                    style={{ width: "350px" }}
+                    type="number"
+                    name="nbrblesse"
+                    min="0"
+                    placeholder="nombre des blessé"
+                    value={updateData.nbrblesse}
+                    onChange={newData}
+                  />
+                  {errors.nbrblesse && (
+                    <p style={{ color: "red" }}>{errors.nbrblesse}</p>
+                  )}
+                  :عدد الجرحى
                 </Row>
               </Form.Group>
             </Modal.Body>
