@@ -203,13 +203,6 @@ const Add = ({ id, userRegion }) => {
     });
   };
 
-  // const [mata, setA] = useState('');
-  // const [matb, setB] = useState('');
-  // const [matc, setC] = useState('');
-  // const [matd, setD] = useState('');
-  // const [pkilo, setPk] = useState('317');
-  // const [metre, setMtr] = useState('0');
-
   const validateForm = () => {
     const newErrors = {};
     if (!formData.a) newErrors.a = "لوحة منجمية إجبارية";
@@ -336,60 +329,47 @@ const Add = ({ id, userRegion }) => {
             <Modal.Body>
               <Form.Group controlId="accident">
                 <Row>
-                  <Col>
-                    <Form.Control
-                      style={{ width: "90px" }}
-                      type="text"
-                      placeholder="أ"
-                      name="a"
-                      value={formData.a}
-                      onChange={handleInputChange}
-                      required
-                    />
-                    {errors.a && <p style={{ color: "red" }}>{errors.a}</p>}
-                    <Form.Control
-                      style={{ width: "90px" }}
-                      type="text"
-                      placeholder="ب"
-                      name="b"
-                      value={formData.b}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Control
-                      style={{ width: "90px" }}
-                      type="text"
-                      placeholder="ج"
-                      name="c"
-                      value={formData.c}
-                      onChange={handleInputChange}
-                      required
-                    />
-                    <Form.Control
-                      style={{ width: "90px" }}
-                      type="text"
-                      placeholder="د"
-                      name="d"
-                      value={formData.d}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </Col>
-                  :لوحة منجمية
-                </Row>
-                <Row>
                   <Form.Control
+                    type="date"
                     style={{ width: "180px" }}
-                    placeholder="اضرار مادية"
-                    type="text"
-                    name="barrier"
-                    value={formData.barrier}
-                    onChange={handleInputChange}
-                    required
+                    defaultValue={dateToday}
+                    max={dateToday}
+                    onChange={handleDateChange}
+                    format="YYYY-MM-DD"
                   />
-                  :اضرار مادية
+                  :التاريخ
+                </Row>
+                <Row
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  marginBottom: "10px",
+                }}
+                >
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    aria-label="Select hours"
+                    value={formData.hours}
+                    onChange={(e) =>
+                      setFormData({ ...formData, hours: e.target.value })
+                    }
+                  >
+                    {generateOptions(24)}
+                  </Form.Select>
+                  :
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    aria-label="Select minutes"
+                    value={formData.minutes}
+                    onChange={(e) =>
+                      setFormData({ ...formData, minutes: e.target.value })
+                    }
+                  >
+                    {generateOptions(60)}
+                  </Form.Select>
+                  :التوقيت
                 </Row>
                 <Row>
                   <Form.Control
@@ -432,36 +412,48 @@ const Add = ({ id, userRegion }) => {
                   :الاتجاه
                 </Row>
                 <Row>
-                  <Form.Control
-                    style={{ width: "180px" }}
-                    type="number"
-                    min="0"
-                    value={formData.nbrmort}
-                    onChange={(e) =>
-                      setFormData({ ...formData, nbrmort: e.target.value })
-                    }
-                    required
-                  />
-                  {errors.nbrmort && (
-                    <p style={{ color: "red" }}>{errors.nbrmort}</p>
-                  )}
-                  :عدد الجرحى
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "180px" }}
-                    type="number"
-                    min="0"
-                    value={formData.nbrblesse}
-                    onChange={(e) =>
-                      setFormData({ ...formData, nbrblesse: e.target.value })
-                    }
-                    required
-                  />
-                  {errors.nbrblesse && (
-                    <p style={{ color: "red" }}>{errors.nbrblesse}</p>
-                  )}
-                  :عدد الموتى
+                  <Col>
+                    <Form.Control
+                      style={{ width: "90px" }}
+                      type="text"
+                      placeholder="أ"
+                      name="a"
+                      value={formData.a}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    {errors.a && <p style={{ color: "red" }}>{errors.a}</p>}
+                    <Form.Control
+                      style={{ width: "90px" }}
+                      type="text"
+                      placeholder="ب"
+                      name="b"
+                      value={formData.b}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Control
+                      style={{ width: "90px" }}
+                      type="text"
+                      placeholder="ج"
+                      name="c"
+                      value={formData.c}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Form.Control
+                      style={{ width: "90px" }}
+                      type="text"
+                      placeholder="د"
+                      name="d"
+                      value={formData.d}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </Col>
+                  :لوحة المركبة
                 </Row>
                 <Row>
                   <Form.Select
@@ -525,38 +517,47 @@ const Add = ({ id, userRegion }) => {
                 </Row>
                 <Row>
                   <Form.Control
-                    type="date"
                     style={{ width: "180px" }}
-                    defaultValue={dateToday}
-                    max={dateToday}
-                    onChange={handleDateChange}
-                    format="YYYY-MM-DD"
+                    placeholder="اضرار مادية"
+                    type="text"
+                    name="barrier"
+                    value={formData.barrier}
+                    onChange={handleInputChange}
+                    required
                   />
-                  :التاريخ
+                  :اضرار مادية
                 </Row>
                 <Row>
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    aria-label="Select hours"
-                    value={formData.hours}
+                  <Form.Control
+                    style={{ width: "180px" }}
+                    type="number"
+                    min="0"
+                    value={formData.nbrmort}
                     onChange={(e) =>
-                      setFormData({ ...formData, hours: e.target.value })
+                      setFormData({ ...formData, nbrmort: e.target.value })
                     }
-                  >
-                    {generateOptions(24)}
-                  </Form.Select>
-                  :
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    aria-label="Select minutes"
-                    value={formData.minutes}
+                    required
+                  />
+                  {errors.nbrmort && (
+                    <p style={{ color: "red" }}>{errors.nbrmort}</p>
+                  )}
+                  :عدد الجرحى
+                </Row>
+                <Row>
+                  <Form.Control
+                    style={{ width: "180px" }}
+                    type="number"
+                    min="0"
+                    value={formData.nbrblesse}
                     onChange={(e) =>
-                      setFormData({ ...formData, minutes: e.target.value })
+                      setFormData({ ...formData, nbrblesse: e.target.value })
                     }
-                  >
-                    {generateOptions(60)}
-                  </Form.Select>
-                  :التوقيت
+                    required
+                  />
+                  {errors.nbrblesse && (
+                    <p style={{ color: "red" }}>{errors.nbrblesse}</p>
+                  )}
+                  :عدد الموتى
                 </Row>
               </Form.Group>
             </Modal.Body>
@@ -591,6 +592,89 @@ const Add = ({ id, userRegion }) => {
             </Modal.Header>
             <Modal.Body>
               <Form.Group controlId="accident">
+                <Row>
+                  <Form.Control
+                    type="date"
+                    style={{ width: "350px" }}
+                    defaultValue={dateToday}
+                    max={dateToday}
+                    onChange={handleDateChange}
+                    format="YYYY-MM-DD"
+                  />
+                  :التاريخ
+                </Row>
+                <Row
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: "center",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    aria-label="Select hours"
+                    value={formData.hours}
+                    onChange={(e) =>
+                      setFormData({ ...formData, hours: e.target.value })
+                    }
+                  >
+                    {generateOptions(24)}
+                  </Form.Select>
+                  :
+                  <Form.Select
+                    style={{ width: "80px" }}
+                    aria-label="Select minutes"
+                    value={formData.minutes}
+                    onChange={(e) =>
+                      setFormData({ ...formData, minutes: e.target.value })
+                    }
+                  >
+                    {generateOptions(60)}
+                  </Form.Select>
+                  :التوقيت
+                </Row>
+                <Row>
+                  <Form.Control
+                    style={{ width: "250px" }}
+                    type="number"
+                    min="0"
+                    name="mtr"
+                    value={formData.mtr}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  +
+                  <Form.Select
+                    style={{ width: "80px", height: "40px" }}
+                    name="nk"
+                    value={formData.nk}
+                    onChange={handleInputChange}
+                  >
+                    {userRedux && userRedux.region
+                      ? generateOptionsNK(userRedux.region)
+                      : null}
+                  </Form.Select>
+                  :نقطة كلمترية
+                </Row>
+                <Row>
+                  <Form.Select
+                    style={{ width: "350px" }}
+                    aria-label="Default select example"
+                    value={selectedVoie || ""}
+                    onChange={(e) => setSelectedVoie(e.target.value)}
+                  >
+                    {Array.isArray(region) && region.length > 0 ? (
+                      region.map((option) => (
+                        <option value={option.value}>{option.label}</option>
+                      ))
+                    ) : (
+                      <option disabled>لا توجد خيارات متاحة</option>
+                    )}
+                  </Form.Select>
+                  :الاتجاه
+                </Row>
                 <Row>
                   <Col>
                     <Form.Control
@@ -633,91 +717,7 @@ const Add = ({ id, userRegion }) => {
                       required
                     />
                   </Col>
-                  :لوحة منجمية
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "350px" }}
-                    placeholder="اضرار مادية"
-                    type="text"
-                    name="barrier"
-                    value={formData.barrier}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  :اضرار مادية
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "194px", height: "30px" }}
-                    type="number"
-                    min="0"
-                    name="mtr"
-                    value={formData.mtr}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  :البعد بالمتر
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    name="nk"
-                    value={formData.nk}
-                    onChange={handleInputChange}
-                  >
-                    {userRedux && userRedux.region
-                      ? generateOptionsNK(userRedux.region)
-                      : null}
-                  </Form.Select>
-                  :نقطة كلمترية
-                </Row>
-                <Row>
-                  <Form.Select
-                    style={{ width: "350px" }}
-                    aria-label="Default select example"
-                    value={selectedVoie || ""}
-                    onChange={(e) => setSelectedVoie(e.target.value)}
-                  >
-                    {Array.isArray(region) && region.length > 0 ? (
-                      region.map((option) => (
-                        <option value={option.value}>{option.label}</option>
-                      ))
-                    ) : (
-                      <option disabled>لا توجد خيارات متاحة</option>
-                    )}
-                  </Form.Select>
-                  :الاتجاه
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "350px" }}
-                    type="number"
-                    min="0"
-                    value={formData.nbrmort}
-                    onChange={(e) =>
-                      setFormData({ ...formData, nbrmort: e.target.value })
-                    }
-                    required
-                  />
-                  {errors.nbrmort && (
-                    <p style={{ color: "red" }}>{errors.nbrmort}</p>
-                  )}
-                  :عدد الجرحى
-                </Row>
-                <Row>
-                  <Form.Control
-                    style={{ width: "350px" }}
-                    type="number"
-                    min="0"
-                    value={formData.nbrblesse}
-                    onChange={(e) =>
-                      setFormData({ ...formData, nbrblesse: e.target.value })
-                    }
-                    required
-                  />
-                  {errors.nbrblesse && (
-                    <p style={{ color: "red" }}>{errors.nbrblesse}</p>
-                  )}
-                  :عدد الموتى
+                  :لوحة المركبة
                 </Row>
                 <Row>
                   <Form.Select
@@ -781,40 +781,48 @@ const Add = ({ id, userRegion }) => {
                 </Row>
                 <Row>
                   <Form.Control
-                    type="date"
                     style={{ width: "350px" }}
-                    defaultValue={dateToday}
-                    max={dateToday}
-                    onChange={handleDateChange}
-                    format="YYYY-MM-DD"
+                    placeholder="اضرار مادية"
+                    type="text"
+                    name="barrier"
+                    value={formData.barrier}
+                    onChange={handleInputChange}
+                    required
                   />
-                  :التاريخ
+                  :اضرار مادية
                 </Row>
                 <Row>
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    aria-label="Select hours"
-                    value={formData.hours}
+                  <Form.Control
+                    style={{ width: "350px" }}
+                    type="number"
+                    min="0"
+                    value={formData.nbrmort}
                     onChange={(e) =>
-                      setFormData({ ...formData, hours: e.target.value })
+                      setFormData({ ...formData, nbrmort: e.target.value })
                     }
-                  >
-                    {generateOptions(24)}
-                  </Form.Select>
-                  :
-                  <Form.Select
-                    style={{ width: "80px" }}
-                    aria-label="Select minutes"
-                    value={formData.minutes}
-                    onChange={(e) =>
-                      setFormData({ ...formData, minutes: e.target.value })
-                    }
-                  >
-                    {generateOptions(60)}
-                  </Form.Select>
-                  :التوقيت
+                    required
+                  />
+                  {errors.nbrmort && (
+                    <p style={{ color: "red" }}>{errors.nbrmort}</p>
+                  )}
+                  :عدد الجرحى
                 </Row>
-                {/* Other input fields... */}
+                <Row>
+                  <Form.Control
+                    style={{ width: "350px" }}
+                    type="number"
+                    min="0"
+                    value={formData.nbrblesse}
+                    onChange={(e) =>
+                      setFormData({ ...formData, nbrblesse: e.target.value })
+                    }
+                    required
+                  />
+                  {errors.nbrblesse && (
+                    <p style={{ color: "red" }}>{errors.nbrblesse}</p>
+                  )}
+                  :عدد الموتى
+                </Row>
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
