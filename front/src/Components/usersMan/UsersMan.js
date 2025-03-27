@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import "./usersMan.css";
 import { UpdateUser } from "../UpdateUser/UpdateUser";
 
-const UsersMan = () => {
+const UsersMan = ({userManLieu}) => {
   const dispatch = useDispatch();
   const { users, status } = useSelector((state) => state.user);
     const isAuth = localStorage.getItem("token");
@@ -73,14 +73,14 @@ const UsersMan = () => {
     return <div>Failed to fetch users</div>;
   }
 
-  const regularUsers = Array.isArray(users) ? users.filter(user => !user.isAdmin && !user.isSuper) : [];
-  const adminUsers = Array.isArray(users) ? users.filter(user => user.isAdmin  && !user.isSuper) : [];
+  const regularUsers = Array.isArray(users) ? users.filter(user => user.region == userManLieu && !user.isAdmin && !user.isSuper) : [];
+  const adminUsers = Array.isArray(users) ? users.filter(user => user.region == userManLieu && user.isAdmin  && !user.isSuper) : [];
   const superUser = Array.isArray(users) ? users.filter(user => user.isAdmin) : [];
 
   return (
     <div className="users-container">
       <h2>Utilisateurs</h2>
-      <Table striped bordered hover responsive>
+      <Table striped bordered hover>
         <thead>
           <tr>
           <th>Nom</th>
@@ -100,7 +100,17 @@ const UsersMan = () => {
                   className="btn btn-danger" 
                   onClick={() => handleDelete(user._id)}
                 >
-                  Delete
+                  <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          className="bi bi-trash"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                        </svg>
                 </button>
               </td>
             </tr>
@@ -115,7 +125,7 @@ const UsersMan = () => {
       </Table>
 
       <h2>Admininistrateur</h2>
-      <Table striped bordered hover responsive className="tab">
+      <Table striped bordered hover className="tab">
         <thead>
           <tr>
             <th>Nom</th>
@@ -137,7 +147,17 @@ const UsersMan = () => {
             className="btn btn-danger"
             onClick={() => handleDelete(user._id)}
           >
-            Delete
+            <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          className="bi bi-trash"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                        </svg>
           </button>
         </td>
       </tr>

@@ -1,0 +1,78 @@
+/* Container spacing for all rows */
+.form-section {
+    margin-bottom: 15px;
+  }
+  
+  /* Row label styling */
+  .form-section label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: right;
+  }
+  
+  /* Adjust form controls */
+  .form-section .form-control,
+  .form-section .form-select {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  /* Date and time */
+  .date-time-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .date-time-row .form-control,
+  .date-time-row .form-select {
+    width: 120px;
+  }
+  
+  /* Kilometric point row */
+  .km-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  /* Direction dropdown */
+  .direction-select {
+    width: 100%;
+  }
+  
+  /* Vehicle plate section */
+  .plate-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .plate-section .form-control {
+    width: 100%;
+    max-width: 120px;
+  }
+  
+  /* Responsive modal adjustments */
+  @media (max-width: 768px) {
+    .modal-body {
+      padding: 10px;
+    }
+  
+    .form-section .form-control,
+    .form-section .form-select {
+      width: 100%;
+    }
+  
+    .date-time-row,
+    .km-row,
+    .plate-section {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+  

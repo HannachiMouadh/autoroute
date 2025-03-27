@@ -39,7 +39,6 @@ const HomeHoraire = ({userLieu}) => {
     const chartInjurRef = useRef(null);
     const chartInjurReff = useRef(null);
     const data = useSelector((state) => state.data.data);
-
     useEffect(() => {
         dispatch(fetchForms());
     }, [dispatch]);
@@ -52,6 +51,7 @@ const HomeHoraire = ({userLieu}) => {
   useEffect(() => {
     setUser(userRedux);
   }, [userRedux]);
+
 
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
@@ -646,6 +646,24 @@ console.log(accFortyy);
                                                     legend: { position: 'top' },
                                                     title: { display: true, text: 'عددالحوادث حسب المكان', font: { size: 60 } },
                                                 },
+                                                scales: {
+                                                    y: {
+                                                      beginAtZero: true,
+                                                      title: {
+                                                        display: true,
+                                                        text: "Nombre des accidents",
+                                                      },
+                                                      ticks: {
+                                                        stepSize: 1,
+                                                      },
+                                                    },
+                                                    x: {
+                                                      title: {
+                                                        display: true,
+                                                        text: "PK",
+                                                      },
+                                                    },
+                                                  },
                                             }}
                                             height={400}
                                         />
@@ -675,8 +693,26 @@ console.log(accFortyy);
                                                 responsive: true,
                                                 plugins: {
                                                     legend: { position: 'top' },
-                                                    title: { display: true, text: 'عدد الجرحى و الموتى حسب اتجاه قابس', font: { size: 60 } },
+                                                    title: { display: true, text: `عدد الجرحى و الموتى حسب ${regionDirections(userLieu)[0]}`, font: { size: 60 } },
                                                 },
+                                                scales: {
+                                                    y: {
+                                                      beginAtZero: true,
+                                                      title: {
+                                                        display: true,
+                                                        text: "Nombre des victimes",
+                                                      },
+                                                      ticks: {
+                                                        stepSize: 1,
+                                                      },
+                                                    },
+                                                    x: {
+                                                      title: {
+                                                        display: true,
+                                                        text:  regionDirections(userLieu)[0],
+                                                      },
+                                                    },
+                                                  },
                                             }}
                                             height={400}
                                         />
@@ -706,8 +742,26 @@ console.log(accFortyy);
                                                 responsive: true,
                                                 plugins: {
                                                     legend: { position: 'top' },
-                                                    title: { display: true, text: 'عدد الجرحى و الموتى حسب اتجاه صفاقس', font: { size: 60 } },
+                                                    title: { display: true, text: `عدد الجرحى و الموتى حسب ${regionDirections(userLieu)[1]}`, font: { size: 60 } },
                                                 },
+                                                scales: {
+                                                    y: {
+                                                      beginAtZero: true,
+                                                      title: {
+                                                        display: true,
+                                                        text: "Nombre des victimes",
+                                                      },
+                                                      ticks: {
+                                                        stepSize: 1,
+                                                      },
+                                                    },
+                                                    x: {
+                                                      title: {
+                                                        display: true,
+                                                        text: regionDirections(userLieu)[1],
+                                                      },
+                                                    },
+                                                  },
                                             }}
                                             height={400}
                                         />

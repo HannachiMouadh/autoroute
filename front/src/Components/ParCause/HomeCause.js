@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { deleteForm, fetchForms, updateForm } from '../../JS/formSlice/FormSlice';
+import { fetchForms } from '../../JS/formSlice/FormSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Table from 'react-bootstrap/Table';
 import './HomeCause.css';
@@ -39,11 +39,11 @@ const HomeSemaine = ({ userCause }) => {
   const chartInjurRef = useRef(null);
   const data = useSelector((state) => state.data.data);
   const isAuth = localStorage.getItem("token");
-  useEffect(() => {
-    dispatch(fetchForms());
-  }, [dispatch]);
+    useEffect(() => {
+        dispatch(fetchForms());
+    }, [dispatch]);
 
-  const userRedux = useSelector((state) => state.user.users);
+    const userRedux = useSelector((state) => state.user.users);
   const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
   useEffect(() => {
     dispatch(getAllUsers());
@@ -697,6 +697,24 @@ const HomeSemaine = ({ userCause }) => {
                         legend: { position: 'top' },
                         title: { display: true, text: 'عدد الحواث حسب الاسباب', font: { size: 60 } },
                       },
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: "Nombre des accidents",
+                          },
+                          ticks: {
+                            stepSize: 1,
+                          },
+                        },
+                        x: {
+                          title: {
+                            display: true,
+                            text: "Causes",
+                          },
+                        },
+                      },
                     }}
                     height={400}
                   />
@@ -727,6 +745,24 @@ const HomeSemaine = ({ userCause }) => {
                       plugins: {
                         legend: { position: 'top' },
                         title: { display: true, text: 'عدد الموتى و الجرحى حسب الاسباب', font: { size: 60 } },
+                      },
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: "Nombre des victimes",
+                          },
+                          ticks: {
+                            stepSize: 1,
+                          },
+                        },
+                        x: {
+                          title: {
+                            display: true,
+                            text: "Causes",
+                          },
+                        },
                       },
                     }}
                     height={400}

@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { updateForm } from '../../JS/formSlice/FormSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { fetchForms, updateForm } from "../../JS/formSlice/FormSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { FiEdit } from "react-icons/fi";
-import { months } from 'moment';
-import DatePicker from 'react-datepicker';
+import { months } from "moment";
+import DatePicker from "react-datepicker";
 import moment from "moment";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useMediaQuery } from "react-responsive";
+import { FaRegEdit } from "react-icons/fa";
+import "./Update.css";
 
 const Update = ({ rowData, dataId, onUpdate }) => {
-
   const [selectedNK, setSelectedNK] = useState(rowData.nk || 317);
-  const [selectedCause, setSelectedCause] = useState(rowData.cause || "سرعة فائقة");
-  const [selectedVoie, setSelectedVoie] = useState(rowData.sens || "اتجاه قابس");
+  const [selectedCause, setSelectedCause] = useState(
+    rowData.cause || "سرعة فائقة"
+  );
+  const [selectedVoie, setSelectedVoie] = useState(
+    rowData.sens || "اتجاه قابس"
+  );
   const [selectedHours, setSelectedHours] = useState(rowData.hours || 0);
   const [selectedMinutes, setSelectedMinutes] = useState(rowData.minutes || 0);
   const userRedux = useSelector((state) => state.user.user);
@@ -48,11 +53,10 @@ const Update = ({ rowData, dataId, onUpdate }) => {
     }));
   };
   useEffect(() => {
-    setUpdateData({ ...updateData, createdBy: userRedux?._id })
+    setUpdateData({ ...updateData, createdBy: userRedux?._id });
   }, [userRedux]);
 
   const handleDateChange = (e) => {
-
     const date = new Date(e.target.value);
     if (isNaN(date.getTime())) {
       // Handle invalid date input if necessary
@@ -134,7 +138,7 @@ const Update = ({ rowData, dataId, onUpdate }) => {
       ddate: e.target.value,
       day: formattedDay,
       months: formattedmonth,
-      years: years
+      years: years,
     });
   };
 
@@ -148,22 +152,22 @@ const Update = ({ rowData, dataId, onUpdate }) => {
       nk: selectedNK,
       cause: selectedCause,
       sens: selectedVoie,
-      hours: selectedHours.toString().padStart(2, '0'),
-      minutes: selectedMinutes.toString().padStart(2, '0'),
+      hours: selectedHours.toString().padStart(2, "0"),
+      minutes: selectedMinutes.toString().padStart(2, "0"),
     };
 
     // Log data to verify it's correct
-    console.log('Data to update:', newData);
-    console.log('Data ID:', dataId);
+    console.log("Data to update:", newData);
+    console.log("Data ID:", dataId);
 
     dispatch(updateForm({ id: dataId, data: newData }))
-      .then(response => {
-        console.log('Update response:', response);
+      .then((response) => {
+        console.log("Update response:", response);
         if (response.error) {
           throw new Error(response.error.message);
         }
-        toast.success('تم تحديث البيانات بنجاح!', {
-          position: 'top-right',
+        toast.success("تم تحديث البيانات بنجاح!", {
+          position: "top-right",
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -189,14 +193,12 @@ const Update = ({ rowData, dataId, onUpdate }) => {
           hours: "",
           minutes: "",
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 800);
+        dispatch(fetchForms());
       })
-      .catch(error => {
-        console.error('Update failed:', error);
-        toast.error('فشل تحديث البيانات. يرجى المحاولة مرة أخرى.', {
-          position: 'top-right',
+      .catch((error) => {
+        console.error("Update failed:", error);
+        toast.error("فشل تحديث البيانات. يرجى المحاولة مرة أخرى.", {
+          position: "top-right",
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -204,7 +206,6 @@ const Update = ({ rowData, dataId, onUpdate }) => {
         });
       });
   };
-
 
   const generateOptions = (range) => {
     return Array.from({ length: range }, (_, i) => (
@@ -226,21 +227,21 @@ const Update = ({ rowData, dataId, onUpdate }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!updateData.a) newErrors.a = 'لوحة منجمية إجبارية';
-    if (!updateData.nk) newErrors.nk = 'نقطة كلمترية إجبارية';
-    if (!updateData.nbrmort) newErrors.nbrmort = 'عدد الجرحى إجباري';
-    if (!updateData.nbrblesse) newErrors.nbrblesse = 'عدد الموتى إجباري';
+    if (!updateData.a) newErrors.a = "لوحة منجمية إجبارية";
+    if (!updateData.nk) newErrors.nk = "نقطة كلمترية إجبارية";
+    if (!updateData.nbrmort) newErrors.nbrmort = "عدد الجرحى إجباري";
+    if (!updateData.nbrblesse) newErrors.nbrblesse = "عدد الموتى إجباري";
     return newErrors;
   };
 
   const generateOptionsNK = (region) => {
     let start, range;
     switch (region) {
-      case 'gabes':
+      case "gabes":
         start = 317;
         range = 75;
         break;
-      case 'sfax':
+      case "sfax":
         start = 395;
         range = 75;
         break;
@@ -261,93 +262,81 @@ const Update = ({ rowData, dataId, onUpdate }) => {
 
   const getSenseByRegion = (region) => {
     switch (region) {
-      case 'gabes':
+      case "gabes":
         return [
-          { value: 'اتجاه قابس', label: 'اتجاه قابس' },
-          { value: 'اتجاه صفاقس', label: 'اتجاه صفاقس' },
+          { value: "اتجاه قابس", label: "اتجاه قابس" },
+          { value: "اتجاه صفاقس", label: "اتجاه صفاقس" },
         ];
-      case 'sfax':
+      case "sfax":
         return [
-          { value: 'اتجاه تونس', label: 'اتجاه تونس' },
-          { value: 'اتجاه صخيرة', label: 'اتجاه صخيرة' },
+          { value: "اتجاه تونس", label: "اتجاه تونس" },
+          { value: "اتجاه صخيرة", label: "اتجاه صخيرة" },
         ];
       default:
         return [];
     }
   };
 
+  const isMobileView = useMediaQuery({ query: "(max-width: 1000px)" });
   return (
     <>
-      <Button variant="info" onClick={() => setShowModal(true)} style={{ width: "40px"}}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-        </svg>
+      <Button
+        variant="info"
+        onClick={() => setShowModal(true)}
+      >
+        <FaRegEdit />
       </Button>
-      <Modal show={showModal} onHide={() => setShowModal(false)} >
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>تحديث البيانات</Modal.Title>
         </Modal.Header>
-        <Modal.Body >
+        <Modal.Body>
           <Form.Group controlId="accident">
-            <Row>
-              <Col>
-                <Form.Control
-                  style={{ width: '150px' }}
-                  type="text"
-                  placeholder='أ'
-                  name="a"
-                  value={updateData.a}
-                  onChange={newData}
-                  required
-                />
-                {errors.a && <p style={{ color: 'red' }}>{errors.a}</p>}
-                <Form.Control
-                  style={{ width: '150px' }}
-                  type="text"
-                  placeholder='ب'
-                  name="b"
-                  value={updateData.b}
-                  onChange={newData}
-                  required
-                />
-              </Col>
-              <Col>
-                <Form.Control
-                  style={{ width: '150px' }}
-                  type="text"
-                  placeholder='ج'
-                  name="c"
-                  value={updateData.c}
-                  onChange={newData}
-                  required
-                />
-                <Form.Control
-                  style={{ width: '150px' }}
-                  type="text"
-                  placeholder='د'
-                  name="d"
-                  value={updateData.d}
-                  onChange={newData}
-                  required
-                />
-              </Col>
-              :لوحة منجمية
-            </Row>
-            <Row>
+            <Row className="form-section">
+                          <label>التاريخ</label>
               <Form.Control
-                style={{ width: '350px' }}
-                type="number"
-                name="barrier"
-                min="0"
-                value={updateData.barrier}
-                onChange={newData}
+                className="form-control"
+                type="date"
+                value={updateData.ddate}
+                onChange={handleDateChange}
               />
-              :زلاقات
-            </Row>
-            <Row>
+              </Row>
+
+            {/* Time */}
+                        <Row className="form-section date-time-row">
+                          <label>التوقيت</label> <Form.Select
+                className="form-select"
+                value={selectedHours}
+                onChange={(e) => setSelectedHours(e.target.value)}
+              >
+                {generateOptions(24)}
+              </Form.Select>
+              :
+              <Form.Select
+                className="form-section km-row"
+                value={selectedMinutes}
+                onChange={(e) => setSelectedMinutes(e.target.value)}
+              >
+                {generateOptions(60)}
+              </Form.Select>
+              </Row>
+
+            {/* NK + Meter */}
+            <Row className="form-section km-row">
+                          <label>نقطة كلمترية</label>
+              <Form.Select
+                className="form-section plate-section"
+                name="nk"
+                value={updateData.nk}
+                onChange={newData}
+              >
+                {userRedux && userRedux.region
+                  ? generateOptionsNK(userRedux.region)
+                  : null}
+              </Form.Select>
+              +
               <Form.Control
-                style={{ width: '194px', height: "30px" }}
+                className="form-control"
                 type="number"
                 min="0"
                 name="mtr"
@@ -355,20 +344,13 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                 onChange={newData}
                 required
               />
-              :البعد بالمتر
+              </Row>
+
+            {/* Direction */}
+            <Row className="form-section">
+                          <label>الاتجاه</label>
               <Form.Select
-                style={{ width: '80px' }}
-                name="nk"
-                value={updateData.nk}
-                onChange={newData}
-              >
-                {userRedux && userRedux.region ? generateOptionsNK(userRedux.region) : null}
-              </Form.Select>
-              :نقطة كلمترية
-            </Row>
-            <Row>
-              <Form.Select aria-label="Default select example"
-                style={{ width: '350px' }}
+                className="form-select"
                 value={selectedVoie || rowData.sens}
                 onChange={(e) => setSelectedVoie(e.target.value)}
               >
@@ -378,40 +360,62 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                   </option>
                 ))}
               </Form.Select>
-              :الاتجاه
-            </Row>
-            <Row>
-              <Form.Control
-                style={{ width: '350px' }}
-                type="number"
-                name="nbrmort"
-                min="0"
-                placeholder="nombre de mort"
-                value={updateData.nbrmort}
-                onChange={newData}
-              />
-              {errors.nbrmort && <p style={{ color: 'red' }}>{errors.nbrmort}</p>}
-              :عدد الموتى
-            </Row>
-            <Row>
-              <Form.Control
-                style={{ width: '350px' }}
-                type="number"
-                name="nbrblesse"
-                min="0"
-                placeholder="nombre des blessé"
-                value={updateData.nbrblesse}
-                onChange={newData}
-              />
-              {errors.nbrblesse && <p style={{ color: 'red' }}>{errors.nbrblesse}</p>}
-              :عدد الجرحى
-            </Row>
-            <Row>
-              <Form.Select aria-label="Default select example"
-                style={{ width: '350px' }}
+              </Row>
+
+            {/* Plate numbers */}
+            <Row className="form-section plate-section">
+                          <label>لوحة المركبة</label>
+                <Form.Control
+                  className="form-control"
+                  type="text"
+                  placeholder="أ"
+                  name="a"
+                  value={updateData.a}
+                  onChange={newData}
+                  required
+                />
+                {errors.a && <p className="form-error">{errors.a}</p>}
+
+                <Form.Control
+                  className="form-control"
+                  type="text"
+                  placeholder="ب"
+                  name="b"
+                  value={updateData.b}
+                  onChange={newData}
+                  required
+                />
+              
+                <Form.Control
+                  className="form-control"
+                  type="text"
+                  placeholder="ج"
+                  name="c"
+                  value={updateData.c}
+                  onChange={newData}
+                  required
+                />
+                <Form.Control
+                  className="form-control"
+                  type="text"
+                  placeholder="د"
+                  name="d"
+                  value={updateData.d}
+                  onChange={newData}
+                  required
+                />
+              </Row>
+              
+
+            {/* Cause of Accident */}
+            <Row className="form-row">
+            <span className="form-label">:السبب</span>
+              <Form.Select
+                className="form-select"
                 value={selectedCause || rowData.cause}
                 onChange={(e) => setSelectedCause(e.target.value)}
               >
+                <option value="">اختر السبب</option>
                 <option value="سرعة فائقة">سرعة فائقة</option>
                 <option value="انشطار اطار العجلة">انشطار اطار العجلة</option>
                 <option value="نعاس">نعاس</option>
@@ -419,59 +423,106 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                 <option value="سياقة في حالة سكر">سياقة في حالة سكر</option>
                 <option value="طريق مبلل">طريق مبلل</option>
                 <option value="عدم انتباه">عدم انتباه</option>
-                <option value="وجود حفرة وسط الطريق">وجود حفرة وسط الطريق</option>
+                <option value="وجود حفرة وسط الطريق">
+                  وجود حفرة وسط الطريق
+                </option>
                 <option value="انقلاب الشاحنة">انقلاب الشاحنة</option>
-                <option value="حيوان على الطريق السيارة">حيوان على الطريق السيارة</option>
-                <option value="مترجل على الطريق السيارة">مترجل على الطريق السيارة</option>
-                <option value="الدوران في الإتجاه المعاكس">الدوران في الإتجاه المعاكس</option>
-                <option value="الخروج من فتحة عشوائية">الخروج من فتحة عشوائية</option>
-                <option value="اصطدام سيارة باخرى رابظة على طرف الطريق">اصطدام سيارة باخرى رابظة على طرف الطريق</option>
-                <option value="عطب مكانيكي/ عطب كهربائي">عطب مكانيكي/ عطب كهربائي</option>
+                <option value="حيوان على الطريق السيارة">
+                  حيوان على الطريق السيارة
+                </option>
+                <option value="مترجل على الطريق السيارة">
+                  مترجل على الطريق السيارة
+                </option>
+                <option value="الدوران في الإتجاه المعاكس">
+                  الدوران في الإتجاه المعاكس
+                </option>
+                <option value="الخروج من فتحة عشوائية">
+                  الخروج من فتحة عشوائية
+                </option>
+                <option value="اصطدام سيارة باخرى رابظة على طرف الطريق">
+                  اصطدام سيارة باخرى رابظة على طرف الطريق
+                </option>
+                <option value="عطب مكانيكي/ عطب كهربائي">
+                  عطب مكانيكي/ عطب كهربائي
+                </option>
                 <option value="مضايقة من الخلف">مضايقة من الخلف</option>
-                <option value="اصطدام السيارة بالدراجة النارية">اصطدام السيارة بالدراجة النارية</option>
-                <option value="وجود عجلة او بقايا عجلة على الطريق">وجود عجلة او بقايا عجلة على الطريق</option>
+                <option value="اصطدام السيارة بالدراجة النارية">
+                  اصطدام السيارة بالدراجة النارية
+                </option>
+                <option value="وجود عجلة او بقايا عجلة على الطريق">
+                  وجود عجلة او بقايا عجلة على الطريق
+                </option>
                 <option value="سقوط قرط على الطريق">سقوط قرط على الطريق</option>
-                <option value="اصطدام سيارتان او اكثر">اصطدام سيارتان او اكثر</option>
-                <option value="عدم التحكم في السيارة">عدم التحكم في السيارة</option>
-                <option value="السياقة تحت تأثير التعب و الإرهاق">السياقة تحت تأثير التعب و الإرهاق</option>
+                <option value="اصطدام سيارتان او اكثر">
+                  اصطدام سيارتان او اكثر
+                </option>
+                <option value="عدم التحكم في السيارة">
+                  عدم التحكم في السيارة
+                </option>
+                <option value="السياقة تحت تأثير التعب و الإرهاق">
+                  السياقة تحت تأثير التعب و الإرهاق
+                </option>
               </Form.Select>
-              :السبب
             </Row>
-            <Row>
+
+            {/* Barrier Damage */}
+            <Row className="form-row">
+            <div className="form-label">:اضرار مادية</div>
               <Form.Control
-                style={{ width: '350px' }}
-                type="date"
-                selected={updateData.ddate ? new Date(updateData.ddate) : null}
-                value={updateData.ddate}
-                onChange={handleDateChange}
-                dateFormat="yyyy-MM-DD"
+                className="form-control"
+                type="text"
+                name="barrier"
+                placeholder="اضرار مادية"
+                value={updateData.barrier}
+                onChange={newData}
               />
-              :التاريخ
-            </Row>
-            <Row>
-              <Form.Select
-                style={{ width: '80px' }}
-                value={selectedHours}
-                onChange={(e) => setSelectedHours(e.target.value)}
-              >
-                {generateOptions(24)}
-              </Form.Select>:
-              <Form.Select
-                style={{ width: '80px' }}
-                value={selectedMinutes}
-                onChange={(e) => setSelectedMinutes(e.target.value)}
-              >
-                {generateOptions(60)}
-              </Form.Select>
-              :التوقيت
-            </Row>
+           </Row>
+
+            {/* Death Count */}
+            <Row className="form-row">
+            <div className="form-label">:عدد الموتى</div>
+              <Form.Control
+                className="form-control"
+                type="number"
+                name="nbrmort"
+                min="0"
+                placeholder="nombre de mort"
+                value={updateData.nbrmort}
+                onChange={newData}
+              />
+              {errors.nbrmort && <p className="form-error">{errors.nbrmort}</p>}
+              
+                          </Row>
+
+            {/* Injured Count */}
+            <Row className="form-row">
+            <span className="form-label">:عدد الجرحى</span>
+              <Form.Control
+                className="form-control"
+                type="number"
+                name="nbrblesse"
+                min="0"
+                placeholder="nombre des blessé"
+                value={updateData.nbrblesse}
+                onChange={newData}
+              />
+              {errors.nbrblesse && (
+                <p className="form-error">{errors.nbrblesse}</p>
+              )}
+              
+             </Row>
           </Form.Group>
         </Modal.Body>
-        <Modal.Footer  >
+        <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             الغاء العملية
           </Button>
-          <Button variant="primary" onClick={(e) => { handleUpdate(e) }}>
+          <Button
+            variant="primary"
+            onClick={(e) => {
+              handleUpdate(e);
+            }}
+          >
             حفظ التغييرات
           </Button>
         </Modal.Footer>

@@ -29,17 +29,14 @@ import { useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TableSortLabel } from '@mui/material';
 import ShowForm from './ShowDataForm';
+import { MdDeleteOutline } from "react-icons/md";
 
 tailChase.register()
 
-const StyledTableCell = styled(TableCell)`
-  color: black;
-  background-color: rgb(66, 173, 235);
-    padding-top: 0%;
-`;
 
 
-const Home = ({ userRegion, curuser,ShowRowData }) => {
+
+const Home = ({ userRegion, curuser,ShowRowData, userRole }) => {
   const dispatch = useDispatch();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -47,7 +44,6 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
   const isAuth = localStorage.getItem("token");
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   const [order, setOrder] = useState("ASC");
-
 
   useEffect(() => {
     if (isAuth && isAdmin) {
@@ -92,7 +88,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
             'Votre donnée est suprimé.',
             'succès'
           );
-          window.location.reload();
+          dispatch(fetchForms());
         }).catch((error) => {
           console.error("Error deleting data:", error);
           swalWithBootstrapButtons.fire(
@@ -119,10 +115,14 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
   const exportToExcel = () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Statistics');
-    const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years, months, createdBy, ...rest }) => rest);
+    const exportData = filteredData(data, startDate, endDate).map(({ _id, __v, years, months, createdBy, mtr, nk,minutes,hours, ...rest }) => ({
+      ...rest,
+      mtr_nk: `${nk}+${mtr}m`,
+      hours_min: `${hours}:${minutes}`
+  }));
 
     const headerMapping = {
-      barrier: "زلاقات",
+      barrier: "اضرار مادية",
       nbrmort: "موتى",
       nbrblesse: "جرحى",
       cause: "السبب",
@@ -131,12 +131,10 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
       b: "ل.م:ب",
       a: "ل.م:أ",
       sens: "اتجاه",
-      mtr: "مسافة ن.ك",
-      nk: "ن.ك",
-      minutes: "دقائق",
-      hours: "الساعة",
       day: "اليوم",
       ddate: "التاريخ",
+      mtr_nk: "مسافة ن.ك",
+      hours_min: "التوقيت",
     };
     console.log(headerMapping);
 
@@ -187,18 +185,21 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
     // Get valid user IDs from the current userRedux state
     const validUserIds = new Set(userRedux.map((user) => user._id));
   
-    // Filter data based on valid user IDs and target region
-    const usersFromTargetRegion = userRedux
-      .filter((user) => (user.region || "") === userRegion)
+    // Filter users based on region and role
+    const usersFromTargetRegionAndRole = userRedux
+      .filter(
+        (user) => (user.region || "") === userRegion && (user.role || "") === "securite" // Filtering by role
+      )
       .map((user) => user._id);
   
     return data.filter(
       (form) =>
-        usersFromTargetRegion.includes(form.createdBy) &&
+        usersFromTargetRegionAndRole.includes(form.createdBy) &&
         validUserIds.has(form.createdBy) // Ensure `createdBy` is still valid
     );
   };
   
+  // Modify filteredData to include the updated filterData function
   const filteredData = (data, start, end) => {
     if (!start && !end) {
       return filterData(data);
@@ -218,38 +219,18 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
   
   // Filter data and calculate sums
   const filteredDataArray = filteredData(data, formatStartDate, formatEndDate);
-  const sumInjur = filteredDataArray.reduce((acc, form) => acc + (form.nbrblesse || 0), 0);
-  const sumDead = filteredDataArray.reduce((acc, form) => acc + (form.nbrmort || 0), 0);
+  
   const sumDays = filteredDataArray.length; 
   
 
 
-  const [isMobileView, setIsMobileView] = useState(false);
-
-  useEffect(() => {
-    // Set up media query listener
-    const mediaQuery = window.matchMedia("(max-width: 1000px)");
-
-    // Update state based on media query
-    const handleResize = () => {
-      setIsMobileView(mediaQuery.matches);
-    };
-
-    // Initial check
-    handleResize();
-
-    // Add event listener
-    mediaQuery.addEventListener('change', handleResize);
-
-    // Cleanup listener on component unmount
-    return () => mediaQuery.removeEventListener('change', handleResize);
-  }, []);
+  const isMobileView = useMediaQuery({ query: '(max-width: 760px)' });
 
   
 
 
   return (
-    <div className='left-right-gap'>
+    <div>
       <div className="custom-form-container">
         <div className="datepickers-container">
           <div>
@@ -282,15 +263,16 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
           </div>
         </div>
       </div>
+      <div className='centerbtn'>
       <Button variant="primary" onClick={() => setStartDate(null) || setEndDate(null)}>
         إعادة تعيين المرشحات
       </Button>
       <Button variant="primary" onClick={exportToExcel}>
         تصدير إلى Excel
       </Button>
-
-      {filteredData(data,startDate,endDate).length === 0 ? (<h4>لا توجد بيانات في هذا التاريخ</h4>) : filteredDataArray.length === 0 ? (
-        <div><h4>!الرجاء تعمير الجدول</h4><l-tail-chase
+      </div>
+      {filteredData(data,startDate,endDate) === null ? (<div className='center-alert'><Add /><h4>لا توجد بيانات في هذا التاريخ</h4></div>) : filteredDataArray.length === 0 ? (
+        <div className='center-alert'><h4>!الرجاء تعمير الجدول</h4><l-tail-chase
         size="40"
         speed="1.75"
         color="black"
@@ -302,27 +284,28 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
   className="tableContainer"
 >
     {isMobileView ? (
-      <Table>
+      <Table className="mobile-table">
         <TableHead>
           <TableRow>
-          <StyledTableCell className='wcell'>موتى</StyledTableCell>
-          <StyledTableCell className='wcell'>جرحى</StyledTableCell>
-          <StyledTableCell className='wcell'>الساعة</StyledTableCell>
-            <StyledTableCell className='wcell'>التاريخ</StyledTableCell>
-            <StyledTableCell className='wcell'>اتجاه</StyledTableCell>
-            <StyledTableCell className='wcell'>Actions</StyledTableCell>
+            <TableCell className="rtl-text">اتجاه</TableCell>
+            <TableCell className="rtl-text">ن.ك</TableCell>
+            <TableCell className="rtl-text">الساعة</TableCell>
+            <TableCell className="rtl-text">اليوم</TableCell>
+            <TableCell className="rtl-text">التاريخ</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {filteredDataArray.map((row) => (
+          {filteredDataArray.slice(-1).map((row) => (
             <TableRow key={row._id}>
-              <TableCell className='wcell'>{row.nbrmort}</TableCell>
-              <TableCell className='wcell'>{row.nbrblesse}</TableCell>
-              <TableCell className='wcell'>{`${row.hours}:${row.minutes}`}</TableCell>
-              <TableCell className='wcell'>{row.ddate}</TableCell>
-              <TableCell className='wcell'>{row.sens}</TableCell>
+              <TableCell className="rtl-text">{row.sens}</TableCell>
+              <TableCell className="rtl-text">{row.nk}</TableCell>
+              <TableCell className="rtl-text">{`${row.hours}:${row.minutes}`}</TableCell>
+              <TableCell className="rtl-text">{row.day}</TableCell>
+              <TableCell className="rtl-text">{row.ddate}</TableCell>
               <TableCell>
-                {curuser?.isAdmin ? (
+              <div className="table-actions">
+                {curuser?.isAdmin && curuser?.role == "securite" ? (
                   <>
                       <Add />
                       <Update dataId={row._id} rowData={row} />
@@ -330,17 +313,7 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
                         variant="danger"
                         onClick={() => handleDelete(row._id)}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-trash"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                        </svg>
+                        <MdDeleteOutline />
                       </Button>
                       <ShowForm ShowRowData={row}/>
                       </>
@@ -350,56 +323,57 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
                   <Add />
                   </>
                 )}
+                </div>
               </TableCell>
             </TableRow>
           ))}
           <TableRow>
-            <TableCell className='wcell'>جرحى: {sumInjur}</TableCell>
-            <TableCell className='wcell'>موتى: {sumDead}</TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell className='wcell' colSpan={2}>اجمالي حوادث: {sumDays}</TableCell>
+          <TableCell>Index:</TableCell>
+          <TableCell>{sumDays}</TableCell>
+          <TableCell colSpan={4}></TableCell>
           </TableRow>
         </TableBody>
         </Table>
     ) : (
-      <Table style={{ tableLayout: "auto" }}>
+      <Table className="large-table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>زلاقات</StyledTableCell>
-            <StyledTableCell>موتى</StyledTableCell>
-            <StyledTableCell>جرحى</StyledTableCell>
-            <StyledTableCell>السبب</StyledTableCell>
-            <StyledTableCell>لوحة منجمية</StyledTableCell>
-            <StyledTableCell>اتجاه</StyledTableCell>
-            <StyledTableCell>ن.ك</StyledTableCell>
-            <StyledTableCell>الساعة</StyledTableCell>
-            <StyledTableCell>اليوم</StyledTableCell>
-            <StyledTableCell>التاريخ</StyledTableCell>
-            <StyledTableCell>Actions</StyledTableCell>
+            <TableCell>Index</TableCell>
+            <TableCell className="rtl-text">اضرار مادية</TableCell>
+            <TableCell className="rtl-text">موتى</TableCell>
+            <TableCell className="rtl-text">جرحى</TableCell>
+            <TableCell className="rtl-text">السبب</TableCell>
+            <TableCell className="rtl-text">لوحة منجمية</TableCell>
+            <TableCell className="rtl-text">اتجاه</TableCell>
+            <TableCell className="rtl-text">ن.ك</TableCell>
+            <TableCell className="rtl-text">الساعة</TableCell>
+            <TableCell className="rtl-text">اليوم</TableCell>
+            <TableCell className="rtl-text">التاريخ</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {filteredDataArray.map((row) => (
+          {filteredDataArray.slice(-1).map((row) => (
             <TableRow key={row._id}>
-              <TableCell>{parseFloat(row.barrier) * 4}m ({row.barrier})</TableCell>
-              <TableCell>{row.nbrmort}</TableCell>
-              <TableCell>{row.nbrblesse}</TableCell>
-              <TableCell>{row.cause}</TableCell>
-              <TableCell>
-                {row.a && `أ: ${row.a}`}<br />
-                {row.b && `ب: ${row.b}`}<br />
-                {row.c && `ج: ${row.c}`}<br />
-                {row.d && `د: ${row.d}`}
+              <TableCell className="rtl-text">{sumDays}</TableCell>
+              <TableCell className="rtl-text">{row.barrier}</TableCell>
+              <TableCell className="rtl-text">{row.nbrmort}</TableCell>
+              <TableCell className="rtl-text">{row.nbrblesse}</TableCell>
+              <TableCell className="rtl-text">{row.cause}</TableCell>
+              <TableCell className="rtl-text">
+                {row.a && `أ: {${row.a}} `}<br />
+                {row.b && `ب: {${row.b}} `}<br />
+                {row.c && `ج: {${row.c}} `}<br />
+                {row.d && `د: {${row.d}} `}
               </TableCell>
-              <TableCell>{row.sens}</TableCell>
-              <TableCell>{`Pk:${row.nk}, ${row.mtr}m`}</TableCell>
-              <TableCell>{`${row.hours}:${row.minutes}`}</TableCell>
-              <TableCell>{row.day}</TableCell>
-              <TableCell>{row.ddate}</TableCell>
+              <TableCell className="rtl-text">{row.sens}</TableCell>
+              <TableCell className="rtl-text">{`Pk:${row.nk}+${row.mtr}m`}</TableCell>
+              <TableCell className="rtl-text">{`${row.hours}:${row.minutes}`}</TableCell>
+              <TableCell className="rtl-text">{row.day}</TableCell>
+              <TableCell className="rtl-text">{row.ddate}</TableCell>
               <TableCell>
-                {curuser?.isAdmin ? (
-                  <div className="wrap-center">
+              <div className="table-actions">
+                {curuser?.isAdmin && curuser?.role == "securite" ? (
                     <div className="top-buttons">
                       <Add />
                       <Update dataId={row._id} rowData={row} />
@@ -407,31 +381,16 @@ const Home = ({ userRegion, curuser,ShowRowData }) => {
                         variant="danger"
                         onClick={() => handleDelete(row._id)}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-trash"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                        </svg>
+                        <MdDeleteOutline />
                       </Button>
                     </div>
-                  </div>
                 ) : (
                   <Add />
                 )}
+                </div>
               </TableCell>
             </TableRow>
           ))}
-          <TableRow>
-            <TableCell colSpan={5}>اجمالي حوادث: {sumDays}</TableCell>
-            <TableCell colSpan={3}>جرحى: {sumInjur}</TableCell>
-            <TableCell colSpan={3}>موتى: {sumDead}</TableCell>
-          </TableRow>
         </TableBody>
         </Table>
     )}

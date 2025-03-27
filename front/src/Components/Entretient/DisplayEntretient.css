@@ -1,0 +1,64 @@
+/* Container styling */
+.entretien-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  /* Header and button alignment */
+  .entretien-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .entretien-header h2 {
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+  }
+
+  
+  /* Table cell adjustments */
+  .entretien-table th,
+  .entretien-table td {
+    white-space: nowrap;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  /* Button spacing */
+  .entretien-actions .btn {
+    margin-right: 8px;
+    margin-bottom: 6px;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .entretien-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .entretien-header h2 {
+      font-size: 1.5rem;
+    }
+  
+    .entretien-actions {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .entretien-table {
+        font-size: 8.5px;
+    }
+    .entretien-table th{
+        font-size: 8.5px;
+      }
+  
+    .entretien-table th,
+    .entretien-table td {
+      padding: 8px;
+    }
+  }
+  

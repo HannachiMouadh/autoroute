@@ -18,7 +18,7 @@ const Signup = () => {
     e.preventDefault();
   
     // Validation basique
-    if (!register.name || !register.lastName || !register.email || !register.password || !register.phone || !register.region) {
+    if (!register.name || !register.lastName || !register.email || !register.password || !register.phone || !register.region || !register.role) {
       return toast.error('Tous les champs doivent être remplis !', {
         position: 'top-right',
         hideProgressBar: false,
@@ -38,6 +38,7 @@ const Signup = () => {
         password: "",
         phone: "",
         region: userRedux?.region || "",
+        role: "",
         //isAdmin: true,
         //isAuth: false,
       });
@@ -126,6 +127,26 @@ const Signup = () => {
           </option>
           <option value="skhera" disabled={userRedux?.isAdmin && userRedux.region !== 'skhera'}>
             skhera
+          </option>
+        </Form.Select>
+        <Form.Label className="form-label">Role:</Form.Label>
+        <Form.Select
+          className="form-control"
+          required
+          id="role"
+          name="role"
+          value={register.role || ""}
+          onChange={(e) => setRegister({ ...register, role: e.target.value })}
+        >
+          <option value="" disabled>Select Role</option>
+          <option value="patrouille">
+            Patrouille
+          </option>
+          <option value="entretient">
+            Entretient
+          </option>
+          <option value="securite">
+          Sécurité
           </option>
         </Form.Select>
         <Form.Label className="form-label">الهاتف:</Form.Label>

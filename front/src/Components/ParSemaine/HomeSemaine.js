@@ -40,12 +40,11 @@ const HomeSemaine = ({ userSemaine }) => {
   const chartAccRef = useRef(null);
   const chartInjurRef = useRef(null);
   const data = useSelector((state) => state.data.data);
+    useEffect(() => {
+        dispatch(fetchForms());
+    }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchForms());
-  }, [dispatch]);
-
-  const userRedux = useSelector((state) => state.user.users);
+    const userRedux = useSelector((state) => state.user.users);
   const [User, setUser] = useState({ name: "", lastName: "", email: "", phone: "", region:"" });
   useEffect(() => {
     dispatch(getAllUsers());
@@ -53,6 +52,7 @@ const HomeSemaine = ({ userSemaine }) => {
   useEffect(() => {
     setUser(userRedux);
   }, [userRedux]);
+
 
   const isMobile = useMediaQuery({ query: '(max-width: 400px)' });
 
@@ -417,6 +417,24 @@ const HomeSemaine = ({ userSemaine }) => {
                       plugins: {
                         legend: { position: 'top' },
                         title: { display: true, text: 'عدد الحوادث حسب ايام الاسبوع', font: { size: 60 } },
+                      },
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: "Nombre des accidents",
+                          },
+                          ticks: {
+                            stepSize: 1,
+                          },
+                        },
+                        x: {
+                          title: {
+                            display: true,
+                            text: "Jours de la semaine",
+                          },
+                        },
                       },
                     }}
                     height={400}

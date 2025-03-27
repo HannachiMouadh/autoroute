@@ -39,7 +39,7 @@ export const loginUser = createAsyncThunk("login", async (user) => {
     console.log(result);
     return result.data;
   } catch (error) {
-    console.log(error)
+    console.error("Login error:", error.response?.data || error.message);
   }
 });
 
@@ -56,39 +56,6 @@ export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => 
   }
 });
 
-
-// export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => {
-//   const token = localStorage.getItem("token");
-//   if (!token) {
-//     return thunkAPI.rejectWithValue("No token available");
-//   }
-
-//   try {
-//     const response = await axios.get("http://localhost:5000/api/user/current", {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error.response.data);
-//   }
-// });
-
-// export const currentUser = createAsyncThunk("current", async () => {
-//   let opts ={
-//     headers:{
-//       Authorization:localStorage.getItem("token"),
-//     },
-//   };
-//   try {
-//     const result = await axios.get("http://localhost:5000/api/user/current",opts);
-//     return result.data;
-//     console.log(result.data)
-//   } catch (error) {
-//     console.log(error)
-//   }
-// });
 
 
 export const getAllUsers = createAsyncThunk("getAllUsers", async () => {

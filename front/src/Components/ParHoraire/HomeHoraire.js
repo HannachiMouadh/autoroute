@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { deleteForm, fetchForms, updateForm } from '../../JS/formSlice/FormSlice';
+import { fetchForms } from '../../JS/formSlice/FormSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Add from '../Forms/Add';
 import Table from 'react-bootstrap/Table';
@@ -39,7 +39,7 @@ const HomeHoraire = ({userHoraire}) => {
   const chartAccRef = useRef(null);
   const chartInjurRef = useRef(null);
   const data = useSelector((state) => state.data.data);
-  //console.log("kkkkkkkkk data: ", data);
+
   useEffect(() => {
     dispatch(fetchForms());
   }, [dispatch]);
@@ -742,6 +742,24 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
                       legend: { position: 'top' },
                       title: { display: true, text: 'عدد الحوادث حسب ساعات اليوم',font: { size: 60 }  },
                     },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        title: {
+                          display: true,
+                          text: "Nombre des accidents",
+                        },
+                        ticks: {
+                          stepSize: 1,
+                        },
+                      },
+                      x: {
+                        title: {
+                          display: true,
+                          text: "Horaire",
+                        },
+                      },
+                    },
                   }}
                   height={400}
                 />
@@ -773,6 +791,24 @@ headerCell.alignment = { horizontal: 'center', vertical: 'middle' };
                     plugins: {
                       legend: { position: 'top' },
                       title: { display: true, text: 'عدد الجرحى و الموتى حسب ساعات اليوم',font: { size: 60 }  },
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        title: {
+                          display: true,
+                          text: "Nombre des victimes",
+                        },
+                        ticks: {
+                          stepSize: 1,
+                        },
+                      },
+                      x: {
+                        title: {
+                          display: true,
+                          text: "Horaire",
+                        },
+                      },
                     },
                   }}
                   height={400}
