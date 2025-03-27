@@ -240,17 +240,31 @@ const Add = ({ id, userRegion }) => {
       hours: formData.hours.toString().padStart(2, "0"),
       minutes: formData.minutes.toString().padStart(2, "0"),
     };
-
-    dispatch(addForm(newData));
-
-    toast.success("تم تحديث البيانات بنجاح!", {
-      position: "top-right",
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-    setShow(false);
+    dispatch(addForm(newData)).then((response) => {
+            console.log("Update response:", response);
+            if (response.error) {
+              throw new Error(response.error.message);
+            }
+            toast.success("تم تحديث البيانات بنجاح!", {
+              position: "top-right",
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+            setShow(false);
+            dispatch(fetchForms());
+          })
+          .catch((error) => {
+            console.error("Update failed:", error);
+            toast.error("فشل تحديث البيانات. يرجى المحاولة مرة أخرى.", {
+              position: "top-right",
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+          });
     dispatch(fetchForms());
   };
   const generateOptions = (range) => {
