@@ -6,9 +6,9 @@ const bcrypt = require('bcryptjs');
 module.exports = {
 
   register: async (req, res) => {
-    const { name, lastName, email, password, phone, region } = req.body;
+    const { name, lastName, email, password, phone, region,role } = req.body;
   
-    if (!name || !lastName || !email || !password || !phone || !region) {
+    if (!name || !lastName || !email || !password || !phone || !region || !role) {
       return res.status(400).json({ msg: "Tous les champs sont obligatoires" });
     }
   
@@ -62,14 +62,8 @@ module.exports = {
   },
 
   current: async (req, res) => {
-    if (!req.user) {
-      console.log("Unauthorized: No user found in request");
-      return res.status(401).send({ message: 'Unauthorized' });
-    }
-    console.log("User found:", req.user);
     res.status(200).send({ user: req.user });
   },
-  
 
   update: async (req, res) => {
     const { id } = req.params;

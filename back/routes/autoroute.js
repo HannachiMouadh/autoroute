@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
   try {
     const newForm = new data(req.body);
     const result = await newForm.save();
-    res.send({ response: result, msg: "form saved" });
+    res.send({ respond: result, msg: "form saved" });
   } catch (error) {
     res.status(200).send({ msg: `cannot save the form${error}` });
     console.log("erroooorrr",error);
