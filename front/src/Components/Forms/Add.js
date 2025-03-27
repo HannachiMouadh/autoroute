@@ -242,7 +242,7 @@ const Add = ({ id, userRegion }) => {
     };
 
     dispatch(addForm(newData));
-    dispatch(fetchForms());
+
     toast.success("تم تحديث البيانات بنجاح!", {
       position: "top-right",
       hideProgressBar: false,
@@ -250,8 +250,8 @@ const Add = ({ id, userRegion }) => {
       pauseOnHover: true,
       draggable: true,
     });
-
     setShow(false);
+    dispatch(fetchForms());
   };
   const generateOptions = (range) => {
     return Array.from({ length: range }, (_, i) => (
