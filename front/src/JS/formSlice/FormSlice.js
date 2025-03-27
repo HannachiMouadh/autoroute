@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // Fetch forms action
 export const fetchForms = createAsyncThunk('data/fetchAll', async () => {
   try {
-    const response = await axios.get('http://localhost:5000/auto/');
+    const response = await axios.get('https://autoroute-api.vercel.app/auto/');
     return response.data.respond;
   } catch (error) {
     console.error('Error fetching forms:', error);
