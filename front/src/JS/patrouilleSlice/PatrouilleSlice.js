@@ -7,7 +7,7 @@ export const fetchPatrouilles = createAsyncThunk(
   'patrouille/fetchPatrouilles',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get('http://localhost:5000/pat/');
+      const response = await axios.get('https://autoroute-api.vercel.app/pat/');
       return response.data.respond;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);
