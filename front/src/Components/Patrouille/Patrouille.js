@@ -107,6 +107,7 @@ const Patrouille = () => {
         >
           <thead>
             <tr>
+              <th>Session</th>
               <th>Matricule</th>
               <th>Start Km</th>
               <th>Point Km</th>
