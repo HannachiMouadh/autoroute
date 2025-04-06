@@ -35,7 +35,13 @@ export const updateUser = createAsyncThunk("update", async ({_id,user}) => {
 
 export const loginUser = createAsyncThunk("login", async (user) => {
   try {
-    const result = await axios.post("http://localhost:5000/api/user/login",user);
+    const result = await axios.post("http://localhost:5000/api/user/login",user,
+      {
+        headers: {
+          'app-type': 'web', // or 'web'
+        },
+      }
+    );
     console.log(result);
     return result.data;
   } catch (error) {

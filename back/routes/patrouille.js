@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const result = await patData.find();
-    res.send({ respond: result, msg: "entdata retreived successfully" });
+    res.send({ respond: result, msg: "patdata retreived successfully" });
   } catch (error) {
     res.send({ msg: `cannot get patData${error}` });
   }

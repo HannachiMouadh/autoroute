@@ -280,10 +280,7 @@ const Update = ({ rowData, dataId, onUpdate }) => {
   const isMobileView = useMediaQuery({ query: "(max-width: 1000px)" });
   return (
     <>
-      <Button
-        variant="info"
-        onClick={() => setShowModal(true)}
-      >
+      <Button variant="info" onClick={() => setShowModal(true)}>
         <FaRegEdit />
       </Button>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -293,20 +290,22 @@ const Update = ({ rowData, dataId, onUpdate }) => {
         <Modal.Body>
           <Form.Group controlId="accident">
             <Row className="form-section">
-                          <label>التاريخ</label>
+              <label>التاريخ</label>
               <Form.Control
                 className="form-control"
                 type="date"
+                selected={updateData.ddate ? new Date(updateData.ddate) : null}
                 value={updateData.ddate}
                 onChange={handleDateChange}
               />
-              </Row>
+            </Row>
 
             {/* Time */}
-                        <Row className="form-section date-time-row">
-                          <label>التوقيت</label> <Form.Select
+            <Row className="form-section date-time-row">
+              <label>التوقيت</label>{" "}
+              <Form.Select
                 className="form-select"
-                value={selectedHours}
+                value={selectedHours || rowData.hours}
                 onChange={(e) => setSelectedHours(e.target.value)}
               >
                 {generateOptions(24)}
@@ -314,20 +313,20 @@ const Update = ({ rowData, dataId, onUpdate }) => {
               :
               <Form.Select
                 className="form-section km-row"
-                value={selectedMinutes}
+                value={selectedMinutes || rowData.minutes}
                 onChange={(e) => setSelectedMinutes(e.target.value)}
               >
                 {generateOptions(60)}
               </Form.Select>
-              </Row>
+            </Row>
 
             {/* NK + Meter */}
             <Row className="form-section km-row">
-                          <label>نقطة كلمترية</label>
+              <label>نقطة كلمترية</label>
               <Form.Select
                 className="form-section plate-section"
                 name="nk"
-                value={updateData.nk}
+                value={updateData.nk || rowData.nk}
                 onChange={newData}
               >
                 {userRedux && userRedux.region
@@ -340,15 +339,15 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                 type="number"
                 min="0"
                 name="mtr"
-                value={updateData.mtr}
+                value={updateData.mtr || rowData.mtr}
                 onChange={newData}
                 required
               />
-              </Row>
+            </Row>
 
             {/* Direction */}
             <Row className="form-section">
-                          <label>الاتجاه</label>
+              <label>الاتجاه</label>
               <Form.Select
                 className="form-select"
                 value={selectedVoie || rowData.sens}
@@ -360,56 +359,55 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                   </option>
                 ))}
               </Form.Select>
-              </Row>
+            </Row>
 
             {/* Plate numbers */}
             <Row className="form-section plate-section">
-                          <label>لوحة المركبة</label>
-                <Form.Control
-                  className="form-control"
-                  type="text"
-                  placeholder="أ"
-                  name="a"
-                  value={updateData.a}
-                  onChange={newData}
-                  required
-                />
-                {errors.a && <p className="form-error">{errors.a}</p>}
+              <label>لوحة المركبة</label>
+              <Form.Control
+                className="form-control"
+                type="text"
+                placeholder="أ"
+                name="a"
+                value={updateData.a || rowData.a}
+                onChange={newData}
+                required
+              />
+              {errors.a && <p className="form-error">{errors.a}</p>}
 
-                <Form.Control
-                  className="form-control"
-                  type="text"
-                  placeholder="ب"
-                  name="b"
-                  value={updateData.b}
-                  onChange={newData}
-                  required
-                />
-              
-                <Form.Control
-                  className="form-control"
-                  type="text"
-                  placeholder="ج"
-                  name="c"
-                  value={updateData.c}
-                  onChange={newData}
-                  required
-                />
-                <Form.Control
-                  className="form-control"
-                  type="text"
-                  placeholder="د"
-                  name="d"
-                  value={updateData.d}
-                  onChange={newData}
-                  required
-                />
-              </Row>
-              
+              <Form.Control
+                className="form-control"
+                type="text"
+                placeholder="ب"
+                name="b"
+                value={updateData.b || rowData.b}
+                onChange={newData}
+                required
+              />
+
+              <Form.Control
+                className="form-control"
+                type="text"
+                placeholder="ج"
+                name="c"
+                value={updateData.c || rowData.c}
+                onChange={newData}
+                required
+              />
+              <Form.Control
+                className="form-control"
+                type="text"
+                placeholder="د"
+                name="d"
+                value={updateData.d || rowData.d}
+                onChange={newData}
+                required
+              />
+            </Row>
 
             {/* Cause of Accident */}
             <Row className="form-row">
-            <span className="form-label">:السبب</span>
+              <span className="form-label">:السبب</span>
               <Form.Select
                 className="form-select"
                 value={selectedCause || rowData.cause}
@@ -467,50 +465,48 @@ const Update = ({ rowData, dataId, onUpdate }) => {
 
             {/* Barrier Damage */}
             <Row className="form-row">
-            <div className="form-label">:اضرار مادية</div>
+              <div className="form-label">:اضرار مادية</div>
               <Form.Control
                 className="form-control"
                 type="text"
                 name="barrier"
                 placeholder="اضرار مادية"
-                value={updateData.barrier}
+                value={updateData.barrier || rowData.barrier}
                 onChange={newData}
               />
-           </Row>
+            </Row>
 
             {/* Death Count */}
             <Row className="form-row">
-            <div className="form-label">:عدد الموتى</div>
+              <div className="form-label">:عدد الموتى</div>
               <Form.Control
                 className="form-control"
                 type="number"
                 name="nbrmort"
                 min="0"
                 placeholder="nombre de mort"
-                value={updateData.nbrmort}
+                value={updateData.nbrmort || rowData.nbrmort}
                 onChange={newData}
               />
               {errors.nbrmort && <p className="form-error">{errors.nbrmort}</p>}
-              
-                          </Row>
+            </Row>
 
             {/* Injured Count */}
             <Row className="form-row">
-            <span className="form-label">:عدد الجرحى</span>
+              <span className="form-label">:عدد الجرحى</span>
               <Form.Control
                 className="form-control"
                 type="number"
                 name="nbrblesse"
                 min="0"
                 placeholder="nombre des blessé"
-                value={updateData.nbrblesse}
+                value={updateData.nbrblesse || rowData.nbrblesse}
                 onChange={newData}
               />
               {errors.nbrblesse && (
                 <p className="form-error">{errors.nbrblesse}</p>
               )}
-              
-             </Row>
+            </Row>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

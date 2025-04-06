@@ -44,20 +44,40 @@ module.exports = {
 
   login: async (req, res) => {
     const { email, password } = req.body;
+    const appType = req.headers['app-type']; // "mobile" or "web"
+  
     try {
       const searchedUser = await User.findOne({ email });
-      if (!searchedUser) return res.status(400).send({ msg: "bad Credential" });
+      if (!searchedUser) return res.status(400).send({ msg: "Bad credentials" });
+  
       const match = await bcrypt.compare(password, searchedUser.password);
-      if (!match) return res.status(400).send({ msg: "bad Credential" });
+      if (!match) return res.status(400).send({ msg: "Bad credentials" });
+  
+      // Role-based access restriction
+      if (appType === 'mobile' && searchedUser.role !== 'patrouille') {
+        return res.status(403).send({ msg: "Access denied. Only patrouille users can use the mobile app." });
+      }
+  
+      if (appType === 'web' && !['securite', 'maintenance'].includes(searchedUser.role)) {
+        return res.status(403).send({ msg: "Access denied. Only securite or maintenance users can use the web app." });
+      }
+  
       const payload = {
         _id: searchedUser._id,
         name: searchedUser.name,
+        role: searchedUser.role,
       };
-      const token = await jwt.sign(payload, process.env.SecretOrKey);
-      res.status(200).send({ user: searchedUser, msg: "success", token: `Bearer ${token}` });
+  
+      const token = await jwt.sign(payload, process.env.SecretOrKey, { expiresIn: '24h' });
+  
+      res.status(200).send({
+        user: searchedUser,
+        msg: "success",
+        token: `Bearer ${token}`,
+      });
     } catch (error) {
-      console.log(error)
-      res.status(500).send({ msg: "can not get the user" });
+      console.error(error);
+      res.status(500).send({ msg: "Cannot log in. Internal error." });
     }
   },
 

@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { currentUser } from "./JS/userSlice/userSlice";
 import DisplayEntretient from "./Components/Entretient/DisplayEntretient";
+import Patrouille from "./Components/Patrouille/Patrouille";
 
 function App({ userManLieu,userRegion,curuser,userCause,userHoraire,userSemaine,userSens,userLieu,userRole }) {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ function App({ userManLieu,userRegion,curuser,userCause,userHoraire,userSemaine,
         <Route path="/par-cause" element={<HomeCause userCause={userRedux.region} />} />
         <Route path="/par-lieu" element={<HomeLieu userLieu={userRedux.region} />} />
         <Route path="/entretient" element={<DisplayEntretient />} />
+        <Route path="/patrouille" element={<Patrouille />} />
         <Route path="/inscription" element={<Signup />} />
         <Route path="/utilisateurs" element={<UsersMan userManLieu={userRedux.region}/>} />
         </Route>
