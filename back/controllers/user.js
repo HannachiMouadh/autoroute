@@ -55,7 +55,10 @@ module.exports = {
   
       // Role-based access restriction
       if (appType === 'mobile' && searchedUser.role !== 'patrouille') {
-        return res.status(403).send({ msg: "Access denied. Only patrouille users can use the mobile app." });
+        return res.status(403).send({ 
+          msg: "Access denied. Only patrouille users can use the mobile app.",
+          isAuth: JSON.stringify(false), 
+        });
       }
   
       if (appType === 'web' && !['securite', 'maintenance'].includes(searchedUser.role)) {
@@ -70,11 +73,18 @@ module.exports = {
   
       const token = await jwt.sign(payload, process.env.SecretOrKey, { expiresIn: '24h' });
   
-      res.status(200).send({
-        user: searchedUser,
-        msg: "success",
-        token: `Bearer ${token}`,
-      });
+      const responseData = {
+      user: searchedUser,
+      msg: "success",
+      token: `Bearer ${token}`,
+    };
+
+    // Include isAuth: "true" if mobile patrouille login
+    if (appType === 'mobile' && searchedUser.role === 'patrouille') {
+      responseData.isAuth = JSON.stringify(true);
+    }
+
+    res.status(200).send(responseData);
     } catch (error) {
       console.error(error);
       res.status(500).send({ msg: "Cannot log in. Internal error." });
