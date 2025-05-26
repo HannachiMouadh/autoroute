@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { deleteForm, fetchForms } from "../../JS/formSlice/FormSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Add from "./Add";
-import Delete from "./Delete";
 import Update from "./Update";
 import Button from "react-bootstrap/Button";
 import Table from "@mui/material/Table";
@@ -18,7 +17,6 @@ import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
-import * as XLSX from "xlsx";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import {
@@ -37,7 +35,7 @@ import { MdDeleteOutline } from "react-icons/md";
 
 tailChase.register();
 
-const Home = ({ userRegion, curuser, ShowRowData, userRole }) => {
+const Home = ({ userDistrict, curuser,userAutonum, ShowRowData, userRole }) => {
   const dispatch = useDispatch();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -45,6 +43,7 @@ const Home = ({ userRegion, curuser, ShowRowData, userRole }) => {
   const isAuth = localStorage.getItem("token");
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   const [order, setOrder] = useState("ASC");
+console.log(userAutonum);
 
   useEffect(() => {
     if (isAuth && isAdmin) {
@@ -63,7 +62,7 @@ const Home = ({ userRegion, curuser, ShowRowData, userRole }) => {
     lastName: "",
     email: "",
     phone: "",
-    region: "",
+    district: "",
   });
   useEffect(() => {
     setUser(userRedux);
@@ -141,14 +140,11 @@ const Home = ({ userRegion, curuser, ShowRowData, userRole }) => {
     );
 
     const headerMapping = {
-      barrier: "اضرار مادية",
+      degat: "اضرار مادية",
       nbrmort: "موتى",
       nbrblesse: "جرحى",
       cause: "السبب",
-      d: "ل.م:د",
-      c: "ل.م:ج",
-      b: "ل.م:ب",
-      a: "ل.م:أ",
+      matriculeA: "ل.م:أ",
       sens: "اتجاه",
       day: "اليوم",
       ddate: "التاريخ",
@@ -173,8 +169,8 @@ const Home = ({ userRegion, curuser, ShowRowData, userRole }) => {
     const headerCell = headerRow.getCell(1);
     headerCell.value =
       startDate && endDate
-        ? `Recap Rapport Statistique : ${formatStartDate} - ${formatEndDate}`
-        : "Recap Rapport Statistique pour touts les données";
+        ? `Recap Rapport Statistique des accidents : ${formatStartDate} - ${formatEndDate}`
+        : "Recap Rapport Statistique des accidents pour touts les données";
     headerCell.font = { bold: true };
     headerCell.alignment = { horizontal: "center", vertical: "middle" };
 
@@ -204,49 +200,72 @@ const Home = ({ userRegion, curuser, ShowRowData, userRole }) => {
     });
   };
 
-  const filterData = (data) => {
-    if (!data || !userRedux) {
-      return [];
-    }
 
-    // Get valid user IDs from the current userRedux state
-    const validUserIds = new Set(userRedux.map((user) => user._id));
+  const autorouteDistrictMap = {
+  a1: ['oudhref', 'mahres', 'jem', 'hergla', 'turki'],
+  a3: ['mdjazbab', 'baja'],
+  a4: ['bizerte'],
+};
 
-    // Filter users based on region and role
-    const usersFromTargetRegionAndRole = userRedux
-      .filter(
-        (user) =>
-          (user.region || "") === userRegion && (user.role || "") === "securite" // Filtering by role
-      )
-      .map((user) => user._id);
 
-    return data.filter(
-      (form) =>
-        usersFromTargetRegionAndRole.includes(form.createdBy) &&
-        validUserIds.has(form.createdBy) // Ensure `createdBy` is still valid
+  const filterData = (data, userAutonum) => {
+  if (!data || !userRedux) {
+    return [];
+  }
+
+  // Get valid user IDs
+  const validUserIds = new Set(userRedux.map((user) => user._id));
+
+  // Filter users by district and role
+  const usersFromTargetRegionAndRole = userRedux
+    .filter(
+      (user) =>
+        (user.district || "") === userDistrict &&
+        (user.role || "") === "securite"
+    )
+    .map((user) => user._id);
+
+  return data.filter((form) => {
+    const isCreatedByValid =
+      usersFromTargetRegionAndRole.includes(form.createdBy) &&
+      validUserIds.has(form.createdBy);
+
+    if (!isCreatedByValid) return false;
+
+    // If no userAutonum filter, allow all
+    if (!userAutonum) return true;
+
+    const allowedDistricts = autorouteDistrictMap[userAutonum] || [];
+
+    return (
+      form.autonum === userAutonum &&
+      allowedDistricts.includes(form.district)
     );
-  };
+  });
+};
+
 
   // Modify filteredData to include the updated filterData function
-  const filteredData = (data, start, end) => {
-    if (!start && !end) {
-      return filterData(data);
-    }
+const filteredData = (data, start, end, userAutonum = null) => {
+  const baseFiltered = filterData(data, userAutonum);
 
-    return filterData(data).filter((form) => {
-      const formDate = moment(form.ddate, "YYYY-MM-DD");
-      const isAfterOrSameStart =
-        !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
-      const isBeforeOrSameEnd =
-        !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
-      return isAfterOrSameStart && isBeforeOrSameEnd;
-    });
-  };
+  if (!start && !end) {
+    return baseFiltered;
+  }
+
+  return baseFiltered.filter((form) => {
+    const formDate = moment(form.ddate, "YYYY-MM-DD");
+    const isAfterOrSameStart =
+      !start || formDate.isSameOrAfter(moment(start, "YYYY-MM-DD"));
+    const isBeforeOrSameEnd =
+      !end || formDate.isSameOrBefore(moment(end, "YYYY-MM-DD"));
+    return isAfterOrSameStart && isBeforeOrSameEnd;
+  });
+};
+
 
   // Format dates
-  const formatStartDate = startDate
-    ? moment(startDate).format("YYYY-MM-DD")
-    : null;
+  const formatStartDate = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
   const formatEndDate = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 
   // Filter data and calculate sums
@@ -310,158 +329,177 @@ const Home = ({ userRegion, curuser, ShowRowData, userRole }) => {
         {isMobileView ? (
           <div>
             <p>Index : {sumDays}</p>
-          <Table className="mobile-table">
-            <TableHead>
-              <TableRow>
-                <TableCell className="rtl-text">اتجاه</TableCell>
-                <TableCell className="rtl-text">ن.ك</TableCell>
-                <TableCell className="rtl-text">الساعة</TableCell>
-                <TableCell className="rtl-text">اليوم</TableCell>
-                <TableCell className="rtl-text">التاريخ</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {startDate && endDate && filteredDataArray.length === 0 ? (
-                <div>
-                  <TableRow>
-                  <TableCell style={{ textAlign: "center" }} colSpan={5}>
-                    <h4>لا توجد بيانات في هذا التاريخ</h4>
-                    <Add />
-                  </TableCell>
-                  </TableRow>
-                </div>
-              ) : filteredDataArray.length === 0 ? (
-                <div>
-                  <TableRow>
-                  <TableCell style={{ textAlign: "center" }} colSpan={5}>
-                    <l-tail-chase
-                      size="40"
-                      speed="1.75"
-                      color="black"
-                    ></l-tail-chase>
-                    <h4>!الرجاء تعمير الجدول</h4>
-                    <Add />
-                  </TableCell>
-                  </TableRow>
-                </div>
-              ) : (
-                sortedDataArray.map((row) => (
-                  <TableRow key={row._id}>
-                    <TableCell className="rtl-text">{row.sens}</TableCell>
-                    <TableCell className="rtl-text">{row.nk}</TableCell>
-                    <TableCell className="rtl-text">{`${row.hours}:${row.minutes}`}</TableCell>
-                    <TableCell className="rtl-text">{row.day}</TableCell>
-                    <TableCell className="rtl-text">{row.ddate}</TableCell>
-                    <TableCell>
-                      <div className="table-actions">
-                        {curuser?.isAdmin && curuser?.role == "securite" ? (
-                          <>
-                            <Add />
-                            <Update dataId={row._id} rowData={row} />
-                            <Button
-                              variant="danger"
-                              onClick={() => handleDelete(row._id)}
-                            >
-                              <MdDeleteOutline />
-                            </Button>
-                            <ShowForm ShowRowData={row} />
-                          </>
-                        ) : (
-                          <>
-                            <ShowForm ShowRowData={row} />
-                            <Add />
-                          </>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+            <Table className="mobile-table">
+              <TableHead>
+                <TableRow>
+                  <TableCell className="rtl-text">اتجاه</TableCell>
+                  <TableCell className="rtl-text">ن.ك</TableCell>
+                  <TableCell className="rtl-text">الساعة</TableCell>
+                  <TableCell className="rtl-text">اليوم</TableCell>
+                  <TableCell className="rtl-text">التاريخ</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {startDate && endDate && filteredDataArray.length === 0 ? (
+                  <div>
+                    <TableRow>
+                      <TableCell style={{ textAlign: "center" }} colSpan={5}>
+                        <h4>لا توجد بيانات في هذا التاريخ</h4>
+                        <Add />
+                      </TableCell>
+                    </TableRow>
+                  </div>
+                ) : filteredDataArray.length === 0 ? (
+                  <div>
+                    <TableRow>
+                      <TableCell style={{ textAlign: "center" }} colSpan={5}>
+                        <l-tail-chase
+                          size="40"
+                          speed="1.75"
+                          color="black"
+                        ></l-tail-chase>
+                        <h4>!الرجاء تعمير الجدول</h4>
+                        <Add />
+                      </TableCell>
+                    </TableRow>
+                  </div>
+                ) : (
+                  sortedDataArray.map((row) => (
+                    <TableRow key={row._id}>
+                      <TableCell className="rtl-text">{row.sens}</TableCell>
+                      <TableCell className="rtl-text">{row.nk}</TableCell>
+                      <TableCell className="rtl-text">{`${row.hours}:${row.minutes}`}</TableCell>
+                      <TableCell className="rtl-text">{row.day}</TableCell>
+                      <TableCell className="rtl-text">{row.ddate}</TableCell>
+                      <TableCell>
+                        <div className="table-actions">
+                          {curuser?.isAdmin && curuser?.role == "securite" ? (
+                            <>
+                              <Add />
+                              <Update dataId={row._id} rowData={row} userDistrict={userRedux.district} userAutonum={userRedux.autonum}/>
+                              <Button
+                                variant="danger"
+                                onClick={() => handleDelete(row._id)}
+                              >
+                                <MdDeleteOutline />
+                              </Button>
+                              <ShowForm ShowRowData={row} />
+                            </>
+                          ) : (
+                            <>
+                              <ShowForm ShowRowData={row} />
+                              <Add userDistrict={userRedux.district} userAutonum={userRedux.autonum}/>
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
         ) : (
           <div>
             <p>Index : {sumDays}</p>
-          <Table className="large-table">
-            <TableHead>
-              <TableRow>
-                <TableCell className="rtl-text">اضرار مادية</TableCell>
-                <TableCell className="rtl-text">موتى</TableCell>
-                <TableCell className="rtl-text">جرحى</TableCell>
-                <TableCell className="rtl-text">السبب</TableCell>
-                <TableCell className="rtl-text">لوحة منجمية</TableCell>
-                <TableCell className="rtl-text">اتجاه</TableCell>
-                <TableCell className="rtl-text">ن.ك</TableCell>
-                <TableCell className="rtl-text">الساعة</TableCell>
-                <TableCell className="rtl-text">اليوم</TableCell>
-                <TableCell className="rtl-text">التاريخ</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-            {startDate && endDate && filteredDataArray.length === 0 ? (
-                  <TableRow >
-                  <TableCell style={{ textAlign: "center" }} colSpan={11}>
-                    <h4>لا توجد بيانات في هذا التاريخ</h4>
-                  </TableCell>
-                  </TableRow>
-              ) : filteredDataArray.length === 0 ? (
-                  <TableRow>
-                  <TableCell style={{ textAlign: "center" }} colSpan={11}>
-                    <l-tail-chase
-                      size="40"
-                      speed="1.75"
-                      color="black"
-                    ></l-tail-chase>
-                    <h4>!الرجاء تعمير الجدول</h4>
-                    <Add />
-                  </TableCell>
-                  </TableRow>
-              ) : (
-                sortedDataArray.map((row) => (
-                <TableRow key={row._id}>
-                  <TableCell className="rtl-text">{row.barrier}</TableCell>
-                  <TableCell className="rtl-text">{row.nbrmort}</TableCell>
-                  <TableCell className="rtl-text">{row.nbrblesse}</TableCell>
-                  <TableCell className="rtl-text">{row.cause}</TableCell>
-                  <TableCell className="rtl-text">
-                    {row.a && `أ: {${row.a}} `}
-                    <br />
-                    {row.b && `ب: {${row.b}} `}
-                    <br />
-                    {row.c && `ج: {${row.c}} `}
-                    <br />
-                    {row.d && `د: {${row.d}} `}
-                  </TableCell>
-                  <TableCell className="rtl-text">{row.sens}</TableCell>
-                  <TableCell className="rtl-text">{`Pk:${row.nk}+${row.mtr}m`}</TableCell>
-                  <TableCell className="rtl-text">{`${row.hours}:${row.minutes}`}</TableCell>
-                  <TableCell className="rtl-text">{row.day}</TableCell>
-                  <TableCell className="rtl-text">{row.ddate}</TableCell>
-                  <TableCell>
-                    <div className="table-actions">
-                      {curuser?.isAdmin && curuser?.role == "securite" ? (
-                        <div className="top-buttons">
-                          <Add />
-                          <Update dataId={row._id} rowData={row} />
-                          <Button
-                            variant="danger"
-                            onClick={() => handleDelete(row._id)}
-                          >
-                            <MdDeleteOutline />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Add />
-                      )}
-                    </div>
-                  </TableCell>
+            <Table className="large-table">
+              <TableHead>
+                <TableRow>
+                <TableCell className="rtl-text">صور الحادث</TableCell>
+                  <TableCell className="rtl-text">اضرار مادية</TableCell>
+                  <TableCell className="rtl-text">موتى</TableCell>
+                  <TableCell className="rtl-text">جرحى</TableCell>
+                  <TableCell className="rtl-text">السبب</TableCell>
+                  <TableCell className="rtl-text">لوحة منجمية</TableCell>
+                  <TableCell className="rtl-text">اتجاه</TableCell>
+                  <TableCell className="rtl-text">ن.ك</TableCell>
+                  <TableCell className="rtl-text">الساعة</TableCell>
+                  <TableCell className="rtl-text">اليوم</TableCell>
+                  <TableCell className="rtl-text">التاريخ</TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
-              )))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {startDate && endDate && filteredDataArray.length === 0 ? (
+                  <TableRow>
+                    <TableCell style={{ textAlign: "center" }} colSpan={11}>
+                      <h4>لا توجد بيانات في هذا التاريخ</h4>
+                    </TableCell>
+                  </TableRow>
+                ) : filteredDataArray.length === 0 ? (
+                  <TableRow>
+                    <TableCell style={{ textAlign: "center" }} colSpan={11}>
+                      <l-tail-chase
+                        size="40"
+                        speed="1.75"
+                        color="black"
+                      ></l-tail-chase>
+                      <h4>!الرجاء تعمير الجدول</h4>
+                      <Add />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  sortedDataArray.map((row) => (
+                    <TableRow key={row._id}>
+                      <TableCell className="rtl-text"
+                      style={{
+                        display: "flex",
+                        gap: "3px",
+                        flexWrap: "wrap",
+                      }}
+                      >
+                        {Array.isArray(row?.image) &&
+                  row.image.map((imgPath, index) => (
+                    <img
+                      key={index}
+                      src={`http://localhost:5000${imgPath}`}
+                      alt={`Preview ${index}`}
+                      className="avatar"
+                      style={{
+                        maxWidth: "60px",
+                        maxHeight: "90px",
+                        margin: "5px",
+                        borderRadius: 3,
+                      }}
+                    />
+                  ))}
+                      </TableCell>
+                      <TableCell className="rtl-text">{row.degat}</TableCell>
+                      <TableCell className="rtl-text">{row.nbrmort}</TableCell>
+                      <TableCell className="rtl-text">{row.nbrblesse}</TableCell>
+                      <TableCell className="rtl-text">{row.cause}</TableCell>
+                      <TableCell className="rtl-text">{row.matriculeA }</TableCell>
+                      <TableCell className="rtl-text">{row.sens}</TableCell>
+                      <TableCell className="rtl-text">{`Pk:${row.nk}+${row.mtr}m`}</TableCell>
+                      <TableCell className="rtl-text">{`${row.hours}:${row.minutes}`}</TableCell>
+                      <TableCell className="rtl-text">{row.day}</TableCell>
+                      <TableCell className="rtl-text">{row.ddate}</TableCell>
+                      
+
+                      <TableCell>
+                        <div className="table-actions">
+                          {curuser?.isAdmin && curuser?.role == "securite" ? (
+                            <div className="top-buttons">
+                              <Add />
+                              <Update dataId={row._id} rowData={row} userDistrict={userRedux.district} userAutonum={userRedux.autonum}/>
+                              <Button
+                                variant="danger"
+                                onClick={() => handleDelete(row._id)}
+                              >
+                                <MdDeleteOutline />
+                              </Button>
+                            </div>
+                          ) : (
+                            <Add userDistrict={userRedux.district} userAutonum={userRedux.autonum}/>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
         )}
       </TableContainer>

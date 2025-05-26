@@ -6,9 +6,9 @@ const bcrypt = require('bcryptjs');
 module.exports = {
 
   register: async (req, res) => {
-    const { name, lastName, email, password, phone, region,role } = req.body;
+    const { name, lastName, email, password, phone,autonum, district,role,isAdmin } = req.body;
   
-    if (!name || !lastName || !email || !password || !phone || !region || !role) {
+    if (!name || !lastName || !email || !password || !phone || !autonum || !district || !role) {
       return res.status(400).json({ msg: "Tous les champs sont obligatoires" });
     }
   
@@ -30,7 +30,10 @@ module.exports = {
         email,
         password: hashedPassword,
         phone,
-        region,
+        autonum,
+        district,
+        role,
+        isAdmin,
       });
   
       const savedUser = await newUser.save();
@@ -68,7 +71,7 @@ module.exports = {
         role: searchedUser.role,
       };
   
-      const token = await jwt.sign(payload, process.env.SecretOrKey, { expiresIn: '24h' });
+      const token = await jwt.sign(payload, process.env.SecretOrKey, { expiresIn: '48h' });
   
       res.status(200).send({
         user: searchedUser,

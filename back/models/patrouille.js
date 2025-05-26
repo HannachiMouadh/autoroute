@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const PatrouilleSchema = new Schema({
   matricule: { type: String, required: true },
-  startKilometrage: { type: String, required: true },
+  startKilometrage: { type: String },
   endKilometrage: { type: String }, // Set when patrol ends
   pointKilo: { type: String },
   tache: { type: String },     // Multiple form entries

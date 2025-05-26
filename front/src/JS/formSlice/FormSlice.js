@@ -12,6 +12,7 @@ export const fetchForms = createAsyncThunk('data/fetchAll', async () => {
   }
 });
 
+
 // Add form action
 export const addForm = createAsyncThunk('data/add', async (newData) => {
   try {
@@ -56,9 +57,18 @@ export const updateForm = createAsyncThunk(
     }
   }
 );
-
-
-
+export const uploadPhoto = createAsyncThunk(
+  "upload/photo",
+  async (formDataUpload) => {
+    const response = await axios.post("http://localhost:5000/api/upload", formDataUpload, {
+      headers: {
+        "Content-Type": "multipart/form-data", // ✅ critical
+      },
+    });
+    console.error("uploaded action: ", response.data);
+    return response.data;
+  }
+);
 
 
 
@@ -125,7 +135,19 @@ const formSlice = createSlice({
           // If not valid JSON, use the error message as is
           state.error = action.error.message;
         }
-      });
+      })
+      .addCase(uploadPhoto.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(uploadPhoto.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(uploadPhoto.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.image = action.payload.image;
+        }
+      })
   },
 });
 

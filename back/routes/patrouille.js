@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const patData = require("../models/patrouille");
-const User = require('../models/user'); // Assuming you have a User model
 
 // Route to handle patrol data submission
 router.post("/", async (req, res) => {

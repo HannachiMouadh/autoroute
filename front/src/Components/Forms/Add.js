@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addForm, fetchForms } from "../../JS/formSlice/FormSlice";
 import Button from "react-bootstrap/Button";
@@ -13,18 +13,29 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useMediaQuery } from "react-responsive";
 import { MdOutlineNoteAdd } from "react-icons/md";
+import axios from "axios";
+import uploadImg from "../../assets/cloud-upload-regular-240.png";
+import { uploadPhoto } from "../../JS/formSlice/FormSlice";
+import { getAllUsers } from "../../JS/userSlice/userSlice";
 
-const Add = ({ id, userRegion }) => {
+const Add = ({ id }) => {
   const dispatch = useDispatch();
   const [selectedCause, setSelectedCause] = useState("سرعة فائقة");
   const [selectedVoie, setSelectedVoie] = useState("اتجاه قابس");
   const [show, setShow] = useState(false);
-  const userRedux = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user.user);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [errors, setErrors] = useState({});
   const currentDate = new Date();
+  const wrapperRef = useRef(null);
+  const onDragEnter = () => wrapperRef.current.classList.add("dragover");
+  const onDragLeave = () => wrapperRef.current.classList.remove("dragover");
+  const onDrop = () => wrapperRef.current.classList.remove("dragover");
   const [dateToday, setDateToday] = useState(moment().format("YYYY-MM-DD"));
+const userAutonum = user?.autonum;
+const userDistrict = user?.district;
+
   const getFormattedDay = (day) => {
     switch (day) {
       case 0:
@@ -76,8 +87,8 @@ const Add = ({ id, userRegion }) => {
         return "";
     }
   };
-  const getDefaultNK = (region) => {
-    switch (region) {
+  const getDefaultNK = (userDistrict) => {
+    switch (userDistrict) {
       case "gabes":
         return 317;
       case "sfax":
@@ -87,13 +98,10 @@ const Add = ({ id, userRegion }) => {
     }
   };
   const [formData, setFormData] = useState({
-    a: "",
-    b: "",
-    c: "",
-    d: "",
-    barrier: "",
+    matriculeA: "",
+    degat: "",
     sens: "",
-    nk: getDefaultNK(userRedux?.region),
+    nk: getDefaultNK(user?.district),
     mtr: "0",
     nbrmort: "0",
     nbrblesse: "0",
@@ -104,6 +112,7 @@ const Add = ({ id, userRegion }) => {
     years: currentDate.getFullYear(),
     hours: "00",
     minutes: "00",
+    image: "",
     createdBy: "",
   });
   const handleInputChange = (e) => {
@@ -114,8 +123,8 @@ const Add = ({ id, userRegion }) => {
     }));
   };
   useEffect(() => {
-    setFormData({ ...formData, createdBy: userRedux?._id });
-  }, [userRedux]);
+    setFormData({ ...formData, createdBy: user?._id });
+  }, [user]);
 
   const handleDateChange = (event) => {
     const date =
@@ -206,11 +215,11 @@ const Add = ({ id, userRegion }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.a) newErrors.a = "لوحة منجمية إجبارية";
+    if (!formData.matriculeA) newErrors.matriculeA = "لوحة منجمية إجبارية";
     if (!formData.nk) newErrors.nk = "نقطة كلمترية إجبارية";
     if (!formData.nbrmort) newErrors.nbrmort = "عدد الجرحى إجباري";
     if (!formData.nbrblesse) newErrors.nbrblesse = "عدد الموتى إجباري";
-    if (!formData.barrier) newErrors.barrier = "الاضرار المادية اجبارية";
+    if (!formData.degat) newErrors.degat = "الاضرار المادية اجبارية";
     return newErrors;
   };
 
@@ -242,32 +251,32 @@ const Add = ({ id, userRegion }) => {
     };
 
     dispatch(addForm(newData))
-    .then((response) => {
-            console.log("Update response:", response);
-            if (response.error) {
-              throw new Error(response.error.message);
-            }
-            toast.success("تم تحديث البيانات بنجاح!", {
-              position: "top-right",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-            });
-            setShow(false);
-            dispatch(fetchForms());
-          })
-          .catch((error) => {
-            console.error("Update failed:", error);
-            toast.error("فشل تحديث البيانات. يرجى المحاولة مرة أخرى.", {
-              position: "top-right",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-            });
-          });
-          dispatch(fetchForms());
+      .then((response) => {
+        console.log("Update response:", response);
+        if (response.error) {
+          throw new Error(response.error.message);
+        }
+        toast.success("تم تحديث البيانات بنجاح!", {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        setShow(false);
+        dispatch(fetchForms());
+      })
+      .catch((error) => {
+        console.error("Update failed:", error);
+        toast.error("فشل تحديث البيانات. يرجى المحاولة مرة أخرى.", {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      });
+    dispatch(fetchForms());
   };
   const generateOptions = (range) => {
     return Array.from({ length: range }, (_, i) => (
@@ -276,21 +285,53 @@ const Add = ({ id, userRegion }) => {
       </option>
     ));
   };
-  const generateOptionsNK = (region) => {
+  const generateOptionsNK = (userDistrict) => {
     let start, range;
-    switch (region) {
-      case "gabes":
+    if (userAutonum === "a1") {
+    switch (userDistrict) {
+      case "oudhref":
         start = 317;
         range = 81;
         break;
-      case "sfax":
-        start = 387;
-        range = 81;
+      case "mahres":
+        start = 317;
+        range = 103;
+        break;
+      case "jem":
+        start = 140;
+        range = 80;
+        break;
+      case "hergla":
+        start = 66;
+        range = 64;
+        break;
+      case "turki":
+        start = 0;
+        range = 56;
         break;
       default:
         start = 317;
         range = 75;
     }
+    } else if (userAutonum === "a3") {
+        switch (userDistrict) {
+      case "mdjazbab":
+        start = 0;
+        range = 55;
+        break;
+      case "baja":
+        start = 0;
+        range = 50;
+        break;
+      default:
+        return [];
+    }
+    } else if (userAutonum === "a4" && userDistrict === "bizerte") {
+        start = 0;
+        range = 50;
+  } else {
+    return [];
+  }
 
     return Array.from({ length: range }, (_, i) => {
       const value = start + i;
@@ -302,33 +343,122 @@ const Add = ({ id, userRegion }) => {
     });
   };
 
-  const getSenseByRegion = (region) => {
-    switch (region) {
-      case "gabes":
+  const getSenseByDistrict = (userDistrict,userAutonum) => {
+          if (userAutonum === "a1") {
+    switch (userDistrict) {
+      case "oudhref":
         return [
           { value: "اتجاه قابس", label: "اتجاه قابس" },
           { value: "اتجاه صفاقس", label: "اتجاه صفاقس" },
         ];
-      case "sfax":
+      case "mahres":
+        return [
+          { value: "اتجاه قابس", label: "اتجاه قابس" },
+          { value: "اتجاه صفاقس", label: "اتجاه صفاقس" },
+        ];
+        case "jem":
         return [
           { value: "اتجاه تونس", label: "اتجاه تونس" },
-          { value: "اتجاه صخيرة", label: "اتجاه صخيرة" },
+          { value: "اتجاه صفاقس", label: "اتجاه صفاقس" },
+        ];
+        case "hergla":
+        return [
+          { value: "اتجاه تونس", label: "اتجاه تونس" },
+          { value: "اتجاه صفاقس", label: "اتجاه صفاقس" },
+        ];
+        case "turki":
+        return [
+          { value: "اتجاه تونس", label: "اتجاه تونس" },
+          { value: "اتجاه سوسة", label: "اتجاه سوسة" },
         ];
       default:
         return [];
     }
+    } else if (userAutonum === "a3") {
+       switch (userDistrict) {
+      case "mdjazbab":
+        return [
+          {value: "اتجاه تونس", label: "اتجاه تونس"},
+          {value: "اتجاه باجة", label: "اتجاه باجة"},
+        ];
+      case "baja":
+        return [
+          {value: "اتجاه تونس", label: "اتجاه تونس"},
+          {value: "اتجاه باجة", label: "اتجاه باجة"},
+        ];
+      default:
+        return [];
+    }
+    } else if (userAutonum === "a4" && userDistrict === "baja") {
+    return [
+          {value: "اتجاه تونس", label: "اتجاه تونس"},
+          {value: "اتجاه باجة", label: "اتجاه باجة"},
+        ];
+  } else {
+    return [];
+  }
   };
 
-  const region = getSenseByRegion(userRedux?.region);
+  const uploadMultipleFiles = async (files) => {
+    const formDataUpload = new FormData();
+    for (let file of files) {
+      formDataUpload.append("files", file);
+    }
+
+    try {
+      const resultAction = await dispatch(uploadPhoto(formDataUpload));
+      if (uploadPhoto.fulfilled.match(resultAction)) {
+        const uploadedPaths = resultAction.payload; // array of file paths
+        console.error("uploadedPaths", uploadedPaths);
+        setFormData((prev) => ({
+          ...prev,
+          image: [...(prev.image || []), ...uploadedPaths], // ✅ append to existing
+        }));
+      }
+    } catch (error) {
+      console.error("Upload failed", error);
+    }
+  };
+  console.log("userDistrict :",userDistrict);
+  console.log("userAutonum :",userAutonum);
+  
+  
+
+  const district = getSenseByDistrict(userDistrict,userAutonum);
   const isMobileView = useMediaQuery({ query: "(max-width: 760px)" });
+  const [matriculeParts, setMatriculeParts] = useState(['']); // start with one input
+
+  const placeholders = ['أ', 'ب', 'ج', 'د'];
+
+  const updateFormData = (parts) => {
+    const combined = parts.filter(Boolean).join(' - ');
+    setFormData({ ...formData, matriculeA: combined });
+  };
+
+  const handleChange = (index, value) => {
+    const updated = [...matriculeParts];
+    updated[index] = value;
+    setMatriculeParts(updated);
+    updateFormData(updated);
+  };
+
+  const addInput = () => {
+    if (matriculeParts.length < 4) {
+      const updated = [...matriculeParts, ''];
+      setMatriculeParts(updated);
+      updateFormData(updated);
+    }
+  };
+
+  const removeInput = (index) => {
+    const updated = matriculeParts.filter((_, i) => i !== index);
+    setMatriculeParts(updated);
+    updateFormData(updated);
+  };
 
   return (
     <div className="isMobile">
-      <Button
-        variant="primary"
-        onClick={() => setShow(true)}
-       
-      >
+      <Button variant="primary" onClick={() => setShow(true)}>
         <MdOutlineNoteAdd />
       </Button>
       <Modal show={show} onHide={() => setShow(false)}>
@@ -374,7 +504,7 @@ const Add = ({ id, userRegion }) => {
                 value={formData.nk}
                 onChange={handleInputChange}
               >
-                {generateOptionsNK(userRedux.region)}
+                {generateOptionsNK(user.district)}
               </Form.Select>
               +
               <Form.Control
@@ -393,46 +523,49 @@ const Add = ({ id, userRegion }) => {
                 value={selectedVoie || ""}
                 onChange={(e) => setSelectedVoie(e.target.value)}
               >
-                {region.map((r) => (
+                {district.map((r) => (
                   <option value={r.value}>{r.label}</option>
                 ))}
               </Form.Select>
             </Row>
-
-            <Row className="form-section plate-section">
-              <label>لوحة المركبة</label>
+ <Row className="form-section plate-section align-items-center">
+        <label>لوحة المركبة</label>
+      <Col xs={12} sm={8}>
+        <Row>
+          {matriculeParts.map((part, index) => (
+            <Col key={index} xs="auto" className="mb-2 d-flex align-items-center">
               <Form.Control
                 type="text"
-                name="a"
-                placeholder="أ"
-                value={formData.a}
-                onChange={handleInputChange}
+                value={part}
+                placeholder={placeholders[index]}
+                onChange={(e) => handleChange(index, e.target.value)}
               />
-              <Form.Control
-                type="text"
-                name="b"
-                placeholder="ب"
-                value={formData.b}
-                onChange={handleInputChange}
-              />
-              <Form.Control
-                type="text"
-                name="c"
-                placeholder="ج"
-                value={formData.c}
-                onChange={handleInputChange}
-              />
-              <Form.Control
-                type="text"
-                name="d"
-                placeholder="د"
-                value={formData.d}
-                onChange={handleInputChange}
-              />
-            </Row>
+              {index > 0 && (
+                <Button
+                  variant="danger"
+                  size="sm"
+                  className="ms-1"
+                  onClick={() => removeInput(index)}
+                >
+                  −
+                </Button>
+              )}
+                      
+            </Col>
+          ))}
+          <Col style={{width:"3px"}}>
+          {matriculeParts.length < 4 && (
+          <Button variant="success" size="sm" onClick={addInput}>
+            +
+          </Button>
+        )}
+        </Col>
+        </Row>
+      </Col>
+    </Row>
 
             <Row className="form-row">
-            <div className="form-label">:السبب</div>
+              <div className="form-label">:السبب</div>
               <Form.Select
                 className="form-select"
                 aria-label="سبب الحادث"
@@ -490,21 +623,21 @@ const Add = ({ id, userRegion }) => {
             </Row>
 
             <Row className="form-row">
-            <div className="form-label">:اضرار مادية</div>
+              <div className="form-label">:اضرار مادية</div>
               <Form.Control
                 className="form-control"
                 placeholder="اضرار مادية"
                 type="text"
-                name="barrier"
-                value={formData.barrier}
+                name="degat"
+                value={formData.degat}
                 onChange={handleInputChange}
                 required
               />
-              {errors.barrier && <p className="form-error">{errors.barrier}</p>}
+              {errors.degat && <p className="form-error">{errors.degat}</p>}
             </Row>
 
             <Row className="form-row">
-            <div className="form-label">:عدد الموتى</div>
+              <div className="form-label">:عدد الموتى</div>
               <Form.Control
                 className="form-control"
                 type="number"
@@ -516,11 +649,10 @@ const Add = ({ id, userRegion }) => {
                 required
               />
               {errors.nbrmort && <p className="form-error">{errors.nbrmort}</p>}
-
             </Row>
 
             <Row className="form-row">
-            <div className="form-label">:عدد الجرحى</div>
+              <div className="form-label">:عدد الجرحى</div>
               <Form.Control
                 className="form-control"
                 type="number"
@@ -534,9 +666,53 @@ const Add = ({ id, userRegion }) => {
               {errors.nbrblesse && (
                 <p className="form-error">{errors.nbrblesse}</p>
               )}
-              
             </Row>
           </Form.Group>
+            <Form.Group controlId="imageUpload" className="mt-4">
+              <Form.Label className="rtl-text">:صور الحادث</Form.Label>
+              <Row>
+                <Col md={6}>
+                  <div className="drop-file-input">
+                    <div className="drop-file-input__label text-center">
+                      <img
+                        src={uploadImg}
+                        alt="Upload"
+                        style={{ width: 40, height: 40 }}
+                      />
+                      <p>اختر صور</p>
+                    </div>
+                    <Form.Control
+                      type="file"
+                      name="image"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => uploadMultipleFiles(e.target.files)}
+                    />
+                  </div>
+                </Col>
+
+                <Col
+                  md={6}
+                  className="d-flex justify-content-center align-items-center"
+                >
+                  {Array.isArray(formData?.image) &&
+                  formData.image.map((imgPath, index) => (
+                    <img
+                      key={index}
+                      src={`http://localhost:5000${imgPath}`}
+                      alt={`Preview ${index}`}
+                      className="avatar"
+                      style={{
+                        maxWidth: "100px",
+                        maxHeight: "100px",
+                        margin: "5px",
+                        borderRadius: 8,
+                      }}
+                    />
+                  ))}
+                </Col>
+              </Row>
+            </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

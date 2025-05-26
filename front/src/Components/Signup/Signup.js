@@ -12,13 +12,14 @@ const Signup = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [register, setRegister] = useState({})
   const dispatch = useDispatch();
-  const userRedux = useSelector((state) => state.user.user);
+    const currentUserData = useSelector((state) => state.user.user);
+  const isSuper = currentUserData?.isSuper;
   
   const handleRegister = async (e) => {
     e.preventDefault();
   
     // Validation basique
-    if (!register.name || !register.lastName || !register.email || !register.password || !register.phone || !register.region || !register.role) {
+    if (!register.name || !register.lastName || !register.email || !register.password || !register.phone || !register.autonum || !register.district || !register.role) {
       return toast.error('Tous les champs doivent être remplis !', {
         position: 'top-right',
         hideProgressBar: false,
@@ -30,6 +31,7 @@ const Signup = () => {
   
     // Soumission des données
     try {
+      console.log("Submitted register data:", register);
       await dispatch(registerUser(register));
       setRegister({
         name: "",
@@ -37,10 +39,10 @@ const Signup = () => {
         email: "",
         password: "",
         phone: "",
-        region: userRedux?.region || "",
+        autonum : "",
+        district: isSuper ? "" : currentUserData?.district || "",
         role: "",
-        //isAdmin: true,
-        //isAuth: false,
+        isAdmin: false,
       });
       toast.success('Utilisateur créé avec succès !', {
         position: 'top-right',
@@ -49,9 +51,9 @@ const Signup = () => {
         pauseOnHover: true,
         draggable: true,
       });
-      setTimeout(function () {
-        window.location.reload();
-      }, 1000);
+      // setTimeout(function () {
+      //   window.location.reload();
+      // }, 1200);
     } catch (error) {
       toast.error('Erreur lors de la création de l’utilisateur.', {
         position: 'top-right',
@@ -106,28 +108,70 @@ const Signup = () => {
           autoComplete="email"
           onChange={(e) => setRegister({ ...register, email: e.target.value })}
         />
+                <Form.Label className="form-label">Choix autoroute :</Form.Label>
+        <Form.Select
+          className="form-control"
+          required
+          id="autonum"
+          name="autonum"
+          value={register.autonum || ""}
+          onChange={(e) => setRegister({ ...register, autonum: e.target.value })}
+        >
+          <option value="" disabled>Select autoroute</option>
+          <option value="a1">
+            A1
+          </option>
+          <option value="a3">
+            A3
+          </option>
+          <option value="a4">
+            A4
+          </option>
+        </Form.Select>
         <Form.Label className="form-label">District:</Form.Label>
         <Form.Select
           className="form-control"
           required
-          id="region"
-          name="region"
-          value={register.region || ""}
-          onChange={(e) => setRegister({ ...register, region: e.target.value })}
+          id="district"
+          name="district"
+          value={register.district || ""}
+          onChange={(e) => setRegister({ ...register, district: e.target.value })}
         >
-          <option value="" disabled>Select Region</option>
-          <option value="sfax" disabled={userRedux?.isAdmin && userRedux.region !== 'sfax'}>
-            sfax
+          <option value="" disabled>Select district</option>
+          {register.autonum === "a1" && (
+            <>
+          <option value="oudhref" disabled={!isSuper && currentUserData?.isAdmin && currentUserData.district !== 'oudhref'}>
+            Oudhref
           </option>
-          <option value="gabes" disabled={userRedux?.isAdmin && userRedux.region !== 'gabes'}>
-            gabes
+          <option value="mahres" disabled={!isSuper &&  currentUserData?.isAdmin && currentUserData.district !== 'mahres'}>
+            Mahres
           </option>
-          <option value="sousse" disabled={userRedux?.isAdmin && userRedux.region !== 'sousse'}>
-            sousse
+          <option value="jem" disabled={!isSuper && currentUserData?.isAdmin && currentUserData.district !== 'jem'}>
+            Jem
           </option>
-          <option value="skhera" disabled={userRedux?.isAdmin && userRedux.region !== 'skhera'}>
-            skhera
+          <option value="hergla" disabled={!isSuper && currentUserData?.isAdmin && currentUserData.district !== 'hergla'}>
+            Hergla
           </option>
+          <option value="turki" disabled={!isSuper && currentUserData?.isAdmin && currentUserData.district !== 'turki'}>
+            Turki
+          </option>
+          </>
+          )}
+          {register.autonum === "a3" && (
+            <>
+          <option value="mdjazbab" disabled={!isSuper && currentUserData?.isAdmin && currentUserData.district !== 'mdjazbab'}>
+            Mdjaz Bab
+          </option>
+          <option value="baja" disabled={!isSuper && currentUserData?.isAdmin && currentUserData.district !== 'baja'}>
+            Baja
+          </option>
+          </>
+          )}
+          {register.autonum === "a4" && (
+          <option value="bizerte" disabled={!isSuper && currentUserData?.isAdmin && currentUserData.district !== 'bizerte'}>
+            Bizerte
+          </option>
+          )}
         </Form.Select>
         <Form.Label className="form-label">Role:</Form.Label>
         <Form.Select
@@ -139,11 +183,11 @@ const Signup = () => {
           onChange={(e) => setRegister({ ...register, role: e.target.value })}
         >
           <option value="" disabled>Select Role</option>
-          <option value="patrouille">
-            Patrouille
-          </option>
           <option value="entretient">
             Entretient
+          </option>
+          <option value="patrouille">
+            Patrouille
           </option>
           <option value="securite">
           Sécurité
@@ -173,7 +217,9 @@ const Signup = () => {
           id="password"
           autoComplete="current-password"
           onChange={(e) => setRegister({ ...register, password: e.target.value })} />
-            {/* <Form.Check
+            {isSuper && (
+              <Form.Check
+              style={{ marginBottom : "30px",marginTop : "30px"}}
             type="checkbox"
             id="isAdmin"
             name="isAdmin"
@@ -182,9 +228,9 @@ const Signup = () => {
             onChange={(e) => setRegister({
               ...register,
               isAdmin: e.target.checked,
-              isAuth: !e.target.checked, 
             })}
-                /> */}
+                />
+            )}
         <Button
           fullWidth
           variant="primary"

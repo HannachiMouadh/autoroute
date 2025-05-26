@@ -4,11 +4,7 @@ import Tabchange from "./Components/Tabchange";
 import Signin from "./Components/Signin/Signin";
 import PrivateRouteHome from "./Components/PrivateRoute/PrivateRouteHome";
 import Home from "./Components/Forms/Home";
-import HomeSemaine from "./Components/ParSemaine/HomeSemaine";
-import HomeSens from "./Components/ParSens/HomeSens";
-import HomeHoraire from "./Components/ParHoraire/HomeHoraire";
 import HomeCause from "./Components/ParCause/HomeCause";
-import HomeLieu from "./Components/ParLieu/HomeLieu";
 import Signup from "./Components/Signup/Signup";
 import UsersMan from "./Components/usersMan/UsersMan";
 import { ToastContainer } from "react-toastify";
@@ -17,13 +13,17 @@ import { currentUser } from "./JS/userSlice/userSlice";
 import DisplayEntretient from "./Components/Entretient/DisplayEntretient";
 import Patrouille from "./Components/Patrouille/Patrouille";
 
-function App({ userManLieu,userRegion,curuser,userCause,userHoraire,userSemaine,userSens,userLieu,userRole }) {
+function App({ userDistrict,curuser,userRole,userAutonum,patUserAutonum,patUserDistrict}) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(currentUser());
   }, [dispatch]);
   
   const userRedux = useSelector((state) => state.user.user);
+
+  console.log('app autonum',userRedux.autonum);
+    console.log('app district',userRedux.district);
+  
 
   return (
     <div className="App">
@@ -38,16 +38,12 @@ function App({ userManLieu,userRegion,curuser,userCause,userHoraire,userSemaine,
           }
         >
           <Route path="/" element={<Navigate to="/recap" />} />
-          <Route path="/recap" element={<Home userRegion={userRedux.region} curuser={userRedux} userRole={userRedux.role} />} />
-        <Route path="/par-semaine" element={<HomeSemaine userSemaine={userRedux.region} />} />
-        <Route path="/par-sens" element={<HomeSens userSens={userRedux.region} />} />
-        <Route path="/par-horaire" element={<HomeHoraire userHoraire={userRedux.region} />} />
-        <Route path="/par-cause" element={<HomeCause userCause={userRedux.region} />} />
-        <Route path="/par-lieu" element={<HomeLieu userLieu={userRedux.region} />} />
+          <Route path="/recap" element={<Home userDistrict={userRedux.district} curuser={userRedux} userRole={userRedux.role} userAutonum={userRedux.autonum} />} />
+        <Route path="/par-cause" element={<HomeCause currentUserDistrict={userRedux.district} currentUserAuto={userRedux.autonum}/>} />
         <Route path="/entretient" element={<DisplayEntretient />} />
-        <Route path="/patrouille" element={<Patrouille />} />
+        <Route path="/patrouille" element={<Patrouille />} patUserAutonum={userRedux.autonum} patUserDistrict={userRedux.district}/>
         <Route path="/inscription" element={<Signup />} />
-        <Route path="/utilisateurs" element={<UsersMan userManLieu={userRedux.region}/>} />
+        <Route path="/utilisateurs" element={<UsersMan userManLieu={userRedux.district}/>} />
         </Route>
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />

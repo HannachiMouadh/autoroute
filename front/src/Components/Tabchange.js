@@ -1,10 +1,6 @@
 import { Alert, Tab, Tabs } from "react-bootstrap";
 import Home from "./Forms/Home.js";
-import HomeSens from "./ParSens/HomeSens.js";
-import HomeSemain from "./ParSemaine/HomeSemaine.js";
-import HomeHoraire from "./ParHoraire/HomeHoraire.js";
 import HomeCause from "./ParCause/HomeCause.js";
-import HomeLieu from "./ParLieu/HomeLieu.js";
 import "./tabchange.css";
 import { Navigate, useNavigate } from "react-router-dom";
 import {} from "react-router-dom";
@@ -13,33 +9,49 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Signup from "./Signup/Signup.js";
 import UsersMan from "./usersMan/UsersMan.js";
+import { jwtDecode } from "jwt-decode";
 import { Link, Outlet, Routes, Route } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 
 import { Nav, NavDropdown } from "react-bootstrap";
+import logo from '../assets/logo.png';
 
-const Tabchange = ({
-  userRegion,
-  curuser,
-  userCause,
-  userHoraire,
-  userSemaine,
-  userSens,
-  userLieu,
-}) => {
+const Tabchange = () => {
   const dispatch = useDispatch();
-  const isAuth = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [online, setOnline] = useState(true);
 
   useEffect(() => {
     dispatch(currentUser());
   }, [dispatch]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const now = Date.now() / 1000; // in seconds
+
+        if (decoded.exp < now) {
+          // Token expired
+          if (window.confirm("Votre session a expiré. Veuillez vous reconnecter.")) {
+            localStorage.removeItem("token");
+            navigate("/connection"); // 🔄 Redirect to login
+          }
+        }
+      } catch (err) {
+        console.error("Invalid token", err);
+        localStorage.removeItem("token");
+        navigate("/connection");
+      }
+    }
+  }, []);
+
   const currentUserData = useSelector((state) => state.user.user);
   const isSuper = currentUserData?.isSuper;
   const isAdmin = currentUserData?.isAdmin;
   //const isSecurite = currentUserData?.role == "securite";
-  //const isPatrou = currentUserData?.role == "patrouille";
   //const isEntret = currentUserData?.role == "entretient";
 
   const navigate = useNavigate();
@@ -87,6 +99,10 @@ const Tabchange = ({
         <>
           {isMobileView ? (
             <>
+            <div class="header">
+  <img src={logo} alt="Logo" className="logo" style={{height:'120px', marginLeft:'100px',marginTop:'50px', }}/>
+  <h1 class="title" style={{fontSize:"23px"}}>مصلحة السلامة و الصيانة للطرقات السيارة</h1>
+</div>
               <div className="admin-info">
                 {!currentUserData.name ? (
                   <h5>Chargement...</h5>
@@ -97,10 +113,10 @@ const Tabchange = ({
                     {currentUserData.name}
                   </h5>
                 )}
-                {!currentUserData.region ? (
+                {!currentUserData.district ? (
                   <h5>Chargement...</h5>
                 ) : (
-                  <h6>District: {currentUserData.region}</h6>
+                  <h6>District: {currentUserData.district}</h6>
                 )}
                 <Link onClick={handlelogout} className="logout-link">
                   Déconnexion
@@ -132,39 +148,11 @@ const Tabchange = ({
                         Recap
                       </Link>
                       <Link
-                        to="/par-semaine"
-                        className="sidebar-subitem"
-                        onClick={toggleMenu}
-                      >
-                        Par Semaine
-                      </Link>
-                      <Link
-                        to="/par-sens"
-                        className="sidebar-subitem"
-                        onClick={toggleMenu}
-                      >
-                        Par Sens
-                      </Link>
-                      <Link
-                        to="/par-horaire"
-                        className="sidebar-subitem"
-                        onClick={toggleMenu}
-                      >
-                        Par Horaire
-                      </Link>
-                      <Link
                         to="/par-cause"
                         className="sidebar-subitem"
                         onClick={toggleMenu}
                       >
-                        Par Cause
-                      </Link>
-                      <Link
-                        to="/par-lieu"
-                        className="sidebar-subitem"
-                        onClick={toggleMenu}
-                      >
-                        Par Lieu
+                        Statistiques
                       </Link>
                     </div>
                   )}
@@ -216,6 +204,10 @@ const Tabchange = ({
           ) : (
             <>
               <div className="admin-info">
+                <div class="header">
+<img src={logo} alt="Logo" className="logo"/>
+  <h1 class="title">مصلحة السلامة و الصيانة للطرقات السيارة</h1>
+</div>
                 {!currentUserData.name ? (
                   <h5>Chargement...</h5>
                 ) : (
@@ -225,10 +217,10 @@ const Tabchange = ({
                     {currentUserData.name}
                   </h5>
                 )}
-                {!currentUserData.region ? (
+                {!currentUserData.district ? (
                   <h5>Chargement...</h5>
                 ) : (
-                  <h6>District: {currentUserData.region}</h6>
+                  <h6>District: {currentUserData.district}</h6>
                 )}
                 <Link onClick={handlelogout} className="logout-link">
                   Déconnexion
@@ -239,20 +231,8 @@ const Tabchange = ({
                   <NavDropdown.Item as={Link} to="/recap">
                     Recap
                   </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/par-semaine">
-                    Par Semaine
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/par-sens">
-                    Par Sens
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/par-horaire">
-                    Par Horaire
-                  </NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/par-cause">
-                    Par Cause
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/par-lieu">
-                    Par Lieu
+                    Statistiques
                   </NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Item>
@@ -284,16 +264,21 @@ const Tabchange = ({
         </>
       ) : (
         <>
+        <div class="header">
+<img src={logo} alt="Logo" className="logo" />
+  <h1 class="title">مصلحة السلامة و الصيانة للطرقات السيارة</h1>
+</div>
+
           <div className="admin-info">
             {!currentUserData.name ? (
               <h5>Chargement...</h5>
             ) : (
               <h5>Bienvenue {currentUserData.name}</h5>
             )}
-            {!currentUserData.region ? (
+            {!currentUserData.district ? (
               <h5>Chargement...</h5>
             ) : (
-              <h6>District: {currentUserData.region}</h6>
+              <h6>District: {currentUserData.district}</h6>
             )}
             <Link onClick={handlelogout} className="logout-link">
               Déconnexion

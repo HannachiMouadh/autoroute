@@ -1,11 +1,71 @@
 /* Sidebar styles */
 .admin-info {
-  margin-bottom: 20px;
-  text-align: right;
-  margin-top: 20px;
-  margin-right: 15px;
-  color: black;
+  background-color: rgba(155, 234, 205, 0.5);
+  border: 2px solid rgba(179, 235, 214, 0.5);
+  border-radius: 5px;
+  padding: 10px 20px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center .header horizontally */
 }
+
+.admin-info .header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1600px; /* optional max width */
+  justify-content: space-between; /* spread out children */
+  gap: 20px;
+}
+
+.admin-info .header img.logo {
+  height: 80px;
+  flex-shrink: 0; /* don't shrink logo */
+}
+
+.admin-info .header h1.title {
+  flex: 1;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.admin-info .header h5,
+.admin-info .header h6 {
+  margin: 0;
+  color: #000;
+  white-space: nowrap;
+}
+
+.admin-info .header > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 160px; /* keep some space for admin info */
+}
+
+.admin-info .header .logout-link {
+  color: #840505;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.admin-info .header .logout-link:hover {
+  text-decoration: underline;
+}
+
+
+body{
+  background-color: #deffeaa9;
+}
+
+
 
 .logout-link {
   color: red;
@@ -93,4 +153,67 @@
   text-decoration: none;
   color: #00386b;
   border-bottom: 1px solid #444;
+}
+
+/* On smaller screens, stack vertically */
+/* On smaller screens, stack vertically */
+@media (max-width: 768px) {
+  .admin-info {
+    height: auto; /* allow height to grow */
+    padding: 10px 15px;
+  }
+
+  .admin-info .header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+  }
+
+  .admin-info .header img.logo {
+  height: 80px;
+  flex-shrink: 0; /* don't shrink logo */
+}
+
+
+  .admin-info .header h1.title {
+    flex: unset;
+    text-align: center;
+    font-size: 22px;
+    white-space: normal; /* allow wrap */
+  }
+
+  .admin-info .header > div {
+    flex-direction: column;  /* stack admin info vertically */
+    justify-content: center;
+    gap: 4px;
+    min-width: auto;
+    width: 100%;
+    align-items: center;     /* center text horizontally */
+  }
+
+  .admin-info .header h5,
+  .admin-info .header h6 {
+    white-space: normal;
+    font-size: 14px;
+    text-align: center;      /* center text */
+    margin: 0;
+  }
+
+  .admin-info .header .logout-link {
+    margin-top: 0;
+    text-align: center;
+  }
+}
+
+/* For very small screens (mobile phones) */
+@media (max-width: 400px) {
+  .admin-info .header h1.title {
+    font-size: 18px;
+  }
+
+  /* Keep admin info stacked and centered */
+  .admin-info .header > div {
+    gap: 6px;
+  }
 }

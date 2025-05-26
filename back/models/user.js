@@ -23,7 +23,11 @@ const UserSchema = new Schema({
         type:Number,
         required:true
     },
-    region:{
+    district:{
+        type:String,
+        required:true
+    },
+    autonum:{
         type:String,
         required:true
     },

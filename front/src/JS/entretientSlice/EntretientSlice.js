@@ -1,122 +1,135 @@
-import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from "axios";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // Fetch forms action
-export const fetchEntData = createAsyncThunk('data/fetchAll', async () => {
+export const fetchEntData = createAsyncThunk("data/fetchAll", async () => {
   try {
-    const response = await axios.get('http://localhost:5000/ent/');
+    const response = await axios.get("http://localhost:5000/ent/");
     return response.data.respond;
   } catch (error) {
-    console.error('Error fetching entdata:', error);
+    console.error("Error fetching entdata:", error);
     throw error;
   }
 });
 
 // Add form action
-export const addEntData = createAsyncThunk('data/add', async (newData) => {
+export const addEntData = createAsyncThunk("data/add", async (newData) => {
   try {
-    const response = await axios.post('http://localhost:5000/ent/', newData, {
+    const response = await axios.post("http://localhost:5000/ent/", newData, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (error) {
-    console.error('Error adding form:', error);
+    console.error("Error adding form:", error);
     throw error;
   }
 });
 
 // Delete form action
-export const deleteEntData = createAsyncThunk('data/delete', async (id) => {
+export const deleteEntData = createAsyncThunk("data/delete", async (id) => {
   try {
     await axios.delete(`http://localhost:5000/ent/${id}`);
     return id;
   } catch (error) {
-    console.error('Error deleting form:', error);
+    console.error("Error deleting form:", error);
     throw error;
   }
 });
 
 // Update form action
 export const updateEntData = createAsyncThunk(
-  'form/update',
-  async ({ id, respond }, { rejectWithValue }) => {
+  "form/update",
+  async ({ id, entData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://localhost:5000/ent/${id}`, respond, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await axios.put(
+        `http://localhost:5000/ent/${id}`,
+        entData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      return response.respond;
+      return response.entData;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
 
-
-
-
+export const uploadPhoto = createAsyncThunk(
+  "upload/photo",
+  async (formDataUpload) => {
+    const response = await axios.post("http://localhost:5000/api/upload", formDataUpload, {
+      headers: {
+        "Content-Type": "multipart/form-data", // ✅ critical
+      },
+    });
+    return response.data;
+  }
+);
 
 
 
 
 const initialState = {
   entDatas: [],
-  status: 'idle',
-  error: null
+  status: "idle",
+  error: null,
 };
 const entretientSlice = createSlice({
-  name: 'entDatas',
+  name: "entDatas",
   initialState,
   extraReducers: (builder) => {
     builder
       .addCase(fetchEntData.fulfilled, (state, action) => {
-        state.entDatas = action.payload; 
+        state.entDatas = action.payload;
       })
       .addCase(fetchEntData.pending, (state) => {
-
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(fetchEntData.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message; 
+        state.status = "failed";
+        state.error = action.error.message;
       })
       .addCase(addEntData.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(addEntData.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.entDatas.push(action.payload);
       })
       .addCase(addEntData.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message; 
+        state.status = "failed";
+        state.error = action.error.message;
       })
       .addCase(deleteEntData.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(deleteEntData.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
 
-        state.entDatas  = state.entDatas.filter((item) => item.id !== action.payload);
+        state.entDatas = state.entDatas.filter(
+          (item) => item.id !== action.payload
+        );
       })
       .addCase(deleteEntData.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = "failed";
         state.error = action.error.message;
       })
       .addCase(updateEntData.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(updateEntData.fulfilled, (state, action) => {
         state.status = action.payload;
         console.log(action.payload);
-        state.status = 'succeeded';
+        state.status = "succeeded";
       })
       .addCase(updateEntData.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = "failed";
         try {
           const errorMessage = JSON.parse(action.error.message);
           state.error = errorMessage;
@@ -124,9 +137,20 @@ const entretientSlice = createSlice({
           // If not valid JSON, use the error message as is
           state.error = action.error.message;
         }
+      })
+      .addCase(uploadPhoto.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(uploadPhoto.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(uploadPhoto.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.image = action.payload.image;
+        }
       });
   },
 });
 
 export default entretientSlice.reducer;
-

@@ -1,8 +1,12 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const DBconnect = async() =>{
     try {
-        await mongoose.connect('mongodb+srv://mouadh:0000@cluster0.f3xlx.mongodb.net/');
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
         console.log("database is connected");
     } catch (error) {
         console.log(`cannot connect to database ${error}`);

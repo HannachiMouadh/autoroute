@@ -73,8 +73,8 @@ const UsersMan = ({userManLieu}) => {
     return <div>Failed to fetch users</div>;
   }
 
-  const regularUsers = Array.isArray(users) ? users.filter(user => user.region == userManLieu && !user.isAdmin && !user.isSuper) : [];
-  const adminUsers = Array.isArray(users) ? users.filter(user => user.region == userManLieu && user.isAdmin  && !user.isSuper) : [];
+  const regularUsers = Array.isArray(users) ? users.filter(user => user.district == userManLieu && !user.isAdmin && !user.isSuper) : [];
+  const adminUsers = Array.isArray(users) ? users.filter(user => user.district == userManLieu && user.isAdmin  && !user.isSuper) : [];
   const superUser = Array.isArray(users) ? users.filter(user => user.isAdmin) : [];
 
   return (
@@ -83,9 +83,10 @@ const UsersMan = ({userManLieu}) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-          <th>Nom</th>
             <th>Prénom</th>
+            <th>Nom</th>
             <th>District</th>
+            <th>Login</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -94,7 +95,8 @@ const UsersMan = ({userManLieu}) => {
             <tr key={user._id}>
               <td>{user.name}</td>
               <td>{user.lastName}</td>
-              <td>{user.region}</td>
+              <td>{user.district}</td>
+              <td>{user.email}</td>
               <td><UpdateUser dataId={user._id} rowData={user} />
                 <button 
                   className="btn btn-danger" 
@@ -128,9 +130,10 @@ const UsersMan = ({userManLieu}) => {
       <Table striped bordered hover className="tab">
         <thead>
           <tr>
-            <th>Nom</th>
             <th>Prénom</th>
+            <th>Nom</th>
             <th>District</th>
+            <th>Login</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -140,7 +143,8 @@ const UsersMan = ({userManLieu}) => {
       <tr key={user._id}>
         <td>{user.name}</td>
         <td>{user.lastName}</td>
-        <td>{user.region}</td>
+        <td>{user.district}</td>
+        <td>{user.email}</td>
         <td>
           <UpdateUser dataId={user._id} rowData={user} />
           <button
@@ -167,7 +171,8 @@ const UsersMan = ({userManLieu}) => {
       <tr key={user._id}>
         <td>{user.name}</td>
         <td>{user.lastName}</td>
-        <td>{user.region}</td>
+        <td>{user.district}</td>
+        <td>{user.email}</td>
         <td>
           <UpdateUser dataId={user._id} rowData={user} />
         </td>
