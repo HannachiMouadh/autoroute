@@ -35,13 +35,7 @@ export const updateUser = createAsyncThunk("update", async ({_id,user}) => {
 
 export const loginUser = createAsyncThunk("login", async (user) => {
   try {
-    const result = await axios.post("https://autoroute-api.vercel.app/api/user/login",user,
-      {
-        headers: {
-          'app-type': 'web', // or 'web'
-        },
-      }
-    );
+    const result = await axios.post("https://autoroute-api.vercel.app/api/user/login",user,);
     console.log(result);
     return result.data;
   } catch (error) {
