@@ -351,12 +351,12 @@ const exportToExcel = async (filteredDataArray) => {
                       >
                         {item.image.map((imgPath, index) => {
                           console.log(
-                            `Image Path: http://localhost:5000${imgPath}`
+                            `Image Path: https://autoroute-api.vercel.app${imgPath}`
                           );
                           return (
                             <img
                               key={index}
-                              src={`http://localhost:5000${imgPath}`}
+                              src={`https://autoroute-api.vercel.app${imgPath}`}
                               alt={`entretient-${index}`}
                               style={{
                                 maxWidth: "20px",
