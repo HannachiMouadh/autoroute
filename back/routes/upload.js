@@ -18,9 +18,16 @@ const upload = multer({ storage: fileStorageEngine });
 
 // Allow uploading up to 10 files with the form key "files"
 uploadRouter.post("/", upload.array("files", 10), (req, res) => {
-  console.log("req.files:", req.files); // ✅ must be array of file objects
-  const filePaths = req.files.map(file => `/uploads/${file.filename}`);
-  res.status(200).json(filePaths);
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: "No files uploaded" });
+    }
+    const filePaths = req.files.map(file => `/uploads/${file.filename}`);
+    res.status(200).json(filePaths);
+  } catch (err) {
+    console.error("Upload error:", err);
+    res.status(500).json({ error: "Upload failed", details: err.message });
+  }
 });
 
 module.exports = uploadRouter;
