@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your actual frontend
+  origin: 'https://autoroute-api.vercel.app', // Replace with your actual frontend
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization','app-type'], // <== INCLUDE THIS!
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']

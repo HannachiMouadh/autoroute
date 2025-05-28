@@ -8,7 +8,7 @@
   ],
   "headers": [
     {
-      "source": "/back/(.*)",
+      "source": "/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "https://autoroute-nu.vercel.app" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
