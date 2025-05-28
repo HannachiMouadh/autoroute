@@ -7,10 +7,15 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 
+
+app.use(cors({
+  origin: 'https://autoroute-nu.vercel.app', // Replace with your actual frontend
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'], // <== INCLUDE THIS!
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+app.options('*', cors());
 app.use("/uploads", express.static("uploads"));
-
-app.use(cors());
-
 app.use(express.json());
 DBconnect();
 app.use("/api/user",require('./routes/user'));
@@ -20,7 +25,7 @@ app.use("/pat",require("./routes/patrouille"));
 app.use("/matPat",require("./routes/matriculePatrouille"));
 app.use("/api/upload",require("./routes/upload"));
 
-mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', true);
 app.listen(port,(error)=>{
     error?console.log(error):console.log("server is running");
 });

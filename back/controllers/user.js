@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const DBconnect = require('../DBconnect');
 
 
 module.exports = {
@@ -50,6 +51,7 @@ module.exports = {
     const appType = req.headers['app-type']; // "mobile" or "web"
   
     try {
+      await DBconnect();
       const searchedUser = await User.findOne({ email });
       if (!searchedUser) return res.status(400).send({ msg: "Bad credentials" });
   
@@ -80,7 +82,7 @@ module.exports = {
       });
     } catch (error) {
       console.error(error);
-      res.status(500).send({ msg: "Cannot log in. Internal error." });
+      res.status(500).send({ msg: "Cannot log in. Internal error, Server error" });
     }
   },
 
