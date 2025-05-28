@@ -48,7 +48,6 @@ module.exports = {
 
   login: async (req, res) => {
     const { email, password } = req.body;
-    const appType = req.headers['app-type']; // "mobile" or "web"
   
     try {
       await DBconnect();
@@ -57,15 +56,6 @@ module.exports = {
   
       const match = await bcrypt.compare(password, searchedUser.password);
       if (!match) return res.status(400).send({ msg: "Bad credentials" });
-  
-      // Role-based access restriction
-      if (appType === 'mobile' && searchedUser.role !== 'patrouille') {
-        return res.status(403).send({ msg: "Access denied. Only patrouille users can use the mobile app." });
-      }
-  
-      if (appType === 'web' && !['securite', 'maintenance'].includes(searchedUser.role)) {
-        return res.status(403).send({ msg: "Access denied. Only securite or maintenance users can use the web app." });
-      }
   
       const payload = {
         _id: searchedUser._id,
