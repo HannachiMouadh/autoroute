@@ -147,7 +147,7 @@ const entretientSlice = createSlice({
       })
       .addCase(uploadPhoto.fulfilled, (state, action) => {
         if (action.payload) {
-          state.image = [...(state.image || []), ...action.payload];
+          state.image = action.payload;
         }
       });
   },
