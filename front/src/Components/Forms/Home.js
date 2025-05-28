@@ -453,7 +453,7 @@ const filteredData = (data, start, end, userAutonum = null) => {
                   row.image.map((imgPath, index) => (
                     <img
                       key={index}
-                      src={`http://localhost:5000${imgPath}`}
+                      src={`https://autoroute-api.vercel.app${imgPath}`}
                       alt={`Preview ${index}`}
                       className="avatar"
                       style={{
