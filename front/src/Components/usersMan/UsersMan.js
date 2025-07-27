@@ -73,9 +73,15 @@ const UsersMan = ({userManLieu}) => {
     return <div>Failed to fetch users</div>;
   }
 
-  const regularUsers = Array.isArray(users) ? users.filter(user => user.district == userManLieu && !user.isAdmin && !user.isSuper) : [];
-  const adminUsers = Array.isArray(users) ? users.filter(user => user.district == userManLieu && user.isAdmin  && !user.isSuper) : [];
-  const superUser = Array.isArray(users) ? users.filter(user => user.isAdmin) : [];
+  const regularUsers = Array.isArray(users) ? users.filter(user => user.district == currentUserData.district && !user.isAdmin) : [];
+  const adminUsers = Array.isArray(users) ? users.filter(user => user.district == currentUserData.district && user.isAdmin  && !user.isSuper) : [];
+  const allAdmins = Array.isArray(users) ? users.filter(user => user.isAdmin | user.isSuper) : [];
+    const allUsers = Array.isArray(users) ? users.filter(user => !user.isAdmin) : [];
+    console.log('all users:',allUsers);
+        console.log('all admins:',allAdmins);
+        console.log("super:",isSuper);
+        
+    
 
   return (
     <div className="users-container">
@@ -87,17 +93,31 @@ const UsersMan = ({userManLieu}) => {
             <th>Nom</th>
             <th>District</th>
             <th>Login</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {regularUsers.length > 0 ? regularUsers.map((user) => (
+          {isAdmin && regularUsers.length > 0 && regularUsers.map((user) => (
             <tr key={user._id}>
               <td>{user.name}</td>
               <td>{user.lastName}</td>
               <td>{user.district}</td>
               <td>{user.email}</td>
-              <td><UpdateUser dataId={user._id} rowData={user} />
+              <td>{user.role}</td>
+              <td style={{textAlign:"center"}}><UpdateUser dataId={user._id} rowData={user} />
+              </td>
+            </tr>
+          ))} 
+          {isSuper && allUsers.length > 0 &&
+            allUsers.map((user) => (
+            <tr key={user._id}>
+              <td>{user.name}</td>
+              <td>{user.lastName}</td>
+              <td>{user.district}</td>
+              <td>{user.email}</td>
+              <td>{user.role}</td>
+              <td style={{textAlign:"center"}}><UpdateUser dataId={user._id} rowData={user} />
                 <button 
                   className="btn btn-danger" 
                   onClick={() => handleDelete(user._id)}
@@ -116,17 +136,11 @@ const UsersMan = ({userManLieu}) => {
                 </button>
               </td>
             </tr>
-          )) : (
-            <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>
-                No regular users found.
-              </td>
-            </tr>
-          )}
+          ))}
         </tbody>
       </Table>
 
-      <h2>Admininistrateur</h2>
+      <h2>Administrateurs</h2>
       <Table striped bordered hover className="tab">
         <thead>
           <tr>
@@ -138,14 +152,27 @@ const UsersMan = ({userManLieu}) => {
           </tr>
         </thead>
         <tbody>
-  {isSuper ? (
-    superUser.map((user) => (
+  {isAdmin && adminUsers.length > 0 &&
+    adminUsers.map((user) => (
       <tr key={user._id}>
         <td>{user.name}</td>
         <td>{user.lastName}</td>
         <td>{user.district}</td>
         <td>{user.email}</td>
-        <td>
+        <td style={{textAlign:"center"}}>
+          <UpdateUser dataId={user._id} rowData={user} />
+          
+        </td>
+      </tr>
+    ))} 
+    {isSuper && allAdmins.length > 0 &&
+    allAdmins.map((user) => (
+      <tr key={user._id}>
+        <td>{user.name}</td>
+        <td>{user.lastName}</td>
+        <td>{user.district}</td>
+        <td>{user.email}</td>
+        <td style={{textAlign:"center"}}>
           <UpdateUser dataId={user._id} rowData={user} />
           <button
             className="btn btn-danger"
@@ -165,26 +192,7 @@ const UsersMan = ({userManLieu}) => {
           </button>
         </td>
       </tr>
-    ))
-  ) : isAdmin ? (
-    adminUsers.map((user) => (
-      <tr key={user._id}>
-        <td>{user.name}</td>
-        <td>{user.lastName}</td>
-        <td>{user.district}</td>
-        <td>{user.email}</td>
-        <td>
-          <UpdateUser dataId={user._id} rowData={user} />
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="6" style={{ textAlign: "center" }}>
-        No admin users found.
-      </td>
-    </tr>
-  )}
+    ))}
 </tbody>
       </Table>
     </div>

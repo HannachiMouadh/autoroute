@@ -1,7 +1,6 @@
 /* Container styling */
 .entretien-container {
-    padding: 20px;
-    background-color: #f9f9f9;
+      max-width: 1440px;
   }
   
   /* Header and button alignment */
@@ -56,10 +55,10 @@
     }
   
     .entretien-table {
-        font-size: 8.5px;
+        font-size: 12.5px;
     }
     .entretien-table th{
-        font-size: 8.5px;
+        font-size: 12.5px;
       }
   
     .entretien-table th,

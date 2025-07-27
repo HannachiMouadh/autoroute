@@ -407,7 +407,7 @@ const exportToExcel = (filteredDataArrayPatrouille) => {
               >
                 إعادة تعيين المرشحات
               </Button>
-              <Button variant="primary" onClick={() => exportToExcel(filteredDataArrayPatrouille)}>
+              <Button variant="primary" className="fas fa-download" onClick={() => exportToExcel(filteredDataArrayPatrouille)}>
                 تصدير إلى Excel
               </Button>
             </div>

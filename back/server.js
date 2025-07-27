@@ -9,23 +9,24 @@ const mongoose = require('mongoose');
 
 
 app.use(cors({
-  origin: 'https://autoroute-api.vercel.app', // Replace with your actual frontend
+  origin: 'http://localhost:3000', // Replace with your actual frontend
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization','app-type'], // <== INCLUDE THIS!
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  allowedHeaders: ['Content-Type', 'Authorization','app-type','Access-Control-Allow-Headers', 'Origin, X-Requested-With, Accept, Access-Control-Allow-Headers, Access-Control-Request-Method, Access-Control-Request-Headers'], // <== INCLUDE THIS!
+  methods: ['Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, PATCH, OPTIONS']
 }));
 app.options('*', cors());
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
-DBconnect();
 app.use("/api/user",require('./routes/user'));
 app.use("/auto",require("./routes/autoroute"));
 app.use("/ent",require("./routes/entretient"));
 app.use("/pat",require("./routes/patrouille"));
 app.use("/matPat",require("./routes/matriculePatrouille"));
 app.use("/api/upload",require("./routes/upload"));
+app.use("/api/uploadSingle",require("./routes/uploadSingle"));
+app.use("/api/updatePhoto",require("./routes/updatePhoto"));
 
 mongoose.set('strictQuery', true);
-app.listen(port,(error)=>{
-    error?console.log(error):console.log("server is running");
+DBconnect().then(() => {
+  app.listen(port, () => console.log(`Server running on port ${port}`));
 });

@@ -12,26 +12,25 @@ export const registerUser = createAsyncThunk("register", async (user, { rejectWi
   }
 });
 
-export const updateUser = createAsyncThunk("update", async ({_id,user}) => {
+export const updateUser = createAsyncThunk("update", async ({ _id, formData }) => {
   const token = localStorage.getItem('token');
   try {
-    console.log(user);
-    let result = await axios.put(`http://localhost:5000/api/user/${_id}`,
-      user,
+    let result = await axios.put(
+      `http://localhost:5000/api/user/${_id}`,
+      formData,
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       }
     );
     return result.data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    throw error;
   }
 });
-
-
 
 export const loginUser = createAsyncThunk("login", async (user) => {
   try {
@@ -82,6 +81,40 @@ export const deleteUser = createAsyncThunk("user/dalete", async (id) => {
     console.log(error)
   }
 });
+
+// Upload image and update user's photo URL
+export const updatePhoto = createAsyncThunk(
+  "user/updatePhoto",
+  async ({ userId, file }, thunkAPI) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(`http://localhost:5000/api/updatePhoto/${userId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("updatePhoto failed:", error);
+      return thunkAPI.rejectWithValue(error.response?.data || "Upload error");
+    }
+  }
+);
+
+
+export const uploadSingle = createAsyncThunk(
+  "upload/photo",
+  async (formDataUpload) => {
+    const response = await axios.post("http://localhost:5000/api/uploadSingle", formDataUpload, {
+      headers: {
+        "Content-Type": "multipart/form-data", // ✅ critical
+      },
+    });
+    console.error("uploaded action: ", response.data);
+    return response.data;
+  }
+);
 
 const initialState = {
   user: [],
@@ -165,6 +198,17 @@ export const userSlice = createSlice({
         state.status = 'success';
       })
       .addCase(deleteUser.rejected, (state) => {
+        state.status = 'fail';
+      })
+      .addCase(uploadSingle.pending, (state) => {
+        state.status = 'pending';
+      })
+      .addCase(uploadSingle.fulfilled, (state,action) => {
+        if (action.payload) {
+          state.image = action.payload.image;
+        }
+      })
+      .addCase(uploadSingle.rejected, (state) => {
         state.status = 'fail';
       });
   },

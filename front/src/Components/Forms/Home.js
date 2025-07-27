@@ -32,10 +32,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { TableSortLabel } from "@mui/material";
 import ShowForm from "./ShowDataForm";
 import { MdDeleteOutline } from "react-icons/md";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import PhotoPreview from "./PhotoPreview";
+
 
 tailChase.register();
 
 const Home = ({ userDistrict, curuser,userAutonum, ShowRowData, userRole }) => {
+  const [showPreview, setShowPreview] = useState(false);
+const [previewUrl, setPreviewUrl] = useState("");
+
   const dispatch = useDispatch();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -321,8 +327,8 @@ const filteredData = (data, start, end, userAutonum = null) => {
         >
           إعادة تعيين المرشحات
         </Button>
-        <Button variant="primary" onClick={exportToExcel}>
-          تصدير إلى Excel
+        <Button variant="primary" onClick={exportToExcel}><i className="fas fa-download"></i>
+          تصدير إلى  Excel 
         </Button>
       </div>
       <TableContainer component={Paper} className="tableContainer">
@@ -423,13 +429,13 @@ const filteredData = (data, start, end, userAutonum = null) => {
               <TableBody>
                 {startDate && endDate && filteredDataArray.length === 0 ? (
                   <TableRow>
-                    <TableCell style={{ textAlign: "center" }} colSpan={11}>
+                    <TableCell style={{ textAlign: "center" }} colSpan={12}>
                       <h4>لا توجد بيانات في هذا التاريخ</h4>
                     </TableCell>
                   </TableRow>
                 ) : filteredDataArray.length === 0 ? (
                   <TableRow>
-                    <TableCell style={{ textAlign: "center" }} colSpan={11}>
+                    <TableCell style={{ textAlign: "center" }} colSpan={12}>
                       <l-tail-chase
                         size="40"
                         speed="1.75"
@@ -449,21 +455,27 @@ const filteredData = (data, start, end, userAutonum = null) => {
                         flexWrap: "wrap",
                       }}
                       >
-                        {Array.isArray(row?.image) &&
-                  row.image.map((imgPath, index) => (
-                    <img
-                      key={index}
-                      src={`http://localhost:5000${imgPath}`}
-                      alt={`Preview ${index}`}
-                      className="avatar"
-                      style={{
-                        maxWidth: "60px",
-                        maxHeight: "90px",
-                        margin: "5px",
-                        borderRadius: 3,
-                      }}
-                    />
-                  ))}
+                        {row.image.map((imgPath, index) => {
+                          return (
+                            <img
+                              key={index}
+                              src={imgPath}
+                              alt={`entretien-${index}`}
+                              style={{
+                                maxWidth: "40px",
+                                maxHeight: "40px",
+                                margin: "5px",
+                                borderRadius: 3,
+                                cursor: "pointer",
+                                border: "1px solid #ccc",
+                              }}
+                              onClick={() => {
+                                setPreviewUrl(imgPath);
+                                setShowPreview(true);
+                              }}
+                            />
+                          );
+                        })}
                       </TableCell>
                       <TableCell className="rtl-text">{row.degat}</TableCell>
                       <TableCell className="rtl-text">{row.nbrmort}</TableCell>
@@ -502,6 +514,11 @@ const filteredData = (data, start, end, userAutonum = null) => {
             </Table>
           </div>
         )}
+        <PhotoPreview
+  show={showPreview}
+  handleClose={() => setShowPreview(false)}
+  imageUrl={previewUrl}
+/>
       </TableContainer>
     </div>
   );

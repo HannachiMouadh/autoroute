@@ -919,12 +919,12 @@ if (Array.isArray(sense)) {
   // stats["اتجاه صخيرة"].dead
   // stats["اتجاه صفاقس"].injured
   // stats["اتجاه قابس"].dead
-  console.log("Total : ",stats[sense[0]].accidents);
-  console.log("Total : ",stats[sense[1]].accidents);
-  console.log(stats[sense[0]].injured);
-  console.log(stats[sense[1]].injured);
-  console.log(stats[sense[0]].dead);
-  console.log(stats[sense[1]].dead);
+  // console.log("Total : ",stats[sense[0]].accidents);
+  // console.log("Total : ",stats[sense[1]].accidents);
+  // console.log(stats[sense[0]].injured);
+  // console.log(stats[sense[1]].injured);
+  // console.log(stats[sense[0]].dead);
+  // console.log(stats[sense[1]].dead);
 } else {
   console.log("Directions non disponibles");
 }
@@ -950,6 +950,9 @@ if (Array.isArray(sense)) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Statistics');
 
+        worksheet.mergeCells('A1:H1');
+    const headerRowTitle = worksheet.getRow(1);
+    headerRowTitle.getCell(1).value = '';
 
     worksheet.columns = [
       { header: '%جرحى', key: 'iinjuries'},
@@ -962,15 +965,17 @@ if (Array.isArray(sense)) {
     ];
 
 
-    const tableHeaderRowCause = worksheet.getRow(2);
+    const tableHeaderRowCause = worksheet.getRow(3);
     tableHeaderRowCause.values = worksheet.columns.map(col => col.header);
     tableHeaderRowCause.eachCell(cell => {
       cell.font = { bold: true };
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
     });
 
-    worksheet.mergeCells('A1:G1');
-    const headerRowCause = worksheet.getRow(1);
+
+
+    worksheet.mergeCells('A2:G2');
+    const headerRowCause = worksheet.getRow(2);
     const headerCellCause = headerRowCause.getCell(1);
     headerCellCause.value = `Rapport Statistique Par Cause: ${formatStartDate} - ${formatEndDate}`;
     headerCellCause.font = { bold: true };
@@ -1033,8 +1038,8 @@ if (Array.isArray(sense)) {
       base64: chartInjurImageCause,
       extension: 'png',
     });
-    worksheet.addImage(accImageIdCause, 'A27:H116');
-    worksheet.addImage(injurImageIdCause, 'A117:H200');
+    worksheet.addImage(accImageIdCause, 'A30:H120');
+    worksheet.addImage(injurImageIdCause, 'A125:H200');
 
 
     worksheet.columns = [
@@ -1121,14 +1126,6 @@ headerCellHoraire.alignment = { horizontal: 'center', vertical: 'middle' };
 
     worksheet.addImage(accImageIdHoraire, 'A230:H300');
     worksheet.addImage(injurImageIdHoraire, 'A303:H380');
-
-
-    // const headerColumnSense1 = worksheet.addRow([]);
-    // headerColumnSense1.getCell(1).value = regionDirections(currentUserDistrict)[0];
-    // worksheet.mergeCells('I387:I394');
-    // const headerColumnSense2 = worksheet.addRow([]);
-    // headerColumnSense2.getCell(1).value = regionDirections(currentUserDistrict)[1];
-    // worksheet.mergeCells('I395:I402');
 
     worksheet.columns = [
         { header: '%جرحى', key: 'iinjuries'},
@@ -1235,7 +1232,7 @@ headerCellHoraire.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
     });
 
-    worksheet.mergeCells('A553:J553');
+    worksheet.mergeCells('A553:G553');
     const headerRowSemaine = worksheet.getRow(553);
     const headerCellSemaine = headerRowSemaine.getCell(1);
     headerCellSemaine.value = `Rapport Statistique Par Semaine: ${formatStartDate} - ${formatEndDate}`;
@@ -1295,7 +1292,7 @@ headerCellHoraire.alignment = { horizontal: 'center', vertical: 'middle' };
           cell.alignment = { horizontal: "center", vertical: "middle" };
         });
     
-        worksheet.mergeCells("A616:J616");
+        worksheet.mergeCells("A616:G616");
         const headerRow = worksheet.getRow(616);
         const headerCell = headerRow.getCell(1);
         headerCell.value = `Rapport Statistique Par Sense: ${formatStartDate} - ${formatEndDate}`;
@@ -1358,8 +1355,8 @@ headerCellHoraire.alignment = { horizontal: 'center', vertical: 'middle' };
           extension: "png",
         });
     
-        worksheet.addImage(accImageIdSense, "A622:H664");
-        worksheet.addImage(injurImageIdSense, "A700:H745");
+        worksheet.addImage(accImageIdSense, "A622:H698");
+        worksheet.addImage(injurImageIdSense, "A700:H765");
 
         worksheet.getColumn(1).width = 40;
         worksheet.getColumn(2).width = 40;

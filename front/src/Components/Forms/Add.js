@@ -431,7 +431,7 @@ const userDistrict = user?.district;
   const placeholders = ['أ', 'ب', 'ج', 'د'];
 
   const updateFormData = (parts) => {
-    const combined = parts.filter(Boolean).join(' - ');
+    const combined = parts.filter(Boolean).join(' |#|\n ');
     setFormData({ ...formData, matriculeA: combined });
   };
 
@@ -699,7 +699,7 @@ const userDistrict = user?.district;
                   formData.image.map((imgPath, index) => (
                     <img
                       key={index}
-                      src={`http://localhost:5000${imgPath}`}
+                      src={imgPath}
                       alt={`Preview ${index}`}
                       className="avatar"
                       style={{

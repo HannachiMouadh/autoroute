@@ -64,7 +64,7 @@ const AddEntretient = ({ show, handleClose }) => {
         console.error("uploadedPaths", uploadedPaths);
         setFormData((prev) => ({
           ...prev,
-          image: [...(prev.image || []), ...uploadedPaths], // ✅ append to existing
+          image: uploadedPaths, // ✅ append to existing
         }));
       }
     } catch (error) {

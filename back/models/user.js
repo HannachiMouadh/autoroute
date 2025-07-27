@@ -35,6 +35,7 @@ const UserSchema = new Schema({
         type: String,
         required:true 
     },
+    image:[String],
     isAuth:{
         type:Boolean,
         default:false

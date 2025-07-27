@@ -12,11 +12,8 @@ const ShowForm = ({ ShowRowData }) => {
   const handleShow = () => setShow(true);
 
   const showData = {
-    a: ShowRowData.a || "",
-    b: ShowRowData.b || "",
-    c: ShowRowData.c || "",
-    d: ShowRowData.d || "",
-    barrier: ShowRowData.barrier || "",
+    matriculeA: ShowRowData.matriculeA || "",
+    degat: ShowRowData.degat || "",
     sens: ShowRowData.sens || "",
     nk: ShowRowData.nk || "",
     mtr: ShowRowData.mtr || "",
@@ -29,6 +26,7 @@ const ShowForm = ({ ShowRowData }) => {
     years: ShowRowData.years || "",
     hours: ShowRowData.hours || "",
     minutes: ShowRowData.minutes || "",
+    image: ShowRowData.image || "",
   };
 
   return (
@@ -47,15 +45,26 @@ const ShowForm = ({ ShowRowData }) => {
         <p><strong>اليوم:</strong> {showData.day}</p>
         <p><strong>نقطة كلمترية :</strong> {showData.nk}+{showData.mtr}m</p>
         <p><strong>الاتجاه:</strong> {showData.sens}</p>
-          <p><strong>المركبة أ:</strong> {showData.a}</p>
-          <p><strong>المركبة ب:</strong> {showData.b}</p>
-          <p><strong>المركبة ج:</strong> {showData.c}</p>
-          <p><strong>المركبة د:</strong> {showData.d}</p>
+          <p><strong>المركبة:</strong> {showData.matriculeA}</p>
           <p><strong>سبب الحادث:</strong> {showData.cause}</p>
-          <p><strong>اضرار مادية:</strong> {showData.barrier}</p>
+          <p><strong>اضرار مادية:</strong> {showData.degat}</p>
           <p><strong>اضرار بدنية:</strong></p> <p>{showData.nbrmort} :موتى</p><p> {showData.nbrblesse}:جرحى</p>
           <p><strong>الشهر:</strong> {showData.months}</p>
-
+          {Array.isArray(showData?.image) &&
+                  showData.image.map((imgPath, index) => (
+                    <img
+                      key={index}
+                      src={imgPath}
+                      alt={`Preview ${index}`}
+                      className="avatar"
+                      style={{
+                        maxWidth: "330px",
+                        maxHeight: "500px",
+                        margin: "5px",
+                        borderRadius: 3,
+                      }}
+                    />
+                  ))}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

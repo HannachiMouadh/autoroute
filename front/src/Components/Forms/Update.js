@@ -26,10 +26,7 @@ const Update = ({ rowData, dataId, onUpdate }) => {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [updateData, setUpdateData] = useState({
-    a: rowData.a || "",
-    b: rowData.b || "",
-    c: rowData.c || "",
-    d: rowData.d || "",
+    matriculeA: rowData.matriculeA || "",
     barrier: rowData.barrier || "",
     sens: rowData.sens || "",
     nk: rowData.nk || "",
@@ -175,10 +172,7 @@ const Update = ({ rowData, dataId, onUpdate }) => {
         });
         setShowModal(false);
         setUpdateData({
-          a: "",
-          b: "",
-          c: "",
-          d: "",
+          matriculeA: "",
           barrier: "",
           sens: "",
           nk: "",
@@ -368,41 +362,12 @@ const Update = ({ rowData, dataId, onUpdate }) => {
                 className="form-control"
                 type="text"
                 placeholder="أ"
-                name="a"
-                value={updateData.a || rowData.a}
+                name="matriculeA"
+                value={updateData.matriculeA || rowData.matriculeA}
                 onChange={newData}
                 required
               />
               {errors.a && <p className="form-error">{errors.a}</p>}
-
-              <Form.Control
-                className="form-control"
-                type="text"
-                placeholder="ب"
-                name="b"
-                value={updateData.b || rowData.b}
-                onChange={newData}
-                required
-              />
-
-              <Form.Control
-                className="form-control"
-                type="text"
-                placeholder="ج"
-                name="c"
-                value={updateData.c || rowData.c}
-                onChange={newData}
-                required
-              />
-              <Form.Control
-                className="form-control"
-                type="text"
-                placeholder="د"
-                name="d"
-                value={updateData.d || rowData.d}
-                onChange={newData}
-                required
-              />
             </Row>
 
             {/* Cause of Accident */}

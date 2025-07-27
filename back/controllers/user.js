@@ -7,7 +7,7 @@ const DBconnect = require('../DBconnect');
 module.exports = {
 
   register: async (req, res) => {
-    const { name, lastName, email, password, phone,autonum, district,role,isAdmin } = req.body;
+    const { name, lastName, email, password, phone,autonum, district,role,isAdmin,image  } = req.body;
   
     if (!name || !lastName || !email || !password || !phone || !autonum || !district || !role) {
       return res.status(400).json({ msg: "Tous les champs sont obligatoires" });
@@ -34,6 +34,7 @@ module.exports = {
         autonum,
         district,
         role,
+        image,
         isAdmin,
       });
   
@@ -63,7 +64,7 @@ module.exports = {
         return res.status(403).send({ msg: "Access denied. Only patrouille users can use the mobile app." });
       }
   
-      if (appType === 'web' && !['securite', 'maintenance'].includes(searchedUser.role)) {
+      if (appType === 'web' && !['securite', 'entretient','superviseur'].includes(searchedUser.role)) {
         return res.status(403).send({ msg: "Access denied. Only securite or maintenance users can use the web app." });
       }
   
