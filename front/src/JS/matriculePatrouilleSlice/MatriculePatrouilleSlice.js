@@ -7,7 +7,7 @@ export const fetchMatricule = createAsyncThunk(
   "patrouille/fetchMatricule",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get("https://autoroute-api.vercel.app/matPat/");
+      const response = await axios.get("https://autoroute.onrender.com/matPat/");
       return response.data.respond;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);
@@ -18,7 +18,7 @@ export const fetchMatricule = createAsyncThunk(
 // Add form action
 export const addMatriculeData = createAsyncThunk("data/add", async (newData) => {
   try {
-    const response = await axios.post("https://autoroute-api.vercel.app/matPat/", newData, {
+    const response = await axios.post("https://autoroute.onrender.com/matPat/", newData, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -34,7 +34,7 @@ export const addMatriculeData = createAsyncThunk("data/add", async (newData) => 
 // Delete form action
 export const deleteMatriculeData = createAsyncThunk('data/delete', async (id) => {
   try {
-    await axios.delete(`https://autoroute-api.vercel.app/matPat/${id}`);
+    await axios.delete(`https://autoroute.onrender.com/matPat/${id}`);
     return id;
   } catch (error) {
     console.error('Error deleting form:', error);
@@ -47,7 +47,7 @@ export const updateMatriculeData = createAsyncThunk(
   'form/update',
   async ({ id, matriculeData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`https://autoroute-api.vercel.app/matPat/${id}`, matriculeData, {
+      const response = await axios.put(`https://autoroute.onrender.com/matPat/${id}`, matriculeData, {
         headers: {
           'Content-Type': 'application/json',
         },
