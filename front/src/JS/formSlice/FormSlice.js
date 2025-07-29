@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // Fetch forms action
 export const fetchForms = createAsyncThunk('data/fetchAll', async () => {
   try {
-    const response = await axios.get('http://localhost:5000/auto/');
+    const response = await axios.get('https://autoroute-api.vercel.app/auto/');
     return response.data.respond;
   } catch (error) {
     console.error('Error fetching forms:', error);
@@ -16,7 +16,7 @@ export const fetchForms = createAsyncThunk('data/fetchAll', async () => {
 // Add form action
 export const addForm = createAsyncThunk('data/add', async (newData) => {
   try {
-    const response = await axios.post('http://localhost:5000/auto/', newData, {
+    const response = await axios.post('https://autoroute-api.vercel.app/auto/', newData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -32,7 +32,7 @@ export const addForm = createAsyncThunk('data/add', async (newData) => {
 // Delete form action
 export const deleteForm = createAsyncThunk('data/delete', async (id) => {
   try {
-    await axios.delete(`http://localhost:5000/auto/${id}`);
+    await axios.delete(`https://autoroute-api.vercel.app/auto/${id}`);
     return id;
   } catch (error) {
     console.error('Error deleting form:', error);
@@ -45,7 +45,7 @@ export const updateForm = createAsyncThunk(
   'form/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://localhost:5000/auto/${id}`, data, {
+      const response = await axios.put(`https://autoroute-api.vercel.app/auto/${id}`, data, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -60,7 +60,7 @@ export const updateForm = createAsyncThunk(
 export const uploadPhoto = createAsyncThunk(
   "upload/photo",
   async (formDataUpload) => {
-    const response = await axios.post("http://localhost:5000/api/upload", formDataUpload, {
+    const response = await axios.post("https://autoroute-api.vercel.app/api/upload", formDataUpload, {
       headers: {
         "Content-Type": "multipart/form-data", // ✅ critical
       },
