@@ -15,5 +15,5 @@ const appB =
     "appB"
   );
 
-const bucket = admin.app("appB").storage().bucket();
+const bucket = admin.app("appB").storage().bucket("uploadsingleautoroute.appspot.com");
 module.exports = bucket;
