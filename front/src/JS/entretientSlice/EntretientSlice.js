@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // Fetch forms action
 export const fetchEntData = createAsyncThunk("data/fetchAll", async () => {
   try {
-    const response = await axios.get("https://autoroute-api.vercel.app/ent/");
+    const response = await axios.get("https://autoroute.onrender.com/ent/");
     return response.data.respond;
   } catch (error) {
     console.error("Error fetching entdata:", error);
@@ -15,7 +15,7 @@ export const fetchEntData = createAsyncThunk("data/fetchAll", async () => {
 // Add form action
 export const addEntData = createAsyncThunk("data/add", async (newData) => {
   try {
-    const response = await axios.post("https://autoroute-api.vercel.app/ent/", newData, {
+    const response = await axios.post("https://autoroute.onrender.com/ent/", newData, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -30,7 +30,7 @@ export const addEntData = createAsyncThunk("data/add", async (newData) => {
 // Delete form action
 export const deleteEntData = createAsyncThunk("data/delete", async (id) => {
   try {
-    await axios.delete(`https://autoroute-api.vercel.app/ent/${id}`);
+    await axios.delete(`https://autoroute.onrender.com/ent/${id}`);
     return id;
   } catch (error) {
     console.error("Error deleting form:", error);
@@ -44,7 +44,7 @@ export const updateEntData = createAsyncThunk(
   async ({ id, entData }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `https://autoroute-api.vercel.app/ent/${id}`,
+        `https://autoroute.onrender.com/ent/${id}`,
         entData,
         {
           headers: {
@@ -63,7 +63,7 @@ export const updateEntData = createAsyncThunk(
 export const uploadPhoto = createAsyncThunk(
   "upload/photo",
   async (formDataUpload) => {
-    const response = await axios.post("https://autoroute-api.vercel.app/api/upload", formDataUpload, {
+    const response = await axios.post("https://autoroute.onrender.com/api/upload", formDataUpload, {
       headers: {
         "Content-Type": "multipart/form-data", // ✅ critical
       },
