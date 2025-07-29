@@ -65,13 +65,12 @@ export const UpdateProfile = ({ dataId }) => {
       let imageUrl = preview;
 
       // ✅ If new image selected, upload and get URL
-if (selectedImage) {
-  const formData = new FormData();
-  formData.append("file", selectedImage);
-
-  const res = await dispatch(updatePhoto(formData)).unwrap();
-  imageUrl = res.imageUrl || res.url;
-}
+      if (selectedImage) {
+        const res = await dispatch(
+          updatePhoto({ userId: dataId, file: selectedImage })
+        ).unwrap();
+        imageUrl = res.imageUrl || res.url;
+      }
 
       const updatedUser = {
         ...User,
