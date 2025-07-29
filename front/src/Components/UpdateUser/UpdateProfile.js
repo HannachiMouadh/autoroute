@@ -69,7 +69,7 @@ if (selectedImage) {
   const formData = new FormData();
   formData.append("file", selectedImage);
 
-  const res = await dispatch(uploadSingle(formData)).unwrap();
+  const res = await dispatch(updatePhoto(formData)).unwrap();
   imageUrl = res.imageUrl || res.url;
 }
 
