@@ -7,7 +7,7 @@ export const fetchPatrouilles = createAsyncThunk(
   "patrouille/fetchPatrouilles",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get("http://localhost:5000/pat/");
+      const response = await axios.get("https://autoroute-api.vercel.app/pat/");
       return response.data.respond;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);
@@ -18,7 +18,7 @@ export const fetchPatrouilles = createAsyncThunk(
 // Add form action
 export const addPatData = createAsyncThunk("data/add", async (newData) => {
   try {
-    const response = await axios.post("http://localhost:5000/pat/", newData, {
+    const response = await axios.post("https://autoroute-api.vercel.app/pat/", newData, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -34,7 +34,7 @@ export const addPatData = createAsyncThunk("data/add", async (newData) => {
 // Delete form action
 export const deletePatData = createAsyncThunk('data/delete', async (id) => {
   try {
-    await axios.delete(`http://localhost:5000/pat/${id}`);
+    await axios.delete(`https://autoroute-api.vercel.app/pat/${id}`);
     return id;
   } catch (error) {
     console.error('Error deleting form:', error);
@@ -47,7 +47,7 @@ export const updatePatData = createAsyncThunk(
   'form/update',
   async ({ id, patData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://localhost:5000/pat/${id}`, patData, {
+      const response = await axios.put(`https://autoroute-api.vercel.app/pat/${id}`, patData, {
         headers: {
           'Content-Type': 'application/json',
         },
