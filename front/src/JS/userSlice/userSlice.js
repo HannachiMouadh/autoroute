@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const registerUser = createAsyncThunk("register", async (user, { rejectWithValue }) => {
   try {
-    const result = await axios.post("https://autoroute-api.vercel.app/api/user/register", user);
+    const result = await axios.post("https://autoroute.onrender.com/api/user/register", user);
     return result.data;
   } catch (error) {
     console.error("Erreur Axios :", error.response?.data || error.message);
@@ -16,7 +16,7 @@ export const updateUser = createAsyncThunk("update", async ({ _id, formData }) =
   const token = localStorage.getItem('token');
   try {
     let result = await axios.put(
-      `https://autoroute-api.vercel.app/api/user/${_id}`,
+      `https://autoroute.onrender.com/api/user/${_id}`,
       formData,
       {
         headers: {
@@ -34,7 +34,7 @@ export const updateUser = createAsyncThunk("update", async ({ _id, formData }) =
 
 export const loginUser = createAsyncThunk("login", async (user) => {
   try {
-    const result = await axios.post("https://autoroute-api.vercel.app/api/user/login",user,
+    const result = await axios.post("https://autoroute.onrender.com/api/user/login",user,
       {
         headers: {
           'app-type': 'web', // or 'web'
@@ -50,7 +50,7 @@ export const loginUser = createAsyncThunk("login", async (user) => {
 
 export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => {
   try {
-      const response = await axios.get("https://autoroute-api.vercel.app/api/user/current", {
+      const response = await axios.get("https://autoroute.onrender.com/api/user/current", {
           headers: {
               Authorization: localStorage.getItem("token"),
           },
@@ -65,7 +65,7 @@ export const currentUser = createAsyncThunk('user/current', async (thunkAPI) => 
 
 export const getAllUsers = createAsyncThunk("getAllUsers", async () => {
   try {
-    const result = await axios.get("https://autoroute-api.vercel.app/api/user/");
+    const result = await axios.get("https://autoroute.onrender.com/api/user/");
     console.log(result.data);
     return result.data;
   } catch (error) {
@@ -75,7 +75,7 @@ export const getAllUsers = createAsyncThunk("getAllUsers", async () => {
 
 export const deleteUser = createAsyncThunk("user/dalete", async (id) => {
   try {
-    const result = await axios.delete(`https://autoroute-api.vercel.app/api/user/${id}`);
+    const result = await axios.delete(`https://autoroute.onrender.com/api/user/${id}`);
     return result.data;
   } catch (error) {
     console.log(error)
@@ -90,7 +90,7 @@ export const updatePhoto = createAsyncThunk(
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`https://autoroute-api.vercel.app/api/updatePhoto/${userId}`, formData, {
+      const response = await axios.post(`https://autoroute.onrender.com/api/updatePhoto/${userId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -106,7 +106,7 @@ export const updatePhoto = createAsyncThunk(
 export const uploadSingle = createAsyncThunk(
   "upload/photo",
   async (formDataUpload) => {
-    const response = await axios.post("https://autoroute-api.vercel.app/api/uploadSingle", formDataUpload, {
+    const response = await axios.post("https://autoroute.onrender.com/api/uploadSingle", formDataUpload, {
       headers: {
         "Content-Type": "multipart/form-data", // ✅ critical
       },
