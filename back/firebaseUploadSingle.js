@@ -1,13 +1,18 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccountKeySingle.json");
+require("dotenv").config();
 
-const appB = admin.apps.find(app => app.name === "appB") || 
+const appB =
+  admin.apps.find(app => app.name === "appB") ||
   admin.initializeApp(
     {
-      credential: admin.credential.cert(serviceAccount),
-      storageBucket: "uploadsingleautoroute.firebasestorage.app", // ✅ correct format
+      credential: admin.credential.cert({
+        projectId: process.env.APP_B_PROJECT_ID,
+        clientEmail: process.env.APP_B_CLIENT_EMAIL,
+        privateKey: process.env.APP_B_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      }),
+      storageBucket: process.env.APP_B_BUCKET,
     },
-    "appB" // ✅ unique name
+    "appB"
   );
 
 const bucket = admin.app("appB").storage().bucket();
