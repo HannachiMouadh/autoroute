@@ -61,11 +61,11 @@ export const updateEntData = createAsyncThunk(
 );
 
 export const uploadPhoto = createAsyncThunk(
-  "upload/photo",
+  "entretient/uploadPhoto",
   async (formDataUpload) => {
     const response = await axios.post("http://localhost:5000/api/upload", formDataUpload, {
       headers: {
-        "Content-Type": "multipart/form-data", // ✅ critical
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
@@ -146,9 +146,10 @@ const entretientSlice = createSlice({
         state.status = "loading";
       })
       .addCase(uploadPhoto.fulfilled, (state, action) => {
-        if (action.payload) {
-          state.image = action.payload.image;
-        }
+        state.status = "succeeded";
+        // The component handles the uploaded URLs locally, 
+        // but we can store the last uploaded set if needed.
+        state.image = action.payload; 
       });
   },
 });

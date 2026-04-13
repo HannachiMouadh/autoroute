@@ -1,5 +1,6 @@
 .table-container {
-  max-height: 400px; /* Adjust as needed */
+  max-height: 400px;
+  /* Adjust as needed */
   overflow-y: auto;
   overflow-x: auto;
   display: block;
@@ -9,21 +10,24 @@
 .table-container table {
   border-collapse: collapse;
   width: 100%;
-  min-width: 600px; /* Prevent column squashing on mobile */
+  min-width: 600px;
+  /* Prevent column squashing on mobile */
 }
 
 /* Fixed header with scroll */
 .table-container thead th {
   position: sticky;
   top: 0;
-  background-color: white; /* or any bg */
+  background-color: white;
+  /* or any bg */
   z-index: 2;
   border-bottom: 1px solid #ccc;
   padding: 8px;
 }
 
 /* Optional styling */
-td, th {
+td,
+th {
   padding: 8px;
   border: 1px solid #ddd;
   text-align: left;

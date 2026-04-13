@@ -9,10 +9,10 @@ const mongoose = require('mongoose');
 
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your actual frontend
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization','app-type','Access-Control-Allow-Headers', 'Origin, X-Requested-With, Accept, Access-Control-Allow-Headers, Access-Control-Request-Method, Access-Control-Request-Headers'], // <== INCLUDE THIS!
-  methods: ['Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, PATCH, OPTIONS']
+  allowedHeaders: ['Content-Type', 'Authorization','app-type','Access-Control-Allow-Headers', 'Origin, X-Requested-With, Accept, Access-Control-Allow-Headers, Access-Control-Request-Method, Access-Control-Request-Headers'],
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS']
 }));
 app.options('*', cors());
 app.use("/uploads", express.static("uploads"));

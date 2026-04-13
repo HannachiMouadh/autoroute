@@ -144,9 +144,8 @@ const formSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(uploadPhoto.fulfilled, (state, action) => {
-        if (action.payload) {
-          state.image = action.payload.image;
-        }
+        state.status = 'succeeded';
+        state.image = action.payload;
       })
   },
 });

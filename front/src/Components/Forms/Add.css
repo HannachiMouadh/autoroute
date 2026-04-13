@@ -1,31 +1,31 @@
-@import "~bootstrap/dist/css/bootstrap.min.css";
-@import "rsuite/dist/rsuite.css";
 .modal-backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Style the modal content */
-  .modal-content {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-  }
-  
-  /* Style the form input fields */
-  .form-control {
-    margin-bottom: 10px;
-  }
-  
-  /* Center the modal vertically */
-  .modal-dialog {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
-  .react-datepicker-popper {
-    z-index: 100 !important;
-  }
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Style the modal content */
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* Style the form input fields */
+.form-control {
+  margin-bottom: 10px;
+}
+
+/* Center the modal vertically */
+.modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.react-datepicker-popper {
+  z-index: 100 !important;
+}
+
 /* Container spacing for all rows */
 .form-section {
   margin-bottom: 15px;

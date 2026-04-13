@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "front": "cd.. && cd front && npm start",
+    "front": "cd.. && cd front && npm run dev",
     "back": "nodemon server.js",
     "dev": "concurrently \"npm run front\" \"npm run back\" "
   },
@@ -14,6 +14,7 @@
     "@reduxjs/rtk-codemods": "^0.1.2",
     "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.9.0",
     "concurrently": "^8.2.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

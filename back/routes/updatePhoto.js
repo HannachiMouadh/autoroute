@@ -1,11 +1,28 @@
 const express = require("express");
 const multer = require("multer");
-const { v4: uuidv4 } = require("uuid");
-const bucket = require("../firebaseUploadSingle");
-const User = require("../models/user"); // adjust path to your User model
+const cloudinary = require("../cloudinaryConfig");
+const User = require("../models/user");
 
 const updatePhoto = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
+
+// Helper: upload buffer to Cloudinary
+const uploadToCloudinary = (fileBuffer, originalname) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "autoroute_users",
+        resource_type: "auto",
+        public_id: `${Date.now()}-${originalname.replace(/\.[^/.]+$/, "")}`,
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result.secure_url);
+      }
+    );
+    stream.end(fileBuffer);
+  });
+};
 
 updatePhoto.post("/:userId", upload.single("file"), async (req, res) => {
   try {
@@ -15,23 +32,8 @@ updatePhoto.post("/:userId", upload.single("file"), async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    // Upload to Firebase
-    const folder = "users";
-    const filename = `${folder}/${Date.now()}-${req.file.originalname}`;
-    const fileUpload = bucket.file(filename);
-
-    await fileUpload.save(req.file.buffer, {
-      metadata: {
-        contentType: req.file.mimetype,
-        metadata: {
-          firebaseStorageDownloadTokens: uuidv4(),
-        },
-      },
-    });
-
-    const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(
-      filename
-    )}?alt=media`;
+    // Upload to Cloudinary
+    const downloadUrl = await uploadToCloudinary(req.file.buffer, req.file.originalname);
 
     // Update user's image in MongoDB
     const updatedUser = await User.findByIdAndUpdate(

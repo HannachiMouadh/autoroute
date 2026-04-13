@@ -20,8 +20,7 @@ export const updateUser = createAsyncThunk("update", async ({ _id, formData }) =
       formData,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
+          Authorization: token,
         },
       }
     );
@@ -204,8 +203,17 @@ export const userSlice = createSlice({
         state.status = 'pending';
       })
       .addCase(uploadSingle.fulfilled, (state,action) => {
-        if (action.payload) {
-          state.image = action.payload.image;
+        state.status = 'success';
+        if (action.payload && action.payload.url) {
+          state.image = action.payload.url;
+        }
+      })
+      .addCase(updatePhoto.fulfilled, (state, action) => {
+        state.status = 'success';
+        if (action.payload && action.payload.imageUrl) {
+          state.user = action.payload.user;
+          // if you have a separate photo field in state
+          state.user.image = action.payload.imageUrl;
         }
       })
       .addCase(uploadSingle.rejected, (state) => {
