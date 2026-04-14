@@ -412,7 +412,11 @@ const exportToExcel = (filteredDataArrayPatrouille) => {
               </Button>
             </div>
       {isMobileView ? (
+        
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <Button variant="success" onClick={() => setShowAddMatricule(true)}>
+            Ajouter
+          </Button>
           <table
             border="1"
             cellPadding="8"
