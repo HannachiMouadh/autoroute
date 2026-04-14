@@ -1,34 +1,47 @@
 .table-container {
-  max-height: 400px;
-  /* Adjust as needed */
+  max-height: 600px;
   overflow-y: auto;
   overflow-x: auto;
-  display: block;
+  margin-top: 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* Ensure table doesn't shrink too much on mobile */
 .table-container table {
-  border-collapse: collapse;
   width: 100%;
-  min-width: 600px;
-  /* Prevent column squashing on mobile */
+  border-collapse: collapse;
+  background-color: #ffffff;
+  color: #212529 !important;
+  min-width: 800px;
 }
 
-/* Fixed header with scroll */
 .table-container thead th {
   position: sticky;
   top: 0;
-  background-color: white;
-  /* or any bg */
-  z-index: 2;
-  border-bottom: 1px solid #ccc;
-  padding: 8px;
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+  z-index: 10;
+  border-bottom: 2px solid #dee2e6;
+  padding: 12px 15px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
 }
 
-/* Optional styling */
-td,
-th {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
+.table-container tbody td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  color: #333 !important;
+  vertical-align: middle;
+}
+
+.table-container tbody tr:hover {
+  background-color: #f8f9fa !important;
+}
+
+/* Ensure bootstrap table classes don't override */
+.table-container .table {
+  margin-bottom: 0;
 }

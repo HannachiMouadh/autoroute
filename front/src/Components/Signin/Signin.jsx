@@ -11,7 +11,7 @@ const Signin = () => {
   const location = useLocation();
 
   const [login, setLogin] = useState({
-    email: "",
+    matricule: "",
     password: "",
   });
 
@@ -20,8 +20,8 @@ const Signin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!login.email || !login.password) {
-      setError("Email and password are required.");
+    if (!login.matricule || !login.password) {
+      setError("Le matricule et le mot de passe sont obligatoires.");
       return;
     }
 
@@ -31,10 +31,10 @@ const Signin = () => {
         navigate("/");
         window.location.reload();
       } else {
-        setError(resultAction.payload?.msg || "البريد الإلكتروني وكلمة المرور لا يتطابقان.");
+        setError(resultAction.payload?.msg || "المعرف أو كلمة المرور غير صحيحة.");
       }
     } catch (error) {
-      setError("البريد الإلكتروني وكلمة المرور لا يتطابقان.");
+      setError("المعرف أو كلمة المرور غير صحيحة.");
     }
   };
 
@@ -51,17 +51,16 @@ const Signin = () => {
           {error && <div className="alert alert-danger">{error}</div>}
           
           <div className="form-outline">
-            <label className="form-label" htmlFor="email">Adresse email</label>
+            <label className="form-label" htmlFor="matricule">Matricule</label>
             <input
-              type="email"
-              id="email"
+              type="text"
+              id="matricule"
               className="form-control"
-              placeholder="votre@email.com"
+              placeholder="votre matricule"
               required
-              name="email"
-              autoComplete="email"
+              name="matricule"
               autoFocus
-              onChange={(e) => setLogin({ ...login, email: e.target.value })}
+              onChange={(e) => setLogin({ ...login, matricule: e.target.value })}
             />
           </div>
 

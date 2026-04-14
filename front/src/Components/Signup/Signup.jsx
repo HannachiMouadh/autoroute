@@ -15,6 +15,7 @@ const Signup = () => {
     name: "",
     lastName: "",
     email: "",
+    matricule: "",
     password: "",
     phone: "",
     autonum: "",
@@ -77,6 +78,7 @@ const Signup = () => {
       !register.name ||
       !register.lastName ||
       !register.email ||
+      !register.matricule ||
       !register.password ||
       !register.phone ||
       !register.autonum ||
@@ -100,6 +102,7 @@ const Signup = () => {
             name: "",
             lastName: "",
             email: "",
+            matricule: "",
             password: "",
             phone: "",
             autonum: "",
@@ -148,6 +151,19 @@ const Signup = () => {
           autoComplete="lname"
           onChange={(e) =>
             setRegister({ ...register, lastName: e.target.value })
+          }
+        />
+        <Form.Label className="form-label">المعرف (Matricule):</Form.Label>
+        <Form.Control
+          className="form-control"
+          variant="outlined"
+          required
+          fullWidth
+          id="matricule"
+          label="Matricule"
+          name="matricule"
+          onChange={(e) =>
+            setRegister({ ...register, matricule: e.target.value })
           }
         />
         <Form.Label className="form-label">بريد إلكتروني:</Form.Label>

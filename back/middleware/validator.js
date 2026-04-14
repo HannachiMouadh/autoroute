@@ -4,6 +4,7 @@ exports.registerRules = () =>
     [
         check("name","name is required").notEmpty(),
         check("lastName","lastName is required").notEmpty(),
+        check("matricule","matricule is required").notEmpty(),
         check("email","email is required").notEmpty(),
         check("email","check email again").isEmail(),
         check("password","password is required").isLength({min:6,max:20}),
@@ -13,8 +14,7 @@ exports.registerRules = () =>
 exports.loginRules = () =>
     [
         
-        check("email","email is required").notEmpty(),
-        check("email","check email again").isEmail(),
+        check("matricule","matricule is required").notEmpty(),
         check("password","password is required").isLength({min:6,max:20}),
     ];
 

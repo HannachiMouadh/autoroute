@@ -7,17 +7,22 @@ const DBconnect = require('../DBconnect');
 module.exports = {
 
   register: async (req, res) => {
-    const { name, lastName, email, password, phone,autonum, district,role,isAdmin,image  } = req.body;
+    const { name, lastName, email, matricule, password, phone,autonum, district,role,isAdmin,image  } = req.body;
   
-    if (!name || !lastName || !email || !password || !phone || !autonum || !district || !role) {
+    if (!name || !lastName || !email || !matricule || !password || !phone || !autonum || !district || !role) {
       return res.status(400).json({ msg: "Tous les champs sont obligatoires" });
     }
   
     try {
       // Vérifier si l'utilisateur existe
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
+      const existingUserEmail = await User.findOne({ email });
+      if (existingUserEmail) {
         return res.status(400).json({ msg: "L'email existe déjà" });
+      }
+
+      const existingUserMatricule = await User.findOne({ matricule });
+      if (existingUserMatricule) {
+        return res.status(400).json({ msg: "Le matricule existe déjà" });
       }
   
       // Hacher le mot de passe
@@ -29,6 +34,7 @@ module.exports = {
         name,
         lastName,
         email,
+        matricule,
         password: hashedPassword,
         phone,
         autonum,
@@ -48,12 +54,12 @@ module.exports = {
   },
 
   login: async (req, res) => {
-    const { email, password } = req.body;
+    const { matricule, password } = req.body;
     const appType = req.headers['app-type']; // "mobile" or "web"
   
     try {
       await DBconnect();
-      const searchedUser = await User.findOne({ email });
+      const searchedUser = await User.findOne({ matricule });
       if (!searchedUser) return res.status(400).send({ msg: "Bad credentials" });
   
       const match = await bcrypt.compare(password, searchedUser.password);
