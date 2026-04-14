@@ -10,6 +10,7 @@ const Signup = () => {
   const dispatch = useDispatch();
   const currentUserData = useSelector((state) => state.user.user);
   const isSuper = currentUserData?.isSuper;
+  const isAyman = currentUserData?.name === "ayman";
 
   const [register, setRegister] = useState({
     name: "",
@@ -215,7 +216,7 @@ const Signup = () => {
               <option
                 value="oudhref"
                 disabled={
-                  !isSuper &&
+                  !isSuper && !isAyman &&
                   currentUserData?.isAdmin &&
                   currentUserData.district !== "oudhref"
                 }
@@ -225,7 +226,7 @@ const Signup = () => {
               <option
                 value="mahres"
                 disabled={
-                  !isSuper &&
+                  !isSuper && !isAyman &&
                   currentUserData?.isAdmin &&
                   currentUserData.district !== "mahres"
                 }
@@ -235,7 +236,7 @@ const Signup = () => {
               <option
                 value="jem"
                 disabled={
-                  !isSuper &&
+                  !isSuper && !isAyman &&
                   currentUserData?.isAdmin &&
                   currentUserData.district !== "jem"
                 }
@@ -245,7 +246,7 @@ const Signup = () => {
               <option
                 value="hergla"
                 disabled={
-                  !isSuper &&
+                  !isSuper && !isAyman &&
                   currentUserData?.isAdmin &&
                   currentUserData.district !== "hergla"
                 }
@@ -255,7 +256,7 @@ const Signup = () => {
               <option
                 value="turki"
                 disabled={
-                  !isSuper &&
+                  !isSuper && !isAyman &&
                   currentUserData?.isAdmin &&
                   currentUserData.district !== "turki"
                 }
