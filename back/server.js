@@ -8,13 +8,14 @@ const mongoose = require('mongoose');
 
 
 
-app.use(cors({
+const corsOptions = {
   origin: process.env.FRONTEND_URL || 'https://autoroute-front.vercel.app',
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization','app-type','Access-Control-Allow-Headers', 'Origin, X-Requested-With, Accept, Access-Control-Allow-Headers, Access-Control-Request-Method, Access-Control-Request-Headers'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'app-type', 'Origin', 'X-Requested-With', 'Accept'],
   methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS']
-}));
-app.options('*', cors());
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use("/api/user",require('./routes/user'));

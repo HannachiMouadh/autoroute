@@ -32,6 +32,3 @@ logs
 .idea
 *.swp
 *.swo
-
-# Vercel
-.vercel
