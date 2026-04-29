@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -74,13 +74,19 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
         
         if (updatePhoto.fulfilled.match(resultAction)) {
           console.log("Photo uploaded successfully:", resultAction.payload);
-          const updatedUserFromBackend = resultAction.payload;
+          const response = resultAction.payload;
           
-          if (updatedUserFromBackend.image && Array.isArray(updatedUserFromBackend.image) && updatedUserFromBackend.image.length > 0) {
-            imageUrl = updatedUserFromBackend.image; 
-          } else if (updatedUserFromBackend.image && typeof updatedUserFromBackend.image === "string") {
-            imageUrl = updatedUserFromBackend.image;
+          // Backend returns imageUrl and user object
+          if (response.imageUrl) {
+            imageUrl = response.imageUrl;
+          } else if (response.user?.image) {
+            imageUrl = response.user.image;
+          } else if (response.image && Array.isArray(response.image) && response.image.length > 0) {
+            imageUrl = response.image[0];
+          } else if (response.image && typeof response.image === "string") {
+            imageUrl = response.image;
           }
+          console.log("Updated image URL:", imageUrl);
         } else {
           setIsLoading(false);
           Swal.fire("Erreur", "Échec du téléchargement de l'image", "error");
@@ -99,11 +105,12 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
       console.log("User data updated:", updateResult);
 
       // 3. Refresh current user
-      await dispatch(currentUser());
+      const refreshResult = await dispatch(currentUser()).unwrap();
+      console.log("Current user refreshed:", refreshResult);
       
       setIsLoading(false);
       
-      // 4. Show success and close modal
+      // 4. Show success message
       await Swal.fire("Succès", "Profil mis à jour avec succès", "success");
       
       // 5. Reset form state
@@ -121,15 +128,10 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
   };
 
   const handleCancel = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setSelectedFile(null);
-    setPreview(null);
-    onHide();
-  };
-
-  const handleModalHide = () => {
-    // Clear form when modal is closed
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setSelectedFile(null);
     setPreview(null);
     onHide();
@@ -138,13 +140,12 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
   return (
     <Modal 
       show={showModal} 
-      onHide={handleModalHide}
-      backdrop="static"
-      keyboard={false}
+      onHide={handleCancel}
+      size="lg"
     >
       <Modal.Header 
         closeButton
-        onHide={handleModalHide}
+        onHide={handleCancel}
       >
         <Modal.Title>Modifier le profil</Modal.Title>
       </Modal.Header>

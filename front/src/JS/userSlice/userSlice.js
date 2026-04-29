@@ -180,6 +180,10 @@ export const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.status = 'success';
+        // Update user if response contains user data
+        if (action.payload && action.payload.user) {
+          state.user = action.payload.user;
+        }
       })
       .addCase(updateUser.rejected, (state) => {
         state.status = 'failed';
@@ -214,10 +218,15 @@ export const userSlice = createSlice({
       })
       .addCase(updatePhoto.fulfilled, (state, action) => {
         state.status = 'success';
-        if (action.payload && action.payload.imageUrl) {
-          state.user = action.payload.user;
-          // if you have a separate photo field in state
-          state.user.image = action.payload.imageUrl;
+        if (action.payload) {
+          // If backend returns full user object
+          if (action.payload.user) {
+            state.user = action.payload.user;
+          }
+          // If backend returns imageUrl separately
+          if (action.payload.imageUrl && state.user) {
+            state.user.image = action.payload.imageUrl;
+          }
         }
       })
       .addCase(uploadSingle.rejected, (state) => {
