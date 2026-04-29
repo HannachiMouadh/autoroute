@@ -395,14 +395,7 @@ const Tabchange = () => {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={() => { handleCloseUserMenu(); setShowModal(true); }}>
-                <ListItemText>{currentUserData && (
-        <UpdateProfile
-            showModal={showModal}
-            onHide={() => setShowModal(false)}
-            dataId={currentUserData._id}
-            rowData={currentUserData}
-        />
-      )}Modifier Profile</ListItemText>
+                <ListItemText>Modifier Profile</ListItemText>
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleLogout}>
@@ -479,6 +472,16 @@ const Tabchange = () => {
            <Outlet />
         </Box>
       </Box>
+
+      {/* Update Profile Modal - Rendered at Top Level */}
+      {currentUserData && (
+        <UpdateProfile
+            showModal={showModal}
+            onHide={() => setShowModal(false)}
+            dataId={currentUserData._id}
+            rowData={currentUserData}
+        />
+      )}
     </Box>
   );
 };

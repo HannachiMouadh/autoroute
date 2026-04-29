@@ -25,14 +25,15 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Reset form when modal opens/closes
   useEffect(() => {
-    if (user) {
+    if (showModal && user) {
       setUserData({
-            name: user.name || "",
-            lastName: user.lastName || "",
-            email: user.email || "",
-            phone: user.phone || "",
-            image: user.image || "",
+        name: user.name || "",
+        lastName: user.lastName || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        image: user.image || "",
       });
 
       // Handle existing image for preview
@@ -43,8 +44,9 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
       } else {
         setPreview(null);
       }
+      setSelectedFile(null);
     }
-  }, [user, showModal]);
+  }, [showModal, user]);
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -61,65 +63,89 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    
     try {
       let imageUrl = userData.image;
 
       // 1. Upload new photo if selected
       if (selectedFile) {
-        // Dispatch updatePhoto action
-        // Note: updatePhoto expects { userId, file }
+        console.log("Uploading photo...");
         const resultAction = await dispatch(updatePhoto({ userId: dataId, file: selectedFile }));
         
         if (updatePhoto.fulfilled.match(resultAction)) {
-           // The backend returns the updated user object with the new image array
-           const updatedUserFromBackend = resultAction.payload;
-           // Extract new image URL if needed, but the backend updated the DB already for the image
-           // However, we still want to update the other text fields below
-           if(updatedUserFromBackend.image && Array.isArray(updatedUserFromBackend.image) && updatedUserFromBackend.image.length > 0) {
-               imageUrl = updatedUserFromBackend.image; 
-           } else if (updatedUserFromBackend.image && typeof updatedUserFromBackend.image === "string") {
-               imageUrl = updatedUserFromBackend.image;
-           }
+          console.log("Photo uploaded successfully:", resultAction.payload);
+          const updatedUserFromBackend = resultAction.payload;
+          
+          if (updatedUserFromBackend.image && Array.isArray(updatedUserFromBackend.image) && updatedUserFromBackend.image.length > 0) {
+            imageUrl = updatedUserFromBackend.image; 
+          } else if (updatedUserFromBackend.image && typeof updatedUserFromBackend.image === "string") {
+            imageUrl = updatedUserFromBackend.image;
+          }
         } else {
-             setIsLoading(false);
-             Swal.fire("Erreur", "Échec du téléchargement de l'image", "error");
-             return; 
+          setIsLoading(false);
+          Swal.fire("Erreur", "Échec du téléchargement de l'image", "error");
+          return;
         }
       }
 
       // 2. Update text data
+      console.log("Updating user data...");
       const finalData = {
-          ...userData,
-          image: imageUrl
+        ...userData,
+        image: imageUrl
       };
 
-      await dispatch(updateUser({ _id: dataId, formData: finalData })).unwrap();
-      
-      // Refresh current user
+      const updateResult = await dispatch(updateUser({ _id: dataId, formData: finalData })).unwrap();
+      console.log("User data updated:", updateResult);
+
+      // 3. Refresh current user
       await dispatch(currentUser());
       
       setIsLoading(false);
       
-      // Show success message
+      // 4. Show success and close modal
       await Swal.fire("Succès", "Profil mis à jour avec succès", "success");
       
-      // Reset form state
+      // 5. Reset form state
       setSelectedFile(null);
       setPreview(null);
       
-      // Close modal after success message
+      // 6. Close modal
       onHide();
 
     } catch (error) {
       setIsLoading(false);
-      console.error(error);
-      Swal.fire("Erreur", "Une erreur est survenue lors de la mise à jour", "error");
+      console.error("Update error:", error);
+      Swal.fire("Erreur", error?.message || "Une erreur est survenue lors de la mise à jour", "error");
     }
   };
 
+  const handleCancel = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedFile(null);
+    setPreview(null);
+    onHide();
+  };
+
+  const handleModalHide = () => {
+    // Clear form when modal is closed
+    setSelectedFile(null);
+    setPreview(null);
+    onHide();
+  };
+
   return (
-    <Modal show={showModal} onHide={onHide}>
-      <Modal.Header closeButton>
+    <Modal 
+      show={showModal} 
+      onHide={handleModalHide}
+      backdrop="static"
+      keyboard={false}
+    >
+      <Modal.Header 
+        closeButton
+        onHide={handleModalHide}
+      >
         <Modal.Title>Modifier le profil</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -134,7 +160,13 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
                 <div style={{ position: 'absolute', bottom: '0', right: '0', background: 'white', borderRadius: '50%', padding: '5px', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}>
                     <label style={{ cursor: 'pointer', margin: 0 }}>
                         <img src={uploadImg} alt="upload" style={{ width: '20px' }} />
-                        <input type="file" style={{ display: 'none' }} onChange={handleFileChange} accept="image/*" />
+                        <input 
+                          type="file" 
+                          style={{ display: 'none' }} 
+                          onChange={handleFileChange} 
+                          accept="image/*"
+                          disabled={isLoading}
+                        />
                     </label>
                 </div>
              </div>
@@ -142,33 +174,56 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
 
           <Form.Group className="mb-3">
             <Form.Label>Nom</Form.Label>
-            <Form.Control type="text" name="name" value={userData.name} onChange={handleChange} required />
+            <Form.Control 
+              type="text" 
+              name="name" 
+              value={userData.name} 
+              onChange={handleChange} 
+              required 
+              disabled={isLoading}
+            />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Prénom</Form.Label>
-            <Form.Control type="text" name="lastName" value={userData.lastName} onChange={handleChange} required />
+            <Form.Control 
+              type="text" 
+              name="lastName" 
+              value={userData.lastName} 
+              onChange={handleChange} 
+              required 
+              disabled={isLoading}
+            />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" name="email" value={userData.email} onChange={handleChange} required />
+            <Form.Control 
+              type="email" 
+              name="email" 
+              value={userData.email} 
+              onChange={handleChange} 
+              required 
+              disabled={isLoading}
+            />
           </Form.Group>
 
            <Form.Group className="mb-3">
             <Form.Label>Téléphone</Form.Label>
-            <Form.Control type="number" name="phone" value={userData.phone} onChange={handleChange} required />
+            <Form.Control 
+              type="number" 
+              name="phone" 
+              value={userData.phone} 
+              onChange={handleChange} 
+              required 
+              disabled={isLoading}
+            />
           </Form.Group>
           
           <div className="d-flex justify-content-end gap-2">
              <Button 
                variant="secondary" 
-               onClick={(e) => {
-                 e.preventDefault();
-                 setSelectedFile(null);
-                 setPreview(null);
-                 onHide();
-               }} 
+               onClick={handleCancel}
                disabled={isLoading}
                className="me-2">
                Annuler

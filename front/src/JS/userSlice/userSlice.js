@@ -12,7 +12,7 @@ export const registerUser = createAsyncThunk("register", async (user, { rejectWi
   }
 });
 
-export const updateUser = createAsyncThunk("update", async ({ _id, formData }) => {
+export const updateUser = createAsyncThunk("update", async ({ _id, formData }, { rejectWithValue }) => {
   const token = localStorage.getItem('token');
   try {
     let result = await axios.put(
@@ -26,8 +26,8 @@ export const updateUser = createAsyncThunk("update", async ({ _id, formData }) =
     );
     return result.data;
   } catch (error) {
-    console.log(error);
-    throw error;
+    console.error("updateUser failed:", error);
+    return rejectWithValue(error.response?.data || { msg: "Erreur lors de la mise à jour" });
   }
 });
 
@@ -86,11 +86,15 @@ export const updatePhoto = createAsyncThunk(
   "user/updatePhoto",
   async ({ userId, file }, thunkAPI) => {
     try {
+      const token = localStorage.getItem('token');
       const formData = new FormData();
       formData.append("file", file);
 
       const response = await axios.post(`https://autoroute-c4tf.vercel.app/api/updatePhoto/${userId}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 
+          "Content-Type": "multipart/form-data",
+          Authorization: token,
+        },
       });
 
       return response.data;
