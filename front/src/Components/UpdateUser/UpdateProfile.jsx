@@ -23,6 +23,7 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
   
   const [preview, setPreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -59,6 +60,7 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       let imageUrl = userData.image;
 
@@ -73,11 +75,14 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
            const updatedUserFromBackend = resultAction.payload;
            // Extract new image URL if needed, but the backend updated the DB already for the image
            // However, we still want to update the other text fields below
-           if(updatedUserFromBackend.image && updatedUserFromBackend.image.length > 0) {
+           if(updatedUserFromBackend.image && Array.isArray(updatedUserFromBackend.image) && updatedUserFromBackend.image.length > 0) {
                imageUrl = updatedUserFromBackend.image; 
+           } else if (updatedUserFromBackend.image && typeof updatedUserFromBackend.image === "string") {
+               imageUrl = updatedUserFromBackend.image;
            }
         } else {
-             Swal.fire("Erreur", "Echec du téléchargement de l'image", "error");
+             setIsLoading(false);
+             Swal.fire("Erreur", "Échec du téléchargement de l'image", "error");
              return; 
         }
       }
@@ -91,14 +96,24 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
       await dispatch(updateUser({ _id: dataId, formData: finalData })).unwrap();
       
       // Refresh current user
-      dispatch(currentUser());
+      await dispatch(currentUser());
       
+      setIsLoading(false);
+      
+      // Show success message
+      await Swal.fire("Succès", "Profil mis à jour avec succès", "success");
+      
+      // Reset form state
+      setSelectedFile(null);
+      setPreview(null);
+      
+      // Close modal after success message
       onHide();
-      Swal.fire("Succès", "Profil mis à jour avec succès", "success");
 
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
-      Swal.fire("Erreur", "Une erreur est survenue", "error");
+      Swal.fire("Erreur", "Une erreur est survenue lors de la mise à jour", "error");
     }
   };
 
@@ -145,9 +160,25 @@ export const UpdateProfile = ({ showModal, onHide, dataId }) => {
             <Form.Control type="number" name="phone" value={userData.phone} onChange={handleChange} required />
           </Form.Group>
           
-          <div className="d-flex justify-content-end">
-             <Button variant="secondary" onClick={onHide} className="me-2">Annuler</Button>
-             <Button variant="primary" type="submit">Enregistrer</Button>
+          <div className="d-flex justify-content-end gap-2">
+             <Button 
+               variant="secondary" 
+               onClick={(e) => {
+                 e.preventDefault();
+                 setSelectedFile(null);
+                 setPreview(null);
+                 onHide();
+               }} 
+               disabled={isLoading}
+               className="me-2">
+               Annuler
+             </Button>
+             <Button 
+               variant="primary" 
+               type="submit" 
+               disabled={isLoading}>
+               {isLoading ? "Enregistrement..." : "Enregistrer"}
+             </Button>
           </div>
         </Form>
       </Modal.Body>
