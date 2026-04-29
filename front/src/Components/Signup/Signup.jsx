@@ -270,7 +270,7 @@ const Signup = () => {
               <option
                 value="mdjazbab"
                 disabled={
-                  !isSuper &&
+                  !isSuper && !isAyman &&
                   currentUserData?.isAdmin &&
                   currentUserData.district !== "mdjazbab"
                 }
@@ -280,7 +280,7 @@ const Signup = () => {
               <option
                 value="baja"
                 disabled={
-                  !isSuper &&
+                  !isSuper && !isAyman &&
                   currentUserData?.isAdmin &&
                   currentUserData.district !== "baja"
                 }
@@ -293,7 +293,7 @@ const Signup = () => {
             <option
               value="bizerte"
               disabled={
-                !isSuper &&
+                !isSuper && !isAyman &&
                 currentUserData?.isAdmin &&
                 currentUserData.district !== "bizerte"
               }
