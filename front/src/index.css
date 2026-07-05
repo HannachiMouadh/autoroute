@@ -1,11 +1,157 @@
 @import "rsuite/dist/rsuite.css";
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap");
+
+:root {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Space Grotesk", "Segoe UI", sans-serif;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+
+  --theme-bg: #070f23;
+  --theme-bg-soft: #0f1b3a;
+  --theme-surface: rgba(255, 255, 255, 0.08);
+  --theme-border: rgba(255, 255, 255, 0.2);
+  --theme-primary: #0f6fff;
+  --theme-accent: #ff8a00;
+  --theme-text: #f4f8ff;
+  --theme-muted: #b8c7e0;
+  --theme-danger: #ff5d7b;
+
+  --shadow-soft: 0 14px 34px rgba(3, 12, 30, 0.28);
+  --shadow-deep: 0 28px 72px rgba(2, 9, 22, 0.42);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-body);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255, 138, 0, 0.16), transparent 34%),
+    radial-gradient(circle at 86% 86%, rgba(15, 111, 255, 0.2), transparent 38%),
+    linear-gradient(135deg, var(--theme-bg) 0%, var(--theme-bg-soft) 52%, #08142e 100%);
+  color: var(--theme-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+.card,
+.btn {
+  transition: all 0.3s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+.btn-primary,
+.btn-success,
+.btn-danger,
+.btn-secondary,
+.btn-outline-primary {
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid transparent !important;
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-primary,
+.btn-success {
+  background: linear-gradient(120deg, var(--theme-primary), #3f8cff 70%) !important;
+  color: #fff !important;
+}
+
+.btn-danger {
+  background: linear-gradient(120deg, var(--theme-danger), #ff7e97 75%) !important;
+  color: #fff !important;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text) !important;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.form-control,
+.form-select,
+input,
+select,
+textarea {
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--theme-border) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--theme-text) !important;
+}
+
+.form-control::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: rgba(212, 222, 242, 0.75) !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--theme-accent) !important;
+  box-shadow: 0 0 0 3px rgba(255, 138, 0, 0.2) !important;
+}
+
+.modal-content {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--theme-border) !important;
+  background: linear-gradient(145deg, rgba(15, 30, 62, 0.94), rgba(8, 20, 44, 0.96)) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-deep) !important;
+  color: var(--theme-text) !important;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.modal-title,
+.form-label,
+label {
+  color: var(--theme-text) !important;
+}
+
+.table {
+  color: var(--theme-text);
+}
+
+.table > :not(caption) > * > * {
+  background: transparent;
+  border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 
 code {

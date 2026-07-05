@@ -1,105 +1,61 @@
-.modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Style the modal content */
-.modal-content {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-/* Style the form input fields */
-.form-control {
-  margin-bottom: 10px;
-}
-
-/* Center the modal vertically */
-.modal-dialog {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-
 .react-datepicker-popper {
-  z-index: 100 !important;
+  z-index: 1200 !important;
 }
 
-/* Container spacing for all rows */
+.modal-backdrop {
+  background-color: rgba(4, 10, 24, 0.65);
+}
+
 .form-section {
-  margin-bottom: 15px;
+  margin-bottom: var(--space-2);
 }
 
-/* Row label styling */
 .form-section label {
   display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
+  font-weight: 600;
+  margin-bottom: var(--space-1);
   text-align: right;
 }
 
-/* Adjust form controls */
 .form-section .form-control,
 .form-section .form-select {
   width: 100%;
   max-width: 100%;
-  margin-bottom: 8px;
 }
 
-/* Date and time */
-.date-time-row {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
+.date-time-row,
+.km-row,
+.plate-section {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
   align-items: center;
 }
 
-.date-time-row .form-control,
-.date-time-row .form-select {
-  width: 120px;
-}
-
-/* Kilometric point row */
-.km-row {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-}
-
-/* Direction dropdown */
 .direction-select {
   width: 100%;
 }
 
-/* Vehicle plate section */
-.plate-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
 .plate-section .form-control {
-  width: 100%;
-  max-width: 120px;
+  max-width: none;
 }
 
-/* Responsive modal adjustments */
+@media (max-width: 992px) {
+  .date-time-row,
+  .km-row,
+  .plate-section {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .modal-body {
-    padding: 10px;
-  }
-
-  .form-section .form-control,
-  .form-section .form-select {
-    width: 100%;
+    padding: var(--space-2);
   }
 
   .date-time-row,
   .km-row,
   .plate-section {
-    flex-direction: column;
-    align-items: stretch;
+    grid-template-columns: 1fr;
   }
 }

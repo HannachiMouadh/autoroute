@@ -5,6 +5,7 @@ import { Alert, Button, Form, Row, Col, Container, Card } from "react-bootstrap"
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import uploadImg from "../../assets/cloud-upload-regular-240.png";
+import "./Signup.css";
 
 const Signup = () => {
   const dispatch = useDispatch();

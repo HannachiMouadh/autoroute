@@ -1,47 +1,59 @@
 .users-container {
-    padding: 20px;
-    max-width: 1450px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-left:30px;
+  padding: var(--space-4);
+  margin: var(--space-4) auto;
+  max-width: 1400px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--theme-border);
+  background: linear-gradient(145deg, rgba(13, 28, 59, 0.78), rgba(6, 17, 38, 0.86));
+  box-shadow: var(--shadow-deep);
+  backdrop-filter: blur(12px);
+}
+
+.users-container h2 {
+  margin-bottom: var(--space-2);
+  color: var(--theme-text);
+}
+
+.users-container .table {
+  width: 100%;
+  table-layout: fixed;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.users-container .table thead th {
+  background: linear-gradient(120deg, var(--theme-primary), #3f8cff);
+  color: #fff;
+  border: none;
+  padding: var(--space-2);
+}
+
+.users-container .table tbody td {
+  color: var(--theme-text);
+  border-color: rgba(255, 255, 255, 0.1);
+  padding: var(--space-2);
+}
+
+.users-container .table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: scale(1.002);
+}
+
+.users-container .btn {
+  min-width: 40px;
+}
+
+@media (max-width: 768px) {
+  .users-container {
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
   }
 
-  
-  Table {
-    width: 100%;
-    table-layout: fixed;
+  .users-container .table thead th,
+  .users-container .table tbody td {
+    font-size: 0.82rem;
+    padding: var(--space-1);
   }
-  
-  thead {
-    background-color: #343a40;
-    color: #ffffff;
-  }
-  
-  tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  .btn-primary {
-    margin-right: 10px;
-  }
-  
-  .btn-danger {
-    background-color: #dc3545;
-  }
-  
-  @media (max-width: 768px) {
-    .users-container {
-      padding: 10px;
-    }
-    Table {
-      width: 100%;
-      table-layout: fixed;
-    }
-    
-    .btn {
-      font-size: 12px;
-      padding: 5px 10px;
-    }
-  }
+}
   

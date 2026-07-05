@@ -39,24 +39,35 @@ const Signin = () => {
   };
 
   return (
-    <section className="vh-100 d-flex justify-content-center align-items-center login-section">
-      <div className="login-container">
-        <div className="header-container">
-          <h1 className="title">Tunisie Autoroute</h1>
-          <h2 className="subtitle">تسجيل الدخول</h2>
-          <img src={logo} alt="Logo" className="logo" style={{ width: "120px", height: "auto" }} />
-        </div>
+    <section className="auth-shell">
+      <div className="auth-orb auth-orb-a" aria-hidden="true" />
+      <div className="auth-orb auth-orb-b" aria-hidden="true" />
 
-        <form className="login-form">
-          {error && <div className="alert alert-danger">{error}</div>}
-          
-          <div className="form-outline">
-            <label className="form-label" htmlFor="matricule">Matricule</label>
+      <div className="auth-panel">
+        <aside className="auth-brand">
+          <img src={logo} alt="Logo Tunisie Autoroute" className="auth-logo" />
+          <p className="auth-kicker">Plateforme Securite</p>
+          <h1 className="auth-title">Tunisie Autoroute</h1>
+          <p className="auth-description">
+            Tableau de bord premium pour le suivi des accidents, entretiens et patrouilles.
+          </p>
+        </aside>
+
+        <form className="auth-form" onSubmit={handleLogin}>
+          <div className="auth-headline-wrap">
+            <h2 className="auth-headline">Bienvenue</h2>
+            <p className="auth-subtitle">تسجيل الدخول</p>
+          </div>
+
+          {error && <div className="auth-alert">{error}</div>}
+
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="matricule">Matricule</label>
             <input
               type="text"
               id="matricule"
-              className="form-control"
-              placeholder="votre matricule"
+              className="auth-input"
+              placeholder="Votre matricule"
               required
               name="matricule"
               autoFocus
@@ -64,12 +75,12 @@ const Signin = () => {
             />
           </div>
 
-          <div className="form-outline">
-            <label className="form-label" htmlFor="password">Mot de passe</label>
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="password">Mot de passe</label>
             <input
               type="password"
               id="password"
-              className="form-control"
+              className="auth-input"
               placeholder="••••••••"
               required
               name="password"
@@ -78,15 +89,9 @@ const Signin = () => {
             />
           </div>
 
-          <div className="text-center mt-3">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleLogin}
-            >
-              Se connecter
-            </button>
-          </div>
+          <button type="submit" className="auth-button">
+            Se connecter
+          </button>
         </form>
       </div>
     </section>

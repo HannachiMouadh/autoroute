@@ -1,69 +1,91 @@
-Table,
-Table th{
-  border: 1px solid #cccccc;
-  text-align: center;
-  width: 10%;
-  font-size: 90%;
-  padding: 4px 8px;
-  border-top: none !important;
-  border-bottom: none !important;
-}
-Table {
-  width: 100%;
-  table-layout: fixed;
-}
-th,
- td {
-  text-align: center;
-  vertical-align: middle;
-}
-td,
- td p {
-  text-align: center;
-  vertical-align: middle;
-  margin: auto;
-}
 .title-layout {
-  margin-top: 40px !important;
-  margin-bottom: 40px !important;
-  border: 4px solid #666666;
-  border-radius: 10px;
-  max-width: 700px;
-  margin: 0 auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
-} 
+  margin: var(--space-5) auto !important;
+  max-width: 780px;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--theme-border);
+  background: linear-gradient(145deg, rgba(12, 27, 58, 0.8), rgba(6, 18, 40, 0.84));
+  box-shadow: var(--shadow-deep);
+  text-align: center;
+}
+
 .custom-form-container {
-  background-color: rgb(241, 241, 241) !important;
-  padding: 3px;
-  border-radius: 8px;
-  max-width: 400px;
-  margin: 0 auto;
+  margin: var(--space-5) auto var(--space-3);
+  max-width: 980px;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  backdrop-filter: blur(10px);
 }
 
 .datepickers-container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 1px;
-  border: 4px solid #ccc ;
-  border-radius: 4px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
 }
 
 .datepicker-label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
+  margin-bottom: var(--space-1);
+  color: var(--theme-text);
+  font-weight: 600;
 }
 
 .custom-datepicker {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc ;
-  border-radius: 4px;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
 }
+
 .centerbtn {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.margin,
+.margin.table {
+  width: 100%;
+  table-layout: fixed;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  background: linear-gradient(145deg, rgba(12, 27, 58, 0.8), rgba(6, 18, 40, 0.84));
+  box-shadow: var(--shadow-soft);
+}
+
+.margin th {
+  background: linear-gradient(120deg, var(--theme-primary), #3f8cff);
+  color: #fff;
+  border: none;
+  text-align: center;
+}
+
+.margin td,
+.margin td p {
+  color: var(--theme-text);
+  text-align: center;
+  vertical-align: middle;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+canvas {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--theme-border);
+  background: rgba(255, 255, 255, 0.06);
+  padding: var(--space-2);
+}
+
+@media (max-width: 900px) {
+  .datepickers-container {
+    grid-template-columns: 1fr;
+  }
+
+  .margin th,
+  .margin td {
+    font-size: 0.84rem;
+  }
 }
