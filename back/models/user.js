@@ -48,6 +48,11 @@ const UserSchema = new Schema({
     isAdmin:{
         type:Boolean,
         default:false
+    },
+    refreshTokenHash: {
+        type: String,
+        default: null,
+        select: false
     }
 });
 

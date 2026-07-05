@@ -12,6 +12,12 @@ router.post("/register", registerRules(),validation,controllers.register);
 // login 
 router.post("/login", loginRules(),validation,controllers.login);
 
+// refresh access token
+router.post("/refresh-token", controllers.refreshToken);
+
+// logout and revoke refresh token
+router.post("/logout", controllers.logout);
+
 // current
 router.get("/current",isAuth(),controllers.current);
 

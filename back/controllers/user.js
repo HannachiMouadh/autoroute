@@ -3,6 +3,35 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const DBconnect = require('../DBconnect');
 
+const ACCESS_TOKEN_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN || '15m';
+const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || '7d';
+const REFRESH_COOKIE_NAME = 'refreshToken';
+
+const getAccessSecret = () => process.env.SecretOrKey;
+const getRefreshSecret = () => process.env.REFRESH_TOKEN_SECRET || process.env.SecretOrKey;
+
+const getRefreshCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: '/',
+  };
+};
+
+const signAccessToken = (payload) => jwt.sign(payload, getAccessSecret(), { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
+const signRefreshToken = (payload) => jwt.sign(payload, getRefreshSecret(), { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
+
+const sanitizeUser = (userDoc) => {
+  const user = userDoc.toObject ? userDoc.toObject() : { ...userDoc };
+  delete user.password;
+  delete user.refreshTokenHash;
+  return user;
+};
+
 
 module.exports = {
 
@@ -80,16 +109,93 @@ module.exports = {
         role: searchedUser.role,
       };
   
-      const token = await jwt.sign(payload, process.env.SecretOrKey, { expiresIn: '48h' });
+      const accessToken = signAccessToken(payload);
+      const refreshToken = signRefreshToken({ _id: searchedUser._id });
+      const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+
+      await User.findByIdAndUpdate(searchedUser._id, { refreshTokenHash });
+
+      res.cookie(REFRESH_COOKIE_NAME, refreshToken, getRefreshCookieOptions());
   
       res.status(200).send({
-        user: searchedUser,
+        user: sanitizeUser(searchedUser),
         msg: "success",
-        token: `Bearer ${token}`,
+        token: `Bearer ${accessToken}`,
       });
     } catch (error) {
       console.error(error);
       res.status(500).send({ msg: "Cannot log in. Internal error, Server error" });
+    }
+  },
+
+  refreshToken: async (req, res) => {
+    try {
+      const tokenFromCookie = req.cookies?.[REFRESH_COOKIE_NAME];
+
+      if (!tokenFromCookie) {
+        return res.status(401).send({ msg: 'Refresh token missing' });
+      }
+
+      let decoded;
+      try {
+        decoded = jwt.verify(tokenFromCookie, getRefreshSecret());
+      } catch (error) {
+        return res.status(401).send({ msg: 'Invalid refresh token' });
+      }
+
+      const user = await User.findById(decoded._id).select('+refreshTokenHash');
+      if (!user || !user.refreshTokenHash) {
+        return res.status(401).send({ msg: 'Refresh token is not valid' });
+      }
+
+      const isValidStoredToken = await bcrypt.compare(tokenFromCookie, user.refreshTokenHash);
+      if (!isValidStoredToken) {
+        return res.status(401).send({ msg: 'Refresh token does not match' });
+      }
+
+      const accessPayload = {
+        _id: user._id,
+        name: user.name,
+        role: user.role,
+      };
+
+      const newAccessToken = signAccessToken(accessPayload);
+      const newRefreshToken = signRefreshToken({ _id: user._id });
+      const newRefreshTokenHash = await bcrypt.hash(newRefreshToken, 10);
+
+      user.refreshTokenHash = newRefreshTokenHash;
+      await user.save();
+
+      res.cookie(REFRESH_COOKIE_NAME, newRefreshToken, getRefreshCookieOptions());
+
+      return res.status(200).send({
+        msg: 'Token refreshed',
+        token: `Bearer ${newAccessToken}`,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ msg: 'Cannot refresh token. Internal error' });
+    }
+  },
+
+  logout: async (req, res) => {
+    try {
+      const tokenFromCookie = req.cookies?.[REFRESH_COOKIE_NAME];
+
+      if (tokenFromCookie) {
+        try {
+          const decoded = jwt.verify(tokenFromCookie, getRefreshSecret());
+          await User.findByIdAndUpdate(decoded._id, { refreshTokenHash: null });
+        } catch (error) {
+          // Always clear cookie even if token is invalid/expired.
+        }
+      }
+
+      res.clearCookie(REFRESH_COOKIE_NAME, getRefreshCookieOptions());
+      return res.status(200).send({ msg: 'Logged out' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ msg: 'Cannot logout. Internal error' });
     }
   },
 

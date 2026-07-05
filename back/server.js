@@ -5,6 +5,7 @@ require('dotenv').config();
 const DBconnect = require("./DBconnect");
 const cors = require('cors');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 
 
@@ -16,6 +17,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
+app.use(cookieParser());
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use("/api/user",require('./routes/user'));

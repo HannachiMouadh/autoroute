@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { jwtDecode } from "jwt-decode";
-import { currentUser, logout } from "../JS/userSlice/userSlice.js";
+import { currentUser, logoutUser } from "../JS/userSlice/userSlice.js";
 import { UpdateProfile } from "./UpdateUser/UpdateProfile.jsx";
 import logo from "../assets/logo.png";
 import avatar from "../assets/avatar.png";
@@ -72,7 +71,6 @@ const Tabchange = () => {
   const [online, setOnline] = useState(true);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   
   const userUser = useSelector((state) => state.user);
   const currentUserData = userUser.user || {};
@@ -87,26 +85,6 @@ const Tabchange = () => {
   useEffect(() => {
     dispatch(currentUser());
   }, [dispatch]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        const now = Date.now() / 1000;
-        if (decoded.exp < now) {
-          if (window.confirm("Votre session a expiré. Veuillez vous reconnecter.")) {
-            localStorage.removeItem("token");
-            navigate("/");
-          }
-        }
-      } catch (err) {
-        console.error("Invalid token", err);
-        localStorage.removeItem("token");
-        navigate("/");
-      }
-    }
-  }, [navigate]);
 
   useEffect(() => {
     const handleOnlineStatus = () => setOnline(navigator.onLine);
@@ -130,8 +108,8 @@ const Tabchange = () => {
     setAnchorElUser(null);
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
     handleCloseUserMenu();
     window.location.reload(); 
   };
