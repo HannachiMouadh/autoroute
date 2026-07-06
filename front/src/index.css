@@ -3,13 +3,13 @@
 
 :root {
   --primary-color: #6366f1;
-  --accent-color: #06b6d4;
+  --accent-color: #0284c7; /* darker cyan for better contrast on light bg */
   --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  --surface-color: rgba(30, 41, 59, 0.7);
-  --surface-border: rgba(255, 255, 255, 0.1);
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --surface-color: rgba(241, 245, 249, 0.95); /* Lighter grey for tables/forms */
+  --surface-border: rgba(0, 0, 0, 0.15); /* Darker border for light containers */
+  --text-primary: #0f172a; /* Dark text for light grey containers */
+  --text-secondary: #334155; /* Medium dark text */
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
   --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -31,7 +31,7 @@ body {
   margin: 0;
   font-family: 'Outfit', sans-serif;
   background: var(--bg-gradient);
-  color: var(--text-primary);
+  color: #f8fafc; /* Keep body text white against dark bg */
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
@@ -80,7 +80,7 @@ h1, h2, h3, h4, h5 {
 .form-control, .form-select, input, select, textarea {
   border-radius: var(--radius-sm) !important;
   border: 1px solid var(--surface-border) !important;
-  background: rgba(15, 23, 42, 0.6) !important;
+  background: rgba(255, 255, 255, 0.9) !important; /* light inputs */
   color: var(--text-primary) !important;
   padding: 12px 16px;
   font-family: 'Outfit', sans-serif;
@@ -115,8 +115,8 @@ h1, h2, h3, h4, h5 {
 }
 
 .table th {
-  background: rgba(99, 102, 241, 0.15);
-  color: var(--accent-color);
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary-color);
   border: none;
   border-bottom: 1px solid var(--surface-border);
   padding: 16px;
@@ -131,7 +131,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .table tbody tr:hover td {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .table th, .table td,
