@@ -134,8 +134,14 @@ h1, h2, h3, h4, h5 {
   background: rgba(255, 255, 255, 0.03);
 }
 
+.table th, .table td,
+.large-table th, .large-table td,
+.mobile-table th, .mobile-table td,
+.accident-table th, .accident-table td,
+.margin th, .margin td,
 .MuiTableCell-root {
-  color: var(--text-primary) !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
 }
 
 .alert-danger {
