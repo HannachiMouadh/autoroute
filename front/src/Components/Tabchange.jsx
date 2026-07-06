@@ -345,7 +345,7 @@ const Tabchange = () => {
           </IconButton>
 
           <Box sx={{ flexGrow: 1 }}>
-             <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', color: '#0f172a' }}>
+             <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', color: '#63cd88ff' }}>
                  مصلحة السلامة و الصيانة للطرقات السيارة
              </Typography>
              {/* Mobile welcome subtext often hidden or simplified */}
