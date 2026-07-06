@@ -1,11 +1,8 @@
 .App {
   min-height: 100vh;
-  padding: 24px;
+  padding: var(--space-4);
+  font-family: 'Outfit', sans-serif;
 }
-
 @media (max-width: 768px) {
-  .App {
-    padding: 16px;
-  }
+  .App { padding: var(--space-2); }
 }
-

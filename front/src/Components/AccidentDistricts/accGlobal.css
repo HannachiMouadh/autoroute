@@ -1,61 +1,50 @@
 .table-wrapper {
   max-height: 600px;
-  overflow-y: auto;
-  overflow-x: auto;
-  margin-top: 20px;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  overflow: auto;
+  margin-top: 24px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  background: var(--surface-color);
+  backdrop-filter: blur(16px);
 }
 
 .accident-table {
   width: 100%;
-  border-collapse: collapse;
-  background-color: #ffffff;
-  color: #212529;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--text-primary);
   min-width: 800px;
 }
 
 .accident-table thead th {
   position: sticky;
   top: 0;
-  background-color: #f8f9fa !important;
-  color: #212529 !important;
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: var(--accent-color) !important;
   z-index: 10;
-  border-bottom: 2px solid #dee2e6;
-  padding: 12px 15px;
-  font-weight: bold;
+  border-bottom: 1px solid var(--surface-border);
+  padding: 16px;
+  font-weight: 600;
   text-align: center;
-  white-space: nowrap;
+  text-transform: uppercase;
+  backdrop-filter: blur(16px);
 }
 
 .accident-table tbody td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #eee;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   text-align: center;
-  color: #333 !important;
+  color: var(--text-primary) !important;
   vertical-align: middle;
+  transition: var(--transition-smooth);
 }
 
-.accident-table tbody tr:hover {
-  background-color: #f1f3f5;
+.accident-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Scrollbar styling */
-.table-wrapper::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.table-wrapper::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
-}
+.table-wrapper::-webkit-scrollbar { width: 8px; height: 8px; }
+.table-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+.table-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+.table-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }

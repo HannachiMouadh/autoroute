@@ -1,61 +1,38 @@
-.react-datepicker-popper {
-  z-index: 1200 !important;
-}
-
-.modal-backdrop {
-  background-color: rgba(4, 10, 24, 0.65);
-}
+.react-datepicker-popper { z-index: 1200 !important; }
+.modal-backdrop { background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(4px); }
 
 .form-section {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
+  background: rgba(255, 255, 255, 0.02);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--surface-border);
 }
 
 .form-section label {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: var(--space-1);
   text-align: right;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: 0.9rem;
 }
 
-.form-section .form-control,
-.form-section .form-select {
-  width: 100%;
-  max-width: 100%;
-}
-
-.date-time-row,
-.km-row,
-.plate-section {
+.date-time-row, .km-row, .plate-section {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
+  gap: var(--space-3);
   align-items: center;
 }
 
-.direction-select {
-  width: 100%;
-}
-
-.plate-section .form-control {
-  max-width: none;
-}
+.direction-select { width: 100%; }
 
 @media (max-width: 992px) {
-  .date-time-row,
-  .km-row,
-  .plate-section {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .date-time-row, .km-row, .plate-section { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 768px) {
-  .modal-body {
-    padding: var(--space-2);
-  }
-
-  .date-time-row,
-  .km-row,
-  .plate-section {
-    grid-template-columns: 1fr;
-  }
+  .modal-body { padding: var(--space-3); }
+  .date-time-row, .km-row, .plate-section { grid-template-columns: 1fr; }
 }

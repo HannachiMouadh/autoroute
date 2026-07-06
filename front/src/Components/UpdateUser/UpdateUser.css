@@ -1,0 +1,17 @@
+.update-user-container {
+  padding: var(--space-4);
+  margin: var(--space-4) auto;
+  max-width: 800px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-color);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.update-user-container h2 {
+  margin-bottom: var(--space-3);
+  color: var(--text-primary);
+  text-align: center;
+}
