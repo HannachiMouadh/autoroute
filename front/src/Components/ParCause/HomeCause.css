@@ -42,7 +42,7 @@ body {
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   transition: var(--transition-smooth);
 }
@@ -79,7 +79,7 @@ body {
 .datepicker-label {
   display: block;
   margin-bottom: 8px;
-  color: var(--text-secondary);
+  color: var(--text-primary) !important;
   font-weight: 500;
   font-size: 0.95rem;
   text-align: right;
@@ -93,7 +93,7 @@ body {
   border-radius: var(--radius-sm);
   border: 1px solid var(--surface-border);
   background: rgba(15, 23, 42, 0.6);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   font-size: 1rem;
   transition: var(--transition-smooth);
   outline: none;
@@ -234,4 +234,4 @@ canvas:hover {
     font-size: 1.5rem;
     padding: 16px;
   }
-}
+}

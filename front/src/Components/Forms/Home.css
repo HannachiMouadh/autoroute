@@ -33,7 +33,7 @@
 .datepicker-label {
   display: block;
   margin-bottom: var(--space-1);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   font-weight: 500;
   text-transform: uppercase;
   font-size: 0.9rem;
@@ -45,7 +45,7 @@
   border-radius: var(--radius-sm);
   border: 1px solid var(--surface-border);
   background: rgba(255, 255, 255, 0.9);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   outline: none;
   transition: var(--transition-smooth);
 }
