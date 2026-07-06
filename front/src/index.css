@@ -24,6 +24,7 @@
   --theme-primary: #0f6fff;
   --theme-accent: #ff8a00;
   --theme-text: #f4f8ff;
+  --theme-text-dark: #0f1b3a;
   --theme-muted: #b8c7e0;
   --theme-danger: #ff5d7b;
 
@@ -146,12 +147,27 @@ label {
 }
 
 .table {
-  color: var(--theme-text);
+  color: var(--theme-text-dark);
 }
 
 .table > :not(caption) > * > * {
-  background: transparent;
-  border-bottom-color: rgba(255, 255, 255, 0.12);
+  border-bottom-color: rgba(15, 27, 58, 0.14);
+}
+
+.MuiTableCell-root {
+  color: var(--theme-text-dark) !important;
+}
+
+.tableContainer .MuiTableCell-root,
+.entretien-table .table td,
+.entretien-table .table th,
+.users-container .table td,
+.users-container .table th,
+.margin td,
+.margin th,
+.large-table .MuiTableCell-root,
+.mobile-table .MuiTableCell-root {
+  color: var(--theme-text) !important;
 }
 
 code {
