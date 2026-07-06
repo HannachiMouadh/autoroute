@@ -5,10 +5,10 @@
   --primary-color: #6366f1;
   --accent-color: #0284c7; /* darker cyan for better contrast on light bg */
   --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  --surface-color: rgba(241, 245, 249, 0.95); /* Lighter grey for tables/forms */
+  --surface-color: rgba(241, 245, 249, 0.95) !important; /* Lighter grey for tables/forms */
   --surface-border: rgba(0, 0, 0, 0.15); /* Darker border for light containers */
   --text-primary: #0f172a; /* Dark text for light grey containers */
-  --text-secondary: #334155; /* Medium dark text */
+  --text-secondary: #111113; /* Medium dark text */
   --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
   --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
   --radius-sm: 8px;
